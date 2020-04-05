@@ -43,7 +43,7 @@
 .navigation__link {
     color: var(--main-red-color);
     text-decoration: none;
-    font-size: 0.7rem;
+    font-size: 0.9rem;
 }
 .navigation__link--bolded {
     text-decoration: underline;
@@ -57,35 +57,35 @@
 .mainSection {
     max-width: 1920px;
     margin: 0px auto;
-    height: 626px;
+    height: 725px;
     background-image: url('../imgs/Section1_bg.png');
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
     justify-content: space-around;
-    padding: 50px 150px 0px 150px;
+    padding: 150px 150px 0px 150px;
 }
 .mainSection__leftSide {
     font-family: var(--main-font);
     color: #fff;
 }
 .mainSection__logo {
-    width: 350px;
+    width: 450px;
 }
 .mainSection__desc {
     text-align: left;
-    max-width: 350px;
+    max-width: 550px;
 }
 .mainSection__header {
     margin-bottom: 10px;
     font-weight: bold;
-    font-size: 1.7rem;
+    font-size: 2.5rem;
     letter-spacing: 0.1rem;
 }
 .mainSection__form { 
     background-color: #f7f7f7;
     font-family: var(--main-font);
-    width: 350px;
+    width: 400px;
     border-radius: 7px;
     padding: 30px;
     box-sizing: border-box;
@@ -94,19 +94,19 @@
     text-align: center;
     padding-bottom: 15px;
     border-bottom: 1px solid var(--main-darker-gray-color);
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: var(--main-darker-gray-color)
 }
 .mainSection__form--label {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     display: block;
-    margin: 15px 0px 7px;
+    margin: 25px 0px 7px;
     font-weight: 600;
 }
 .mainSection__form--input {
     width: 100%;
-    height: 30px;
+    height: 35px;
     border-radius: 6px;
     border: 1px solid #a0a0a0;
     padding: 10px;
@@ -133,7 +133,7 @@
     display: flex;
     justify-content: center;
     padding: 20px 0px 15px;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-family: var(--main-font);
     font-weight: 600;
 }
@@ -158,7 +158,7 @@
     color: #838383;
     font-family: var(--main-font);
     letter-spacing: 0.1em;
-    font-size: 1.3em;
+    font-size: 1.5em;
     text-align: center;
 }
 .stepsSection__header2 {
@@ -167,7 +167,7 @@
     font-family: var(--main-font);
     font-weight: lighter;
     letter-spacing: 0.1em;
-    font-size: 1em;
+    font-size: 1.1em;
     text-align: center;
 }
 .stepsSection__steps {
@@ -179,10 +179,10 @@
 .stepsSection__stepHerader {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 .stepsSection__stepbox {
-    width: 200px;
+    width: 300px;
     background-color: rgb(255, 255, 255);
     padding: 30px;
     box-sizing: border-box;
@@ -192,12 +192,13 @@
 .stepsSection__septitle {
     color: #838383;
     font-family: var(--main-font);
-    font-size: 0.9em;
+    font-size: 1.1em;
 }
 .stepsSection__sepnum {
     background-color: var(--main-red-color);
     text-align: center;
-    width: 20px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     padding: 3px 3px 1px;
     color: #fff;
@@ -208,7 +209,7 @@
 }
 .stepsSection__icon {
     color: var(--main-red-color);
-    font-size: 3.5rem;
+    font-size: 5.5rem;
     margin: 30px auto;
     display: block;
 }
@@ -216,7 +217,7 @@
     font-family: var(--main-font);
     color: #fff;
     background-color: var(--main-red-color);
-    font-size: 0.8em;
+    font-size: 1em;
     padding: 10px;
     border-radius: 5px;
 }
@@ -227,24 +228,25 @@
     font-family: var(--main-font);
     padding: 10px 30px 5px;
     border-radius: 3px;
-    font-size: 1.2em;
+    font-size: 1.5em;
     text-align: center;
     margin: 0px auto;
     display: block;
-    width: 150px;
+    width: 200px;
     box-sizing: border-box;
+    border: 1px dashed var(--main-gray-color);
 }
 .stepsSection__Btn:hover {
     background-color: #f9f9f9;
     color: var(--main-gray-color);
     transition: 0.3s;
-    border: 1px dashed var(--main-gray-color);
 }
 .suppSection {
     background-color: #4c4c4c;
     padding: 150px 300px;
     box-sizing: border-box;
     display: flex;
+    justify-content: center;
 }
 .suppSection__question {
     color: rgb(228, 228, 228);
@@ -293,7 +295,7 @@
 .footer__list-link, .footer__list-item {
     color: var(--main-violet-color);
     text-decoration: none;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
 .footer__list-item {
     margin-top: 5px;
@@ -309,7 +311,7 @@
     width: 70vw;
 }
 .footer__list-header {
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-weight: bold;
 }
 .footer__list {
@@ -319,6 +321,6 @@
     padding: 20px 0px;
 }
 .footer__bottom-text {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     text-align: center;
 }
