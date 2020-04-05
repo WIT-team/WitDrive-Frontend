@@ -1,2 +1,1 @@
-# WitDrive-Frontend
-## Live - wit-team.github.io/WitDrive-Frontend/
+# WitDrive-Frontend [Live](wit-team.github.io/WitDrive-Frontend/)
