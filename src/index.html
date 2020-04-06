@@ -13,14 +13,14 @@
         <div class="navigation__leftBox">
             <img class="navigation__logo" src="assets/imgs/logo_1.svg"></img>
             <ul class="navigation__list">
-                <li class="navigation__item"><a href="#" class="navigation__link">About</a></li>
-                <li class="navigation__item"><a href="#" class="navigation__link">FAQ</a></li>
+                <li class="navigation__item"><a href="#services" class="navigation__link">About</a></li>
+                <li class="navigation__item"><a href="FAQ.html" class="navigation__link">FAQ</a></li>
             </ul>
         </div>
         <div class="navigation__rightBox">
             <ul class="navigation__list">
-                <li class="navigation__item"><a href="#" class="navigation__link">Sign in</a></li>
-                <li class="navigation__item"><a href="#" class="navigation__link navigation__link--bolded">Sign up</a></li>
+                <li class="navigation__item"><a href="login.html" class="navigation__link">Sign in</a></li>
+                <li class="navigation__item"><a href="register.html" class="navigation__link navigation__link--bolded">Sign up</a></li>
             </ul>
         </div>
     </nav>
@@ -38,7 +38,7 @@ all their memories on our servers.
         </div>
         <div class="mainSection__rightSide">
             <form action="#" class="mainSection__form">
-                <h3 class="mainSection__form--header">Create account</h3>
+                <h3 class="mainSection__form-header">Create account</h3>
                 <label for="username" class="mainSection__form--label">Username:</label>
                 <input type="text" name="username" id="usernameInput" class="mainSection__form--input" placeholder="James-Smith">
                 <label for="email" class="mainSection__form--label" >E-mail address:</label>
@@ -51,10 +51,10 @@ all their memories on our servers.
             </form>
         </div>
     </section>
-    <div class="cookiesBar">
-        <p class="cookiesBar__p">Our website uses cookies. Make sure you accept that.</p>
-        <a href="" class="cookiesBar__btn">Accept</a>
-        <a href="" class="cookiesBar__btn">Deny</a>
+    <div class="alertBar">
+        <p class="alertBar__p">Our website uses cookies. Make sure you accept that.</p>
+        <a href="" class="alertBar__btn">Accept</a>
+        <a href="" class="alertBar__btn">Deny</a>
     </div>
     <section class="stepsSection">
         <h2 class="stepsSection__header1">
@@ -92,9 +92,38 @@ all their memories on our servers.
         
         <a href="#" class="stepsSection__Btn">Start now!</a>
     </section>
-    <!--<section class="services">
+    <section class="services" id="services">
         <h3 class="services__header">Our services ensure all you need</h3>
-    </section>-->
+        <div class="services__box">
+            <img class="services__comp-logo"src="assets/imgs/logo_dashed_b.png">
+            <div class="services__serviceBox services__box--1">
+                <h4 class="services__service-title">Easy management</h4>
+                <p class="services__service-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <i class="services__service-icon services__service-icon--1 icon-folder "></i>
+            </div>
+            <div class="services__serviceBox services__box--2">
+                <h4 class="services__service-title">Safety for documents</h4>
+                <p class="services__service-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <i class="services__service-icon services__service-icon--2 icon-doc-text-inv"></i>
+            </div>
+            <div class="services__serviceBox services__box--3">
+                <h4 class="services__service-title">Mobile access</h4>
+                <p class="services__service-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <i class="services__service-icon services__service-icon--3 icon-mobile"></i>
+            </div>
+            <div class="services__serviceBox services__box--4">
+                <h4 class="services__service-title">15GB free disk space</h4>
+                <p class="services__service-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <i class="services__service-icon services__service-icon--4 icon-database"></i>
+            </div>
+            <div class="services__serviceBox services__box--5">
+                <h4 class="services__service-title">Worldwide access</h4>
+                <p class="services__service-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <i class="services__service-icon services__service-icon--5 icon-network"></i>
+            </div>
+        </div>
+        
+    </section>
     <section class="suppSection">
         <div class="suppSection__leftBox">
             <img src="assets/imgs/gear.png" alt="" class="suppSection__image">

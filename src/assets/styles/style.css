@@ -85,23 +85,24 @@
 .mainSection__form { 
     background-color: #f7f7f7;
     font-family: var(--main-font);
-    width: 400px;
+    width: 440px;
     border-radius: 7px;
-    padding: 30px;
+    padding: 40px;
     box-sizing: border-box;
 }
-.mainSection__form--header {
+.mainSection__form-header {
     text-align: center;
     padding-bottom: 15px;
     border-bottom: 1px solid var(--main-darker-gray-color);
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--main-darker-gray-color)
+    color: var(--main-darker-gray-color);
+    margin-bottom: 30px;
 }
 .mainSection__form--label {
     font-size: 0.8rem;
     display: block;
-    margin: 25px 0px 7px;
+    margin: 25px 0px 10px;
     font-weight: 600;
 }
 .mainSection__form--input {
@@ -118,9 +119,10 @@
     width: 100%;
     padding: 15px 0px;
     color: #fff;
-    margin-top: 20px;
+    margin-top: 30px;
     font-weight: 600;
     margin-bottom: 10px;
+    font-size: 1rem;
 }
 .mainSection__SubmitBtn:hover {
     
@@ -128,7 +130,7 @@
     transition: 0.3s;
     cursor: pointer;
 }
-.cookiesBar {
+.alertBar {
     background-color: var(--main-brighter-red-color);
     display: flex;
     justify-content: center;
@@ -137,15 +139,15 @@
     font-family: var(--main-font);
     font-weight: 600;
 }
-.cookiesBar__p {
+.alertBar__p {
     color: #fff;
 }
-.cookiesBar__btn {
+.alertBar__btn {
     color: #a61010;
     text-decoration: none;
     margin-left: 10px;
 }
-.cookiesBar__btn:hover {
+.alertBar__btn:hover {
     color: rgb(233, 233, 233);
     transition: 0.3s;
 }
@@ -323,4 +325,173 @@
 .footer__bottom-text {
     font-size: 0.9rem;
     text-align: center;
+}
+.services {
+    background-color: #fff;
+    padding: 100px;
+}
+.services__header {
+    color: #838383;
+    font-family: var(--main-font);
+    letter-spacing: 0.1em;
+    font-size: 1.5em;
+    text-align: center;
+}
+.services__box {
+    position: relative;
+    width: 500px;
+    margin: 200px auto;
+}
+.services__comp-logo {
+    width: 100%;
+}
+.services__service-title {
+    font-size: 1.3em;
+    letter-spacing: 0.1em;
+}
+.services__service-desc {
+    line-height: 1.5em;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+.services__service-icon {
+    font-size: 2.5rem;
+    position: absolute;
+    color: var(--main-red-color);
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 50%;
+}
+.services__serviceBox {
+    position: absolute;
+    width: 380px;
+    height: 160px;
+    color: #fff;
+    background-color: var(--main-red-color);
+    font-family: var(--main-font);
+    text-align: center;
+    box-sizing: border-box;
+    padding: 30px 30px;
+    border-radius: 10px;
+}
+.services__service-icon--1 {
+    bottom: -30px;
+    right: -45px;
+}
+.services__service-icon--2 {
+    top: -30px;
+    right: -45px;
+}
+.services__service-icon--3 {
+    top: -30px;
+    left: -45px;
+}
+.services__service-icon--4 {
+    bottom: 40px;
+    left: -65px;
+}
+.services__service-icon--5 {
+    bottom: -55px;
+    right: 200px;
+}
+.services__box--1 {
+    top:50px;
+    left:-360px;
+}
+.services__box--2 {
+    top:420px;
+    left:-300px;
+}
+.services__box--3 {
+    top:420px;
+    right:-280px;
+}
+.services__box--4 {
+    top:80px;
+    right:-380px;
+}
+.services__box--5 {
+    top:-165px;
+    left:90px;
+}
+
+/* LOGIN */ 
+.mainSection__form-header--login {
+    color : var(--main-violet-color);
+    text-align: left;
+    font-weight: 400;
+}
+
+.mainSection__checkbox {
+    margin-top: 20px;
+    margin-left: 5px;
+}
+.mainSection__checkbox-label {
+    color: var(--main-violet-color);
+    font-size: 0.8rem;
+    margin-left: 5px;
+}
+.mainSection__SubmitBtn--login {
+    background-color: var(--main-violet-color);
+    margin-top: 15px;
+}
+
+.mainSection__create-new-accountBtn {
+    font-size: 0.8rem;
+    text-align: center;
+    color: var(--main-gray-color);
+    margin-top: 15px;
+}
+
+.mainSection__new-account-link {
+    text-decoration: none;
+    color: var(--main-violet-color);
+    font-weight: 600;
+}
+
+.mainSection__new-account-link:hover {
+    color: rgb(96, 25, 138);
+    transition: 0.3s;
+}
+.mainSection__form--login {
+    padding-bottom: 25px;
+}
+
+/* FAQ */
+.FAQ__content {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 100px;
+}
+.FAQ__header {
+    font-family: var(--main-font);
+    color: #fff;
+    background-color: var(--main-red-color); 
+    font-weight: 400;
+    padding: 50px 0px 50px 7vw;   
+}
+
+.Questions {
+    max-width: 800px;
+    color: var(--main-red-color);
+    font-family: var(--main-font);
+    margin-left: 7vw;
+}
+.Question__section-topic {
+    margin: 50px 0px 25px;
+    border-bottom: 1px solid #dd3f5f;
+    padding-bottom: 10px;
+}
+.Questions__Question {
+    font-size: 1.3em;
+    margin-top: 25px;
+}
+.Questions__Answer {
+    color: #aa2e2e;
+    margin-top: 10px;
+    font-size: 1rem;
+}
+.FAQ__logo {
+    max-width: 400px;
+    margin-right: 10vw;
 }
