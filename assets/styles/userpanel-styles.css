@@ -1,0 +1,84 @@
+:root {
+    --main-red-color: #de4b4b;
+    --main-darker-red-color : #dd3f5f;
+    --main-brighter-red-color : #ff4f4f;
+    --main-orange-color: #e58231;
+    --main-violet-color : #7371d5;
+    --main-lime-color: #36ffa3;
+    --main-black-color: #000;
+    --main-gray-color : #464646;
+    --main-darker-gray-color: #303234;
+    --main-white-color: #fafbfe;
+    --main-font: 'Myriad Pro Regular';
+    --main-font-bolded: 'Myriad Pro Bold';
+}
+
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+/* nagivation bar */
+.navigation {
+    font-family: var(--main-font);
+    display: flex;
+    padding: 5px 0vw 5px 3vw;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 0px 0px rgba(0,0,0,0.05), 
+              0 1px 1px rgba(0,0,0,0.05), 
+              0 2px 2px rgba(0,0,0,0.05), 
+              0 2px 2px rgba(0,0,0,0.05),
+              0 4px 4px rgba(0,0,0,0.05);
+}
+.navigation__logo {
+    max-width: 125px;
+}
+.navigation__leftBox {
+    display: flex;
+    align-items: center;
+}
+.navigation__list {
+    list-style-type: none;
+    margin-left: 50px;
+}
+.navigation__item {
+    display: inline;
+    margin-right: 20px;
+}
+.navigation__link {
+    color: var(--main-red-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.navigation__link--bolded {
+    text-decoration: underline;
+    font-family: var(--main-font    );
+    font-weight: bold;
+}
+.navigation__link:hover {
+    color: var(--main-gray-color);
+    transition: 0.3s;
+}
+
+.navigation--email {
+    font-family: var(--main-font);
+    color: var(--main-red-color);
+    font-size: 0.9rem;
+}
+
+.mainSection {
+    display: flex;
+    margin-top: 10px;
+}
+
+.mainSection__menu {
+    width: 250px;
+    background-color: red;
+    
+
+}
+.mainSection__files-box {
+    width: calc(100vw - 250px);
+    background-color: var(--main-gray-color);
+}

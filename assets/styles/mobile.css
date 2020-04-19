@@ -84,6 +84,9 @@
     .footer__list-header {
         font-size: 1.1em;
     }
+    .main404Section {
+        margin-bottom: 100px;
+    }
 }
 
 @media (max-width: 1300px) {

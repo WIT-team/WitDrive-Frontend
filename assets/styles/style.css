@@ -26,7 +26,7 @@
     justify-content: space-between;
 }
 .navigation__logo {
-    max-width: 60px;
+    max-width: 125px;
 }
 .navigation__leftBox {
     display: flex;
@@ -494,4 +494,42 @@
 .FAQ__logo {
     max-width: 400px;
     margin-right: 10vw;
+}
+/* 404 PAGE */
+
+.main404Section {
+    max-width: 600px;
+    margin: 0px auto 30vh;
+    padding: 50px 5vw;
+    
+}
+.main404Section__logo {
+    max-width: 200px;
+    margin: 0px auto;
+    display: block;
+}
+.main404Section__header1 {
+    font-family: var(--main-font);
+    color: var(--main-darker-red-color);
+}
+
+.main404Section__header2 {
+    font-family: var(--main-font);
+    color: var(--main-gray-color);
+    font-size: 1rem;
+    font-weight: 400;
+}
+.main404Section__home-link {
+    font-family: var(--main-font);
+    color: var(--main-brighter-red-color);
+    text-decoration: none;
+    display: block;
+}
+.main404Section__home-link:hover {
+    color: var(--main-violet-color);
+    transition: 0.3s;
+
+}
+.main404Section__logo, .main404Section__header1, .main404Section__header2, .main404Section__home-link {
+    margin-top: 20px;
 }
