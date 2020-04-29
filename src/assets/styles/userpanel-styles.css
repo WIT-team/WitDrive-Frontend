@@ -53,32 +53,182 @@
 }
 .navigation__link--bolded {
     text-decoration: underline;
-    font-family: var(--main-font    );
+    font-family: var(--main-font);
     font-weight: bold;
 }
 .navigation__link:hover {
     color: var(--main-gray-color);
     transition: 0.3s;
 }
-
 .navigation--email {
     font-family: var(--main-font);
     color: var(--main-red-color);
     font-size: 0.9rem;
 }
-
 .mainSection {
     display: flex;
     margin-top: 10px;
 }
-
+.mainSection__header {
+    font-family: var(--main-font);
+    margin-top: 20px;
+    color: var(--main-gray-color);
+}
 .mainSection__menu {
     width: 250px;
-    background-color: red;
-    
+    margin-left: 10px;
+}
+.mainSection__menu-list {
+    list-style-type: none;
+}
+.mainSection__menu-item-link {
+    color: var(--main-violet-color);
+    width: 100%;
+    display: block;
+    padding: 10px 0px 10px 20px;
+    box-sizing: border-box;
+}
+.mainSection__menu-item {
+    width: 90%;
+    margin-top: 10px;
+}
+.mainSection__menu-item:first-child {
+    margin-top: 0px;
+    padding: 0px;
+    padding-left: 0px;
+}
+.mainSection__menu-item:nth-child(2) {
+    margin-top: 20px;
+}
+.mainSection__menu-item-link:hover {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+}
+.mainSection__upBtn {
+    font-family: var(--main-font-bolded);
+    border: 0px;
+    background-color: var(--main-violet-color);
+    color: #fff;
+    padding: 20px 0px;
+    width: 100%;
+    border-radius: 5px;
+    border: 2px dashed var(--main-violet-color);
+    cursor: pointer;
+}
 
+.mainSection__upBtn:hover {
+    background-color: #fff;
+    color: var(--main-violet-color);
+    transition: 0.3s;
 }
+.mainSection__f-space-info {
+    margin-top: 25px;
+}
+.mainSection__f-space-h {
+    font-size: 1rem;
+    color: var(--main-violet-color);
+}
+.mainSection__f-space-details {
+    margin-top: 5px;
+    font-size: 0.8rem;
+}
+/* files boxes*/
 .mainSection__files-box {
-    width: calc(100vw - 250px);
-    background-color: var(--main-gray-color);
+    width: calc(95vw - 250px);
 }
+.mainSection__file-list {
+    list-style-type: none;
+}
+.mainSection__file {
+    background-color: rgb(245, 245, 245);
+    color: rgb(141, 141, 141);
+    margin: 10px 0px;
+    font-family: var(--main-font);
+    padding: 15px 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+.mainSection__file-box {
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.mainSection__file-name {
+    margin-left: 10px;
+}
+.mainSection__file-filesize {
+    margin-left: 20%;
+}
+.mainSection__file-uploadTime {
+    margin-left: 5%;
+}
+.mainSection__file:hover {
+    background-color: var(--main-violet-color);
+    color: #fff;
+    transition: 0.3s;
+}
+.mainSection__menu {
+    margin-top: 10px;
+    font-family: var(--main-font);
+    padding: 10px;
+}
+.mainSection__menu-item-link {
+    text-decoration: none;
+}
+.mainSection__file-atrubutes {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    font-family: var(--main-font);
+    color: rgb(141, 141, 141);
+}
+.mainSection__file-atrubutes-name {
+    margin-left: 40px;
+}
+.mainSection__file-atrubutes-size {
+    margin-left: 22.2%;
+}
+.mainSection__file-atrubutes-up-date {
+    margin-left: 6.5%;
+}
+/* Context menu */
+.file__contextmenu {
+    position: absolute;
+    top:100px;
+    left: 0px;
+    display: flex;
+    flex-direction: column;
+    width: 175px;
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+              0 2px 2px rgba(0,0,0,0.12), 
+              0 4px 4px rgba(0,0,0,0.12), 
+              0 8px 8px rgba(0,0,0,0.12),
+              0 16px 16px rgba(0,0,0,0.12);
+}
+.file__contextmenu-item {
+    background-color: #fff;
+    border: 0px;
+    z-index: 9999;
+    color: #7371d5;
+    font-family: var(--main-font);
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid #e2e2e2;
+    
+}
+.file__contextmenu-item:first-child {
+    border-radius: 5px 5px 0px 0px;
+}
+.file__contextmenu-item:last-child {
+    border-radius: 0px 0px 5px 5px;
+}
+.file__contextmenu-item:hover {
+    color: rgb(78, 78, 78);
+    background-color: rgb(230, 230, 230);
+    transition: 0.3s;
+    cursor: pointer;
+}
+.file__contextmenu-btn-text {
+    margin-left: 10px;
+}
+
