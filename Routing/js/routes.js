@@ -1,5 +1,6 @@
 import homeView from '../views/main_page/home.js'
 import FAQView from '../views/main_page/FAQ.js'
+import registerView from '../views/main_page/register.js'
 
 const routes = [
     {
@@ -22,6 +23,10 @@ const routes = [
     {
         path: '/products/:productId',
         getTemplate: (params) =>  `<h1>Product ${params.productId}</h1>`,
+    },
+    {
+        path: '/register',
+        getTemplate: (params) =>  registerView,
     },
 ];
 
