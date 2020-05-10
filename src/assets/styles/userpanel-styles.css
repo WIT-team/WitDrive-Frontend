@@ -59,6 +59,7 @@
 .navigation__link:hover {
     color: var(--main-gray-color);
     transition: 0.3s;
+    cursor: pointer;
 }
 .navigation--email {
     font-family: var(--main-font);
@@ -101,6 +102,10 @@
     margin-top: 20px;
 }
 .mainSection__menu-item-link:hover {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+}
+.menu-item-link-active {
     background-color: rgb(238, 238, 238);
     color: rgb(141, 141, 141);
 }
@@ -409,6 +414,143 @@
 }
 
 .DeleteModal__btns {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+/* User settings */ 
+
+.mainSection--settingsPanel {
+    width: 60vw;
+    margin: 0px auto;
+    margin-top: 10vh;
+}
+.mainSection__form {
+    font-family: var(--main-font);
+    margin-top: 30px;
+}
+
+.mainSection__form-header {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: var(--main-violet-color);
+}
+.mainSection__form-label {
+    font-size: 0.8rem;
+    display: block;
+    margin: 25px 0px 10px;
+    font-weight: 600;
+}
+
+.mainSection__form-input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #b3b3b3;
+    font-size: 0.7rem;
+    width: 200px;
+}
+
+.mainSection__form-btn {
+    cursor: pointer;
+    color: #fff;
+    background-color: var(--main-violet-color);
+    padding: 10px;
+    border: 0px;
+    border-radius: 5px;
+    display: block;
+    width: 70px;
+    margin-top: 10px;
+}
+
+.mainSection__form-btns {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cancelBtn {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+    margin-right: 10px; 
+}
+
+.mainSection__h {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+/*Error modal*/ 
+.ErrorModal {
+    position: absolute;
+    top: 20vh;
+    left: 35vw;
+    z-index: 2;
+    width: 600px;
+    margin: 0px auto;
+    font-family: var(--main-font);
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 4px 4px rgba(0,0,0,0.12), 
+    0 8px 8px rgba(0,0,0,0.12),
+    0 16px 16px rgba(0,0,0,0.12);
+    background-color: #fff;
+}
+
+.ErrorModal__header {
+    background-color: var(--main-red-color);
+    border-radius: 5px 5px 0px 0px;
+    color: #fff;
+    font-weight: 400;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 1.3rem;
+}
+
+.ErrorModal__content {
+    box-sizing: border-box;
+    padding: 10px 20px 20px;
+    color: rgb(141, 141, 141);
+    border-radius: 0px 0px 5px 5px;
+}
+.ErrorModal__sharelink {
+    text-decoration: none;
+    color: var(--main-violet-color);
+    margin-left: 10px;
+}
+.ErrorModal__p {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+.ErrorModal__file {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 400;
+}
+.ErrorModal__filename {
+    display: inline;
+    font-size: 1rem;
+    margin-left: 10px;
+    font-weight: 400;
+}
+.ErrorModal__filesize {
+    display: inline;
+    margin-left: 5px;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+.ErrorModal__CloseBtn {
+    background-color: rgb(245, 245, 245);
+    border: 0px;
+    border-radius: 5px;
+    color: rgb(141, 141, 141);
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.ErrorModal__btns {
     display: flex;
     justify-content: flex-end;
     width: 100%;

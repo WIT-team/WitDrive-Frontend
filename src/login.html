@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login to WitDrive</title>
-    <link rel="stylesheet" href="assets/fonts/Font__MyriadPro.css.css">
+    <link rel="stylesheet" href="assets/fonts/Font__MyriadPro.css">
     <link rel="stylesheet" href="assets/styles/style.css">
     <link rel="stylesheet" href="assets/styles/mobile.css">
     <link rel="stylesheet" href="assets/styles/fontello.css">
@@ -18,7 +18,7 @@
                 <li class="navigation__item"><a href="FAQ.html" class="navigation__link">FAQ</a></li>
             </ul>
         </div>
-        <div class="navigation__rightBox">
+        <div class="navigation__rightBox" id="userAccountNav">
             <ul class="navigation__list">
                 <li class="navigation__item"><a href="register.html" class="navigation__link navigation__link--bolded">Sign up</a></li>
             </ul>
@@ -26,14 +26,17 @@
     </nav>
     <section class="mainSection">
         <div class="mainSection__rightSide">
-            <form action="#" class="mainSection__form mainSection__form--login">
+            <form action="#" class="mainSection__form mainSection__form--login" id="loginForm">
                 <h3 class="mainSection__form-header mainSection__form-header--login">Sign in</h3>
                 <label for="username" class="mainSection__form--label">Username:</label>
                 <input type="text" name="username" id="usernameInput" class="mainSection__form--input" placeholder="James-Smith">
                 <label for="password" class="mainSection__form--label">Password:</label>
                 <input type="password" name="password" id="passwordInput" class="mainSection__form--input" placeholder="Password">
+                <!--
                 <input type="checkbox" name="remember" value="true" class="mainSection__checkbox">
                 <label for="remember" class="mainSection__checkbox-label">Remember my password</label>
+                -->
+                <a href="PasswordReset.html" class="mainSection__resetPassword-link">Reset my password</a>
                 <button type="submit" class="mainSection__SubmitBtn mainSection__SubmitBtn--login" id="SubmitBtn">Sign in</button>
                 <p class="mainSection__create-new-accountBtn">
                     or <a href="" class="mainSection__new-account-link">create new account</a>
@@ -68,5 +71,6 @@
             </p>
         </div>
     </footer>
+    <script src="js/auth.js"></script>
 </body>
 </html>

@@ -53,6 +53,7 @@
 .navigation__link:hover {
     color: var(--main-gray-color);
     transition: 0.3s;
+    cursor: pointer;
 }
 .mainSection {
     max-width: 1920px;
@@ -610,3 +611,75 @@
     justify-content: flex-end;
     width: 100%;
 }
+/* Password reset template */ 
+.mainPasswordResetSection {
+    max-width: 440px;
+    margin: 10vh auto 30vh;
+}
+
+.mainSection__form-header--reset {
+    color : var(--main-violet-color);
+    text-align: left;
+    font-weight: 400;
+    margin-bottom: 0px;
+}
+.mainSection__SubmitBtn--reset {
+    background-color: var(--main-violet-color);
+    margin-top: 10px;
+    width: 35%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 0px;
+}
+
+.mainSection__CancelBtn {
+    text-decoration: none;
+    width: 35%;
+    padding: 10px 0px;
+    color: var(--main-violet-color);
+    text-align: center;
+    
+}
+.mainSection__CancelBtn:hover {
+    color: rgb(141, 141, 141);
+    transition: 0.3s;
+}
+.mainSection__form--reset {
+    padding-bottom: 25px;
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 4px 4px rgba(0,0,0,0.12), 
+    0 8px 8px rgba(0,0,0,0.12),
+    0 16px 16px rgba(0,0,0,0.12);
+}
+
+.mainSection__SubmitBtn--reset:hover {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+}
+.mainPasswordResetSection__btns {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.mainPasswordResetSection__successH {
+    font-family: var(--main-font-bolded);
+    color: var(--main-violet-color);
+}
+
+
+.mainSection__resetPassword-link {
+    text-decoration: none;
+    font-size: 0.8rem;
+    display: block;
+    margin: 20px 5px 0px;
+    color: var(--main-gray-color);
+}
+
+.mainSection__resetPassword-link:hover {
+    color: var(--main-violet-color);
+    transition: 0.3s;
+}
+

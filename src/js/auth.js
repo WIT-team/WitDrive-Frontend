@@ -1,7 +1,8 @@
 class Auth {
     api = 'http://localhost:5000/api/';
     constructor() {
-        this.initRegisterForm();
+        this.validateRedirection();
+        this.initNavBar();
     }
     getRegisterParameters(form) {
         return {
@@ -36,12 +37,11 @@ class Auth {
             const result = this.sendRegisterRequest(reg_params);
             if(result.status == 201)
                 alert("Congrats, registered!");
+                //There will be called redirection to login page instead of alert
             else {
                 const errors = JSON.parse(result.response);
-                this.displayRegisterErrorModal(errors);
-            }
-                //alert(result.response);
-                
+                this.displayErrorModal(errors);
+            }   
             registerForm.reset();
         }
         else {
@@ -63,10 +63,10 @@ class Auth {
                     description : "Passwords must have at least one uppercase ('A'-'Z')."
                 },
             ];
-            this.displayRegisterErrorModal(errors);
+            this.displayErrorModal(errors);
         }
     }
-    displayRegisterErrorModal(erorrs) {
+    displayErrorModal(erorrs) {
         const errorModal = document.createElement('div');
         errorModal.classList.add('ErrorModal');
         let modalBody = `<header>
@@ -87,11 +87,11 @@ class Auth {
             document.body.removeChild(errorModal);
         });
     }
-    sendRegisterRequest(reg_params) {
+    sendRegisterRequest(req_params) {
         const XHR = new XMLHttpRequest();
         XHR.open( 'POST', this.api + "auth/register",false);
         XHR.setRequestHeader('Content-Type', 'application/json');
-        XHR.send(JSON.stringify(reg_params));
+        XHR.send(JSON.stringify(req_params));
         return XHR;
     }
     initRegisterForm() {
@@ -101,6 +101,236 @@ class Auth {
             this.register(registerForm);
         });
     }
+    initPassResetForm() {
+        const pResetForm = document.querySelector("#passwordResetForm");
+        pResetForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.resetPassword(pResetForm);
+        });
+    }
+    resetPassword(form) {
+        const email = form.elements.namedItem("email").value;
+        if(email.length > 0) {
+            const result = this.sendPResetRequest(email);
+            if(result.status == 200) {
+                const mainSection = document.querySelector("#mainPasswordResetSection");
+                const successH = document.createElement("h2");
+                successH.classList.add("mainPasswordResetSection__successH");
+                successH.textContent = "To reset password check your email and follow next steps."
+                mainSection.appendChild(successH);
+                mainSection.remove(form);
+            }
+            else {
+                const errors = JSON.parse(result.response);
+                this.displayErrorModal(errors);
+                registerForm.reset();
+            }   
+        }
+        else {
+            this.displayErrorModal(
+                {
+                    code : "EmailInvalid",
+                    description : "Invalid email"
+                }
+            );
+        }
+
+    }
+    sendPResetRequest(email) {
+        const reg_params = {email:email};
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'POST', this.api + "auth/resetPassword",false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.send(JSON.stringify(reg_params));
+        return XHR;
+    }
+    initLoginForm() {
+        const loginForm = document.querySelector("#loginForm");
+        if(loginForm != null) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.login(loginForm);
+            });
+        }
+    }
+    login(form) {
+        const req_params = {
+            username : form.elements.namedItem("username").value,
+            password : form.elements.namedItem("password").value,
+        }
+        const userloginErrorMsg = [{
+            code : "InvalidPasswordOrUsername",
+            description : "Invalid password or username."
+        }];
+        if(req_params.username.length > 0 && req_params.password.length > 0) {
+            const result = this.sendLoginRequest(req_params);
+            if(result.status == 200) {
+                this.saveToLocalStorage(result.response);
+                //There will be called redirection by router
+                this.routerRedirect("userpanel");
+            }
+            else if(result.status == 401) {
+                this.displayErrorModal(userloginErrorMsg);
+            }
+            else {
+                this.displayErrorModal([{
+                    code : "UknownError",
+                    description : "Uknown error. Please try again later."
+                }]);
+            }   
+            form.reset();
+        }
+        else {
+            this.displayErrorModal(userloginErrorMsg);
+        }
+    }
+    sendLoginRequest(req_params) {
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'POST', this.api + "auth/login",false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.send(JSON.stringify(req_params));
+        return XHR;
+    }
+    saveToLocalStorage(UserAuthData) {
+        localStorage.setItem("UserAuthData", UserAuthData);
+    }
+    getUserName() {
+        const UserAuthData = JSON.parse(localStorage.getItem("UserAuthData"));
+        return UserAuthData.user.username;
+    }
+    validateUserAuthData() {
+
+    }
+    logout() {
+        localStorage.removeItem("UserAuthData");
+        this.routerRedirect("index");
+    }
+    isUserLoged() {
+        return localStorage.getItem("UserAuthData") != null;
+    }
+    routerRedirect(page) {
+        window.location.href = `${page}.html`;
+    }
+    routerGetCurrentRoute() {
+        let route = window.location.href;
+        route = route.split("/");
+        route = route[route.length - 1];
+        route = route.split(".")[0];
+        return route;
+    }
+    initpasswordChangeForm() {
+        const passwordChangeForm = document.querySelector("#passwordChangeForm");
+        
+        if(passwordChangeForm != null) {
+            const submitBtn = passwordChangeForm.querySelector("#mainSection__form-Sbtn");
+            submitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.changePassword(passwordChangeForm);
+            });
+            passwordChangeForm.querySelector("#mainSection__form-cancel-btn").addEventListener('click', (e) => {
+                e.preventDefault();
+                this.routerRedirect("userpanel");
+            });
+        }
+    }
+    changePassword(form) {
+        const req_params = {
+            oldPassword : form.elements.namedItem("oldPassword").value,
+            newPassword : form.elements.namedItem("newPassword").value,
+            newPassword_r : form.elements.namedItem("newPassword_r").value,
+        }
+        
+        const userPasswordsCErrorMsg = [{
+            code : "InvalidPasswords",
+            description : "Invalid passwords!"
+        }];
+        if(req_params.oldPassword.length > 0 && this.validatePassword(req_params.newPassword, req_params.newPassword_r)) {
+            const result = this.sendChangePasswordRequest(req_params);
+            if(result.status == 200) {
+                alert("Password changed");
+            }
+            else if(result.status == 401) {
+                this.displayErrorModal(userPasswordsCErrorMsg);
+            }
+            else {
+                this.displayErrorModal([{
+                    code : "UknownError",
+                    description : "Uknown error. Please try again later."
+                }]);
+            }   
+            form.reset();
+        }
+        else {
+            this.displayErrorModal(userPasswordsCErrorMsg);
+        }
+    }
+    sendChangePasswordRequest(req_params) {
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'POST', this.api + "auth/changePassword",false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.send(JSON.stringify(req_params));
+        return XHR;
+    }
+    initNavBar() {
+        const accountNav = document.querySelector("#userAccountNav");
+        if (this.isUserLoged()) {
+            const username = this.getUserName();
+            accountNav.innerHTML = `
+            <li class="navigation__item navigation--email">${username}</li>
+            <li class="navigation__item navigation__link" id="settingsBtn"><i class="icon-cog"></i></li>
+            <li class="navigation__item navigation__link navigation__link--bolded" id="logoutBtn">Log out</li>
+            `;
+            accountNav.querySelector("#logoutBtn").addEventListener('click', e => {
+                e.preventDefault();
+                this.logout();
+            });
+            accountNav.querySelector("#settingsBtn").addEventListener('click', e => {
+                e.preventDefault();
+                this.routerRedirect("userSettings");
+            });
+        }
+        else {
+            const currentRoute = this.routerGetCurrentRoute();
+            if(currentRoute == "login")
+                accountNav.innerHTML = `
+                <li class="navigation__item"><a href="register.html" class="navigation__link navigation__link--bolded">Sign up</a></li>`;
+            else if(currentRoute == "register")
+                accountNav.innerHTML = `
+                <li class="navigation__item"><a href="login.html" class="navigation__link">Sign in</a></li>`;
+            else
+                accountNav.innerHTML = `
+                <li class="navigation__item"><a href="login.html" class="navigation__link">Sign in</a></li>
+                <li class="navigation__item"><a href="register.html" class="navigation__link navigation__link--bolded">Sign up</a></li>`;
+        }
+    }
+    validateRedirection() {
+        const currentRoute = this.routerGetCurrentRoute();
+        if(this.isUserLoged()) {
+            if(currentRoute == "login" || currentRoute == "register" || currentRoute == "PasswordReset") {
+                this.routerRedirect("userpanel");
+            }
+            if(currentRoute == "userSettings")
+                this.initpasswordChangeForm();
+        }
+        else {
+            switch (currentRoute) {
+                case "userpanel":
+                    this.routerRedirect("index");
+                    break;
+                case "login":
+                    this.initLoginForm();
+                    break;
+                case "register":
+                    this.initRegisterForm();
+                    break;
+                case "PasswordReset":
+                    this.initPassResetForm();
+                    break;
+                default:
+                    break;
+            }
+        }
+    } 
 }
 
 const auth = new Auth();
