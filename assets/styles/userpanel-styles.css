@@ -53,32 +53,505 @@
 }
 .navigation__link--bolded {
     text-decoration: underline;
-    font-family: var(--main-font    );
+    font-family: var(--main-font);
     font-weight: bold;
 }
 .navigation__link:hover {
     color: var(--main-gray-color);
     transition: 0.3s;
+    cursor: pointer;
 }
-
 .navigation--email {
     font-family: var(--main-font);
     color: var(--main-red-color);
     font-size: 0.9rem;
 }
-
 .mainSection {
     display: flex;
     margin-top: 10px;
 }
-
+.mainSection__header {
+    font-family: var(--main-font);
+    margin-top: 20px;
+    color: var(--main-gray-color);
+}
 .mainSection__menu {
     width: 250px;
-    background-color: red;
-    
-
+    margin-left: 10px;
 }
+.mainSection__menu-list {
+    list-style-type: none;
+}
+.mainSection__menu-item-link {
+    color: var(--main-violet-color);
+    width: 100%;
+    display: block;
+    padding: 10px 0px 10px 20px;
+    box-sizing: border-box;
+}
+.mainSection__menu-item {
+    width: 90%;
+    margin-top: 10px;
+}
+.mainSection__menu-item:first-child {
+    margin-top: 0px;
+    padding: 0px;
+    padding-left: 0px;
+}
+.mainSection__menu-item:nth-child(2) {
+    margin-top: 20px;
+}
+.mainSection__menu-item-link:hover {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+}
+.menu-item-link-active {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+}
+.mainSection__upBtn {
+    font-family: var(--main-font-bolded);
+    border: 0px;
+    background-color: var(--main-violet-color);
+    color: #fff;
+    padding: 20px 0px;
+    width: 100%;
+    border-radius: 5px;
+    border: 2px dashed var(--main-violet-color);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.mainSection__upBtn:hover {
+    background-color: #fff;
+    color: var(--main-violet-color);
+    transition: 0.3s;
+}
+.mainSection__f-space-info {
+    margin-top: 25px;
+}
+.mainSection__f-space-h {
+    font-size: 1rem;
+    color: var(--main-violet-color);
+}
+.mainSection__f-space-details {
+    margin-top: 5px;
+    font-size: 0.8rem;
+}
+/* files boxes*/
 .mainSection__files-box {
-    width: calc(100vw - 250px);
-    background-color: var(--main-gray-color);
+    width: calc(95vw - 250px);
+}
+.mainSection__file-list {
+    list-style-type: none;
+}
+.mainSection__file {
+    background-color: rgb(245, 245, 245);
+    color: rgb(141, 141, 141);
+    margin: 10px 0px;
+    font-family: var(--main-font);
+    padding: 15px 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+.mainSection__file-box {
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.mainSection__file-name {
+    margin-left: 10px;
+}
+.mainSection__file-filesize {
+    margin-left: 20%;
+}
+.mainSection__file-uploadTime {
+    margin-left: 5%;
+}
+.mainSection__file:hover {
+    background-color: var(--main-violet-color);
+    color: #fff;
+    transition: 0.3s;
+}
+.mainSection__menu {
+    margin-top: 10px;
+    font-family: var(--main-font);
+    padding: 10px;
+}
+.mainSection__menu-item-link {
+    text-decoration: none;
+}
+.mainSection__file-atrubutes {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    font-family: var(--main-font);
+    color: rgb(141, 141, 141);
+}
+.mainSection__file-atrubutes-name {
+    margin-left: 40px;
+}
+.mainSection__file-atrubutes-size {
+    margin-left: 22.2%;
+}
+.mainSection__file-atrubutes-up-date {
+    margin-left: 6.5%;
+}
+/* Context menu */
+.file__contextmenu {
+    position: absolute;
+    top:100px;
+    left: 0px;
+    display: flex;
+    flex-direction: column;
+    width: 175px;
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+              0 2px 2px rgba(0,0,0,0.12), 
+              0 4px 4px rgba(0,0,0,0.12), 
+              0 8px 8px rgba(0,0,0,0.12),
+              0 16px 16px rgba(0,0,0,0.12);
+}
+.file__contextmenu-item {
+    background-color: #fff;
+    border: 0px;
+    z-index: 1;
+    color: #7371d5;
+    font-family: var(--main-font);
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid #e2e2e2;
+    
+}
+.file__contextmenu-item:first-child {
+    border-radius: 5px 5px 0px 0px;
+}
+.file__contextmenu-item:last-child {
+    border-radius: 0px 0px 5px 5px;
+}
+.file__contextmenu-item:hover {
+    color: rgb(78, 78, 78);
+    background-color: rgb(230, 230, 230);
+    transition: 0.3s;
+    cursor: pointer;
+}
+.file__contextmenu-btn-text {
+    margin-left: 10px;
+}
+
+
+/* Share modal */
+.ShareModal {
+    position: absolute;
+    top: 20vh;
+    left: 35vw;
+    z-index: 2;
+    width: 600px;
+   
+    margin: 0px auto;
+    
+    font-family: var(--main-font);
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 4px 4px rgba(0,0,0,0.12), 
+    0 8px 8px rgba(0,0,0,0.12),
+    0 16px 16px rgba(0,0,0,0.12);
+    background-color: #fff;
+}
+
+.ShareModal__header {
+    background-color: var(--main-violet-color);
+    border-radius: 5px 5px 0px 0px;
+    color: #fff;
+    font-weight: 400;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 1.3rem;
+}
+
+.ShareModal__content {
+    box-sizing: border-box;
+    padding: 10px 20px 20px;
+    color: rgb(141, 141, 141);
+    border-radius: 0px 0px 5px 5px;
+}
+.ShareModal__sharelink {
+    text-decoration: none;
+    color: var(--main-violet-color);
+    margin-left: 10px;
+}
+.ShareModal__p {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+.ShareModal__file {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 400;
+}
+.ShareModal__filename {
+    display: inline;
+    font-size: 1rem;
+    margin-left: 10px;
+    font-weight: 400;
+}
+.ShareModal__filesize {
+    display: inline;
+    margin-left: 5px;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+.ShareMOdal__CloseBtn {
+    background-color: rgb(245, 245, 245);
+    border: 0px;
+    border-radius: 5px;
+    color: rgb(141, 141, 141);
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.ShareMOdal__SwitchSBtn {
+    background-color: var(--main-violet-color);
+    border: 0px;
+    border-radius: 5px;
+    color: #fff;
+    padding: 10px 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.ShareModal__btns {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+/* Delete modal */
+.DeleteModal {
+    position: absolute;
+    top: 20vh;
+    left: 35vw;
+    z-index: 2;
+    width: 600px;
+   
+    margin: 0px auto;
+    
+    font-family: var(--main-font);
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 4px 4px rgba(0,0,0,0.12), 
+    0 8px 8px rgba(0,0,0,0.12),
+    0 16px 16px rgba(0,0,0,0.12);
+    background-color: #fff;
+}
+
+.DeleteModal__header {
+    background-color: var(--main-violet-color);
+    border-radius: 5px 5px 0px 0px;
+    color: #fff;
+    font-weight: 400;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 1.3rem;
+}
+
+.DeleteModal__content {
+    box-sizing: border-box;
+    padding: 10px 20px 20px;
+    color: rgb(141, 141, 141);
+    border-radius: 0px 0px 5px 5px;
+}
+.DeleteModal__sharelink {
+    text-decoration: none;
+    color: var(--main-violet-color);
+    margin-left: 10px;
+}
+.DeleteModal__p {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+.DeleteModal__file {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 400;
+}
+.DeleteModal__filename {
+    display: inline;
+    font-size: 1rem;
+    margin-left: 10px;
+    font-weight: 400;
+}
+.DeleteModal__filesize {
+    display: inline;
+    margin-left: 5px;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+.DeleteModal__CloseBtn {
+    background-color: rgb(245, 245, 245);
+    border: 0px;
+    border-radius: 5px;
+    color: rgb(141, 141, 141);
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.DeleteModal__DeleteBtn {
+    background-color: var(--main-violet-color);
+    border: 0px;
+    border-radius: 5px;
+    color: #fff;
+    padding: 10px 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.DeleteModal__btns {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+/* User settings */ 
+
+.mainSection--settingsPanel {
+    width: 60vw;
+    margin: 0px auto;
+    margin-top: 10vh;
+}
+.mainSection__form {
+    font-family: var(--main-font);
+    margin-top: 30px;
+}
+
+.mainSection__form-header {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: var(--main-violet-color);
+}
+.mainSection__form-label {
+    font-size: 0.8rem;
+    display: block;
+    margin: 25px 0px 10px;
+    font-weight: 600;
+}
+
+.mainSection__form-input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #b3b3b3;
+    font-size: 0.7rem;
+    width: 200px;
+}
+
+.mainSection__form-btn {
+    cursor: pointer;
+    color: #fff;
+    background-color: var(--main-violet-color);
+    padding: 10px;
+    border: 0px;
+    border-radius: 5px;
+    display: block;
+    width: 70px;
+    margin-top: 10px;
+}
+
+.mainSection__form-btns {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cancelBtn {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+    margin-right: 10px; 
+}
+
+.mainSection__h {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+/*Error modal*/ 
+.ErrorModal {
+    position: absolute;
+    top: 20vh;
+    left: 35vw;
+    z-index: 2;
+    width: 600px;
+    margin: 0px auto;
+    font-family: var(--main-font);
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 4px 4px rgba(0,0,0,0.12), 
+    0 8px 8px rgba(0,0,0,0.12),
+    0 16px 16px rgba(0,0,0,0.12);
+    background-color: #fff;
+}
+
+.ErrorModal__header {
+    background-color: var(--main-red-color);
+    border-radius: 5px 5px 0px 0px;
+    color: #fff;
+    font-weight: 400;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 1.3rem;
+}
+
+.ErrorModal__content {
+    box-sizing: border-box;
+    padding: 10px 20px 20px;
+    color: rgb(141, 141, 141);
+    border-radius: 0px 0px 5px 5px;
+}
+.ErrorModal__sharelink {
+    text-decoration: none;
+    color: var(--main-violet-color);
+    margin-left: 10px;
+}
+.ErrorModal__p {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+.ErrorModal__file {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 400;
+}
+.ErrorModal__filename {
+    display: inline;
+    font-size: 1rem;
+    margin-left: 10px;
+    font-weight: 400;
+}
+.ErrorModal__filesize {
+    display: inline;
+    margin-left: 5px;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+.ErrorModal__CloseBtn {
+    background-color: rgb(245, 245, 245);
+    border: 0px;
+    border-radius: 5px;
+    color: rgb(141, 141, 141);
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.ErrorModal__btns {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }

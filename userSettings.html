@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WitDrive - your secure cloud disk</title>
+    <link rel="stylesheet" href="assets/fonts/Font__MyriadPro.css">
+    <link rel="stylesheet" href="assets/styles/userpanel-styles.css">
+    <link rel="stylesheet" href="assets/styles/userpanel-mobile-styles.css">
+    <link rel="stylesheet" href="assets/styles/fontello.css">
+</head>
+<body>
+    <nav class="navigation">
+        <div class="navigation__leftBox">
+            <img class="navigation__logo" src="assets/imgs/logo_2.svg"></img>
+        </div>
+        <div class="navigation__rightBox">
+            <ul class="navigation__list" id="userAccountNav"></ul>
+        </div>
+    </nav>
+    <section class="mainSection mainSection--settingsPanel">
+        <div class="mainSection__menu">
+            <header>
+                <h2 class="mainSection__h">Settings</h2>
+            </header>
+            <ul class="mainSection__menu-list">
+                <li class="mainSection__menu-item"><a href="#" class="mainSection__menu-item-link">Password</a></li>
+                <li class="mainSection__menu-item"><a href="#" class="mainSection__menu-item-link">Delete account</a></li>
+            </ul>
+        </div>
+        <div class="mainSection__settings-box">
+            <form action="#" class="mainSection__form" id="passwordChangeForm">
+                <h2 class="mainSection__form-header">Change your password:</h2>
+                <label for="oldPassword" class="mainSection__form-label">Old password:</label>
+                <input type="password" name="oldPassword" class="mainSection__form-input" placeholder="Old password">
+                <label for="newPassword" class="mainSection__form-label">New password:</label>
+                <input type="password" name="newPassword" class="mainSection__form-input"  placeholder="New password">
+                <label for="newPassword_r" class="mainSection__form-label">Repeat new password:</label>
+                <input type="password" name="newPassword_r" class="mainSection__form-input" placeholder="Repeat new password">
+                <div class="mainSection__form-btns">
+                    <button class="mainSection__form-btn cancelBtn" id="mainSection__form-cancel-btn">Cancel</button>
+                    <button type="submit" class="mainSection__form-btn" id="mainSection__form-Sbtn">Change</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <script src="js/auth.js"></script>
+    <script src="js/file-operator.js"></script>
+</body>
+</html>

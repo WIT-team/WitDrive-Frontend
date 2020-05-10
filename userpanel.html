@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WitDrive - your secure cloud disk</title>
-    <link rel="stylesheet" href="assets/fonts/Font__MyriadPro.css.css">
+    <link rel="stylesheet" href="assets/fonts/Font__MyriadPro.css">
     <link rel="stylesheet" href="assets/styles/userpanel-styles.css">
     <link rel="stylesheet" href="assets/styles/userpanel-mobile-styles.css">
     <link rel="stylesheet" href="assets/styles/fontello.css">
@@ -15,18 +15,20 @@
             <img class="navigation__logo" src="assets/imgs/logo_2.svg"></img>
         </div>
         <div class="navigation__rightBox">
-            <ul class="navigation__list">
-                <li class="navigation__item navigation--email">user-sth@gmail.com</li>
-                <li class="navigation__item"><a href="index.html" class="navigation__link navigation__link--bolded">Log out</a></li>
+            <ul class="navigation__list" id="userAccountNav">
+               
             </ul>
         </div>
     </nav>
     <section class="mainSection">
         <div class="mainSection__menu">
             <ul class="mainSection__menu-list">
+                <li class="mainSection__menu-item">
+                    <button class="mainSection__upBtn">Upload</button>
+                </li>
                 <li class="mainSection__menu-item"><a href="#" class="mainSection__menu-item-link">My files</a></li>
                 <li class="mainSection__menu-item"><a href="#" class="mainSection__menu-item-link">Shared</a></li>
-                <li class="mainSection__menu-item"><a href="#" class="mainSection__menu-item-link">Bin</a></li>
+                <li class="mainSection__menu-item"><a href="#" class="mainSection__menu-item-link">Recycle bin</a></li>
             </ul>
             <div class="mainSection__f-space-info">
                 <h2 class="mainSection__f-space-h">Free space</h2>
@@ -35,23 +37,60 @@
         </div>
         <div class="mainSection__files-box">
             <header>
-                <h1 class="mainSection__header">My files</h1>
+                <h1 class="mainSection__header">Files</h1>
+                <div class="mainSection__file-atrubutes">
+                    <span class="mainSection__file-atrubutes-name">Name</span>
+                    <span class="mainSection__file-atrubutes-size">Size</span>
+                    <span class="mainSection__file-atrubutes-up-date">Upload date</span>
+                </div>
             </header>
-            <ul class="mainSection__file-list">
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
-                <li class="mainSection__file"><a href="" class="mainSection__file-link">TestFile.dat</a></li>
+            <ul class="mainSection__file-list" id="fileList">
+                <li class="mainSection__file" draggable="true" id="file_1">
+                    <div class="mainSection__file-box" >
+                        <span><i class="mainSection__file-icon icon-doc-inv"></i></span>
+                        <span class="mainSection__file-name">
+                            TestFile.dat
+                        </span>
+                        <span class="mainSection__file-filesize">
+                            40,2MB
+                        </span>
+                        <span class="mainSection__file-uploadTime">
+                            30-04-2020 15:19 
+                        </span>
+                    </div>
+                </li>
+                <li class="mainSection__file" id="file_2">
+                    <div class="mainSection__file-box">
+                        <span><i class="mainSection__file-icon icon-doc-inv"></i></span>
+                        <span class="mainSection__file-name">
+                            TestFile.dat
+                        </span>
+                        <span class="mainSection__file-filesize">
+                            40,2MB
+                        </span>
+                        <span class="mainSection__file-uploadTime">
+                            30-04-2020 15:19 
+                        </span>
+                    </div>
+                </li>
+                <li class="mainSection__file" id="file_3">
+                    <div class="mainSection__file-box">
+                        <span><i class="mainSection__file-icon icon-doc-inv"></i></span>
+                        <span class="mainSection__file-name">
+                            TestFile.dat
+                        </span>
+                        <span class="mainSection__file-filesize">
+                            40,2MB
+                        </span>
+                        <span class="mainSection__file-uploadTime">
+                            30-04-2020 15:19 
+                        </span>
+                    </div>
+                </li>
             </ul>
         </div>
     </section>
+    <script src="js/auth.js"></script>
+    <script src="js/file-operator.js"></script>
 </body>
 </html>

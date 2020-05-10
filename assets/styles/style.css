@@ -53,6 +53,7 @@
 .navigation__link:hover {
     color: var(--main-gray-color);
     transition: 0.3s;
+    cursor: pointer;
 }
 .mainSection {
     max-width: 1920px;
@@ -533,3 +534,152 @@
 .main404Section__logo, .main404Section__header1, .main404Section__header2, .main404Section__home-link {
     margin-top: 20px;
 }
+
+/*Error modal*/ 
+.ErrorModal {
+    position: absolute;
+    top: 20vh;
+    left: 35vw;
+    z-index: 2;
+    width: 600px;
+    margin: 0px auto;
+    font-family: var(--main-font);
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 4px 4px rgba(0,0,0,0.12), 
+    0 8px 8px rgba(0,0,0,0.12),
+    0 16px 16px rgba(0,0,0,0.12);
+    background-color: #fff;
+}
+
+.ErrorModal__header {
+    background-color: var(--main-red-color);
+    border-radius: 5px 5px 0px 0px;
+    color: #fff;
+    font-weight: 400;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 1.3rem;
+}
+
+.ErrorModal__content {
+    box-sizing: border-box;
+    padding: 10px 20px 20px;
+    color: rgb(141, 141, 141);
+    border-radius: 0px 0px 5px 5px;
+}
+.ErrorModal__sharelink {
+    text-decoration: none;
+    color: var(--main-violet-color);
+    margin-left: 10px;
+}
+.ErrorModal__p {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+.ErrorModal__file {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 400;
+}
+.ErrorModal__filename {
+    display: inline;
+    font-size: 1rem;
+    margin-left: 10px;
+    font-weight: 400;
+}
+.ErrorModal__filesize {
+    display: inline;
+    margin-left: 5px;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+.ErrorModal__CloseBtn {
+    background-color: rgb(245, 245, 245);
+    border: 0px;
+    border-radius: 5px;
+    color: rgb(141, 141, 141);
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.ErrorModal__btns {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+/* Password reset template */ 
+.mainPasswordResetSection {
+    max-width: 440px;
+    margin: 10vh auto 30vh;
+}
+
+.mainSection__form-header--reset {
+    color : var(--main-violet-color);
+    text-align: left;
+    font-weight: 400;
+    margin-bottom: 0px;
+}
+.mainSection__SubmitBtn--reset {
+    background-color: var(--main-violet-color);
+    margin-top: 10px;
+    width: 35%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 0px;
+}
+
+.mainSection__CancelBtn {
+    text-decoration: none;
+    width: 35%;
+    padding: 10px 0px;
+    color: var(--main-violet-color);
+    text-align: center;
+    
+}
+.mainSection__CancelBtn:hover {
+    color: rgb(141, 141, 141);
+    transition: 0.3s;
+}
+.mainSection__form--reset {
+    padding-bottom: 25px;
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 4px 4px rgba(0,0,0,0.12), 
+    0 8px 8px rgba(0,0,0,0.12),
+    0 16px 16px rgba(0,0,0,0.12);
+}
+
+.mainSection__SubmitBtn--reset:hover {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+}
+.mainPasswordResetSection__btns {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.mainPasswordResetSection__successH {
+    font-family: var(--main-font-bolded);
+    color: var(--main-violet-color);
+}
+
+
+.mainSection__resetPassword-link {
+    text-decoration: none;
+    font-size: 0.8rem;
+    display: block;
+    margin: 20px 5px 0px;
+    color: var(--main-gray-color);
+}
+
+.mainSection__resetPassword-link:hover {
+    color: var(--main-violet-color);
+    transition: 0.3s;
+}
+
