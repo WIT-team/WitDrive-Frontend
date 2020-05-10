@@ -317,6 +317,9 @@ class Auth {
                 case "userpanel":
                     this.routerRedirect("index");
                     break;
+                case "userSettings":
+                    this.routerRedirect("index");
+                    break;
                 case "login":
                     this.initLoginForm();
                     break;
