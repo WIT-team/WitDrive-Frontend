@@ -1,5 +1,5 @@
 class Auth {
-    api = 'http://localhost:5000/api/';
+    api = 'https://witdrive-api.azurewebsites.net:443/api/';
     constructor() {
         this.validateRedirection();
         this.initNavBar();
@@ -110,31 +110,93 @@ class Auth {
     }
     resetPassword(form) {
         const email = form.elements.namedItem("email").value;
-        if(email.length > 0) {
-            const result = this.sendPResetRequest(email);
-            if(result.status == 200) {
-                const mainSection = document.querySelector("#mainPasswordResetSection");
-                const successH = document.createElement("h2");
-                successH.classList.add("mainPasswordResetSection__successH");
-                successH.textContent = "To reset password check your email and follow next steps."
-                mainSection.appendChild(successH);
-                mainSection.remove(form);
+        try {
+            if(email.length > 0) {
+                const result = this.sendPResetRequest(email);
+                if(result.status == 200) {
+                    const mainSection = document.querySelector("#mainPasswordResetSection");
+                    const successH = document.createElement("h2");
+                    successH.classList.add("mainPasswordResetSection__successH");
+                    successH.textContent = "To reset password check your email and follow next steps."
+                    mainSection.appendChild(successH);
+                    mainSection.removeChild(form);
+                }
+                else {
+                    const errors = JSON.parse(result.response);
+                    this.displayErrorModal(errors);
+                    registerForm.reset();
+                }   
             }
             else {
-                const errors = JSON.parse(result.response);
-                this.displayErrorModal(errors);
-                registerForm.reset();
-            }   
+                this.displayErrorModal([
+                    {
+                        code : "EmailInvalid",
+                        description : "Invalid email"
+                    }]
+                );
+            }
+        } catch (error) {
+            this.displayErrorModal([{
+                "code" : "Uknown error",
+                "description" : "Uknown error. Try again later."
+            }]);
+        }
+    }
+    initNewPassForm() {
+        const newPasswordForm = document.querySelector("#newPasswordForm");
+        newPasswordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.newPassword(newPasswordForm);
+        });
+    }
+    newPassword(form) {
+        const req_params = {
+            newPassword : form.elements.namedItem("newPassword").value,
+            newPassword_r : form.elements.namedItem("newPassword_r").value,
+        }
+        
+        const newPasswordErrorMsg = [{
+            code : "InvalidPasswords",
+            description : "Invalid inputs!"
+        }];
+        if(this.validatePassword(req_params.newPassword, req_params.newPassword_r)) {
+            try {
+                const result = this.sendNewPasswordRequest(req_params);
+                if(result.status == 200) {
+                    const mainSection = document.querySelector("#newPasswordSection");
+                    const successH = document.createElement("h2");
+                    successH.classList.add("mainPasswordResetSection__successH");
+                    successH.textContent = "Your password has been succesfuly changed!"
+                    mainSection.appendChild(successH);
+                    mainSection.removeChild(form);
+                }
+                else if(result.status == 401) {
+                    this.displayErrorModal(newPasswordErrorMsg);
+                }
+                else {
+                    this.displayErrorModal([{
+                        code : "UknownError",
+                        description : "Uknown error. Please try again later."
+                    }]);
+                }   
+                form.reset();
+            } catch (error) {
+                this.displayErrorModal([{
+                    code : "UknownError",
+                    description : "Uknown error. Please try again later."
+                }]);
+            }
         }
         else {
-            this.displayErrorModal(
-                {
-                    code : "EmailInvalid",
-                    description : "Invalid email"
-                }
-            );
+            this.displayErrorModal(newPasswordErrorMsg);
         }
-
+    }
+    sendNewPasswordRequest(req_params) {
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'POST', this.api + "auth/newPassword",false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.send(JSON.stringify(req_params));
+        return XHR; 
     }
     sendPResetRequest(email) {
         const reg_params = {email:email};
@@ -242,23 +304,32 @@ class Auth {
         
         const userPasswordsCErrorMsg = [{
             code : "InvalidPasswords",
-            description : "Invalid passwords!"
+            description : "Invalid inputs!"
         }];
         if(req_params.oldPassword.length > 0 && this.validatePassword(req_params.newPassword, req_params.newPassword_r)) {
-            const result = this.sendChangePasswordRequest(req_params);
-            if(result.status == 200) {
-                alert("Password changed");
-            }
-            else if(result.status == 401) {
-                this.displayErrorModal(userPasswordsCErrorMsg);
-            }
-            else {
+            try {
+                const result = this.sendChangePasswordRequest(req_params);
+                if(result.status == 200) {
+                    alert("Password changed");
+                }
+                else if(result.status == 401) {
+                    this.displayErrorModal(userPasswordsCErrorMsg);
+                }
+                else {
+                    this.displayErrorModal([{
+                        code : "UknownError",
+                        description : "Uknown error. Please try again later."
+                    }]);
+                }   
+                form.reset();
+            } catch (error) {
                 this.displayErrorModal([{
                     code : "UknownError",
                     description : "Uknown error. Please try again later."
                 }]);
-            }   
-            form.reset();
+            }
+            
+           
         }
         else {
             this.displayErrorModal(userPasswordsCErrorMsg);
@@ -328,6 +399,12 @@ class Auth {
                     break;
                 case "PasswordReset":
                     this.initPassResetForm();
+                    break;
+                case "index":
+                    this.initRegisterForm();
+                    break;
+                case "newPasswordForm":
+                    this.initNewPassForm();
                     break;
                 default:
                     break;

@@ -683,3 +683,61 @@
     transition: 0.3s;
 }
 
+
+/* Password reset form */
+.newPasswordSection {
+    max-width: 225px;
+    margin: 10vh auto 30vh;
+}
+.newPassword__form {
+    font-family: var(--main-font);
+    margin-top: 30px;
+}
+
+.newPassword__form-header {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: var(--main-violet-color);
+}
+.newPassword__form-label {
+    font-size: 0.8rem;
+    display: block;
+    margin: 25px 0px 10px;
+    font-weight: 600;
+}
+
+.newPassword__form-input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #b3b3b3;
+    font-size: 0.7rem;
+    width: 200px;
+}
+
+.newPassword__form-btn {
+    cursor: pointer;
+    color: #fff;
+    background-color: var(--main-violet-color);
+    padding: 10px;
+    border: 0px;
+    border-radius: 5px;
+    display: block;
+    width: 70px;
+    margin-top: 10px;
+}
+
+.newPassword__form-btns {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cancelBtn {
+    background-color: rgb(238, 238, 238);
+    color: rgb(141, 141, 141);
+    margin-right: 10px; 
+}
+
+.mainSection__h {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}

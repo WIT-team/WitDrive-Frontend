@@ -161,12 +161,7 @@
 .mainSection__file-name {
     margin-left: 10px;
 }
-.mainSection__file-filesize {
-    margin-left: 20%;
-}
-.mainSection__file-uploadTime {
-    margin-left: 5%;
-}
+
 .mainSection__file:hover {
     background-color: var(--main-violet-color);
     color: #fff;
@@ -190,10 +185,19 @@
     margin-left: 40px;
 }
 .mainSection__file-atrubutes-size {
-    margin-left: 22.2%;
+    margin-left: 5.5%;
 }
 .mainSection__file-atrubutes-up-date {
-    margin-left: 6.5%;
+    margin-left: 30.2%;
+}
+
+.mainSection__file--cell {
+    width: 33%;
+    margin:0px;
+    display: inline-block;
+}
+.mainSection__file--cell:nth-child(3) {
+    width: 10%;
 }
 /* Context menu */
 .file__contextmenu {
