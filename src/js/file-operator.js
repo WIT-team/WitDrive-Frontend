@@ -5,14 +5,14 @@ class ContextMenu {
     setup() {
         document.body.addEventListener('contextmenu', (e) => {
             e.preventDefault();
-            let constextMenu = document.querySelector('.file__contextmenu');
+            let constextMenu = document.querySelector('.up_file__contextmenu');
             if(constextMenu !== null) {
                 document.body.removeChild(constextMenu);
             }
             const clikedItemClass = e.target.getAttribute("class");
 
-            if(['mainSection__file', 'mainSection__file-box', 'mainSection__file-name', 'mainSection__file-filesize', 'mainSection__file-uploadTime'].indexOf(clikedItemClass) >= 0) {
-                let fileId = e.target.closest(".mainSection__file").id;
+            if(['up_mainSection__file', 'up_mainSection__file-box', 'up_mainSection__file-name', 'up_mainSection__file-filesize', 'up_mainSection__file-uploadTime'].indexOf(clikedItemClass) >= 0) {
+                let fileId = e.target.closest(".up_mainSection__file").id;
                 if(fileId.substring(0,4) == "file")
                   fileId = fileId.substring(5);
                 else
@@ -23,7 +23,7 @@ class ContextMenu {
         });
         document.addEventListener('click', (e) => {
             e.preventDefault();
-            let constextMenu = document.querySelector('.file__contextmenu');
+            let constextMenu = document.querySelector('.up_file__contextmenu');
             if(constextMenu !== null) {
                 document.body.removeChild(constextMenu);
             }
@@ -31,35 +31,44 @@ class ContextMenu {
     }
     createCM_DOMel(posX, posY, fileid) {
         const contextmenu = document.createElement('div');
-        contextmenu.classList.add('file__contextmenu');
+        contextmenu.classList.add('up_file__contextmenu');
         contextmenu.id = `CM_file_${fileid}`;
-        contextmenu.innerHTML = `<button class="file__contextmenu-item" id="file__cm-moveBtn">
-                <i class="file__contextmenu-btn-icon icon-doc-inv"></i>
-                <span class="file__contextmenu-btn-text">Move</span>
+        contextmenu.innerHTML = `<button class="up_file__contextmenu-item" id="file__cm-moveBtn">
+                <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+                <span class="up_file__contextmenu-btn-text">Move</span>
             </button>
-            <button class="file__contextmenu-item" id="file__cm-downloadBtn">
-                <i class="file__contextmenu-btn-icon icon-doc-inv"></i>
-                <span class="file__contextmenu-btn-text">Download</span>
+            <button class="up_file__contextmenu-item" id="file__cm-downloadBtn">
+                <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+                <span class="up_file__contextmenu-btn-text">Download</span>
             </button>
-            <button class="file__contextmenu-item" id="file__cm-deleteBtn">
-                <i class="file__contextmenu-btn-icon icon-doc-inv"></i>
-                <span class="file__contextmenu-btn-text">Delete</span>
+            <button class="up_file__contextmenu-item" id="file__cm-renameBtn">
+                <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+                <span class="up_file__contextmenu-btn-text">Rename</span>
             </button>
-            <button class="file__contextmenu-item" id="file__cm-shareBtn">
-                <i class="file__contextmenu-btn-icon icon-doc-inv"></i>
-                <span class="file__contextmenu-btn-text">Share...</span>
+            <button class="up_file__contextmenu-item" id="file__cm-deleteBtn">
+                <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+                <span class="up_file__contextmenu-btn-text">Delete</span>
+            </button>
+            <button class="up_file__contextmenu-item" id="file__cm-shareBtn">
+                <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+                <span class="up_file__contextmenu-btn-text">Share...</span>
             </button>`;
         const downloadBtn = contextmenu.querySelector('#file__cm-downloadBtn');
         const deleteBtn = contextmenu.querySelector('#file__cm-deleteBtn');
         const shareBtn = contextmenu.querySelector('#file__cm-shareBtn');
+        const renameBtn = contextmenu.querySelector('#file__cm-renameBtn');
         shareBtn.addEventListener('click',(e) => {
             e.preventDefault();
             this.fileOp.displayShareDialog(fileid);
-        })
+        });
         deleteBtn.addEventListener('click',(e) => {
             e.preventDefault();
             this.fileOp.deleteFile(fileid);
-        })
+        });
+        renameBtn.addEventListener('click',(e) => {
+          e.preventDefault();
+          this.fileOp.rename(fileid);
+        });
         contextmenu.style.top = posY + "px";
         contextmenu.style.left = posX + "px";
         return contextmenu;
@@ -71,16 +80,32 @@ class FileOperator {
     files = [];
 
     //Constructors
-    constructor() {
-        this.loadFiles();
-        this.contextMenu = new ContextMenu(this);
-        this.contextMenu.setup();
+    constructor(auth, api) {
+        this.api = api;
+        this.auth = auth;
     }
     // Methods 
-    
+    setup() {
+      this.loadFiles();
+      this.contextMenu = new ContextMenu(this);
+      this.contextMenu.setup();
+    }
     // Load files 
     getFilesFromServer() {
-      // This will be replaced with request to api 
+      /*
+      const userId = this.auth.getUserId();
+      try {
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'GET', this.api + `u/${userId}/files/root`,false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.setRequestHeader("Authorization", this.auth.getUserToken());
+        XHR.send();
+        if(XHR.status == 200)
+          this.files = JSON.parse(XHR.response);
+          console.log(this.files);
+      } catch (error) {
+        return false;
+      } */
       this.files = {
           "_id": "0",
           "name": "root",
@@ -236,7 +261,6 @@ class FileOperator {
       };
     }
     getFileData(id) {
-      console.log(id);
       let directory = this.files.directories[1];
         for (let index = 0; index < directory.files.length; index++) {
           const el = directory.files[index];
@@ -273,20 +297,20 @@ class FileOperator {
     createFolderTemplate(folder) {
       const folderElement = document.createElement('li');
       folderElement.id = `folder_${folder._id}`;
-      folderElement.classList.add('mainSection__file');
+      folderElement.classList.add('up_mainSection__file');
       //fileElement.draggable=true;
       let foldername = folder.name.substring(0, Math.min(folder.name.length,40));
       if(foldername.length < folder.name.length)
         foldername = foldername + "...";
-      folderElement.innerHTML = `<div class="mainSection__file-box" >
-                                  <span><i class="mainSection__file-icon icon-folder-1"></i></span>
-                                  <span class="mainSection__file-name mainSection__file--cell">
+      folderElement.innerHTML = `<div class="up_mainSection__file-box" >
+                                  <span><i class="up_mainSection__file-icon icon-folder-1"></i></span>
+                                  <span class="up_mainSection__file-name up_mainSection__file--cell">
                                     ${foldername}
                                   </span>
-                                  <span class="mainSection__file-uploadTime mainSection__file--cell">
+                                  <span class="up_mainSection__file-uploadTime up_mainSection__file--cell">
                                     ${this.convertUploadDate(folder.created)}
                                   </span>
-                                  <span class="mainSection__file-filesize mainSection__file--cell">
+                                  <span class="up_mainSection__file-filesize up_mainSection__file--cell">
                                     -
                                   </span>
                                   
@@ -296,20 +320,20 @@ class FileOperator {
     createFileTemplate(file){
       const fileElement = document.createElement('li');
       fileElement.id = `file_${file._id}`;
-      fileElement.classList.add('mainSection__file');
+      fileElement.classList.add('up_mainSection__file');
       //fileElement.draggable=true;
       let filename = file.name.substring(0, Math.min(file.name.length,40));
       if(filename.length < file.name.length)
         filename = filename + "...";
-      fileElement.innerHTML = `<div class="mainSection__file-box" >
-                                  <span><i class="mainSection__file-icon icon-doc-inv"></i></span>
-                                  <span class="mainSection__file-name mainSection__file--cell">
+      fileElement.innerHTML = `<div class="up_mainSection__file-box" >
+                                  <span><i class="up_mainSection__file-icon icon-doc-inv"></i></span>
+                                  <span class="up_mainSection__file-name up_mainSection__file--cell">
                                     ${filename}
                                   </span>
-                                  <span class="mainSection__file-uploadTime mainSection__file--cell">
+                                  <span class="up_mainSection__file-uploadTime up_mainSection__file--cell">
                                     ${this.convertUploadDate(file.created)}
                                   </span>
-                                  <span class="mainSection__file-filesize mainSection__file--cell">
+                                  <span class="up_mainSection__file-filesize up_mainSection__file--cell">
                                     ${this.convertFileSize(file.size)}
                                   </span>
                                   
@@ -350,7 +374,7 @@ class FileOperator {
     }
     createDeleteModal(file) {
       const deleteModal = document.createElement('div');
-        deleteModal.classList.add('DeleteModal');
+        deleteModal.classList.add('up_DeleteModal');
         if(file.type == "file")
           deleteModal.innerHTML = this.fillDeleteModalHTML(file);
         else
@@ -388,41 +412,49 @@ class FileOperator {
 
     fillDeleteModalHTML(file) {
       return `<header>
-                 <h2 class="DeleteModal__header">Delete</h2>
+                 <h2 class="up_DeleteModal__header">Delete</h2>
              </header>
-             <div class="DeleteModal__content">
-                 <h3 class="DeleteModal__file">File:</h3>
-                 <h3 class="DeleteModal__filename">${file.name}</h3>
-                 <h4 class="DeleteModal__filesize">${this.convertFileSize(file.size)}</h4>
-                 <p class="DeleteModal__p" id="DeleteModal_text">Do you really want to delete this file?</p>
-                 <div class="DeleteModal__btns" id="DeleteModal__btns">
-                     <button class="DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
-                     <button class="DeleteModal__DeleteBtn" id="modalDeleteBtn">Delete</button>
+             <div class="up_DeleteModal__content">
+                 <h3 class="up_DeleteModal__file">File:</h3>
+                 <h3 class="up_DeleteModal__filename">${file.name}</h3>
+                 <h4 class="up_DeleteModal__filesize">${this.convertFileSize(file.size)}</h4>
+                 <p class="up_DeleteModal__p" id="DeleteModal_text">Do you really want to delete this file?</p>
+                 <div class="up_DeleteModal__btns" id="DeleteModal__btns">
+                     <button class="up_DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
+                     <button class="up_DeleteModal__DeleteBtn" id="modalDeleteBtn">Delete</button>
                  </div>
              </div>`
     }
     folderDeleteModalHTML(file) {
       return `<header>
-                 <h2 class="DeleteModal__header">Delete</h2>
+                 <h2 class="up_DeleteModal__header">Delete</h2>
              </header>
-             <div class="DeleteModal__content">
-                 <h3 class="DeleteModal__file">Folder:</h3>
-                 <h3 class="DeleteModal__filename">${file.name}</h3>
-                 <p class="DeleteModal__p" id="DeleteModal_text">Do you really want to delete this folder?</p>
-                 <div class="DeleteModal__btns" id="DeleteModal__btns">
-                     <button class="DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
-                     <button class="DeleteModal__DeleteBtn" id="modalDeleteBtn">Delete</button>
+             <div class="up_DeleteModal__content">
+                 <h3 class="up_DeleteModal__file">Folder:</h3>
+                 <h3 class="up_DeleteModal__filename">${file.name}</h3>
+                 <p class="up_DeleteModal__p" id="DeleteModal_text">Do you really want to delete this folder?</p>
+                 <div class="up_DeleteModal__btns" id="DeleteModal__btns">
+                     <button class="up_DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
+                     <button class="up_DeleteModal__DeleteBtn" id="modalDeleteBtn">Delete</button>
                  </div>
              </div>`
     }   
-    deleteFileRequest(id) { 
-      // delete request to api (not specified yet)
-      let deleted = true;
-      if(deleted)
-          // returns true if  request accepted 
+    deleteFileRequest(fileId) { 
+      const userId = this.auth.getUserId();
+      try {
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'DELETE', this.api + `u/${userId}/files/${fileId}`,false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.setRequestHeader("Authorization", this.auth.getUserToken());
+        XHR.send(null);
+        if(XHR.status == 200)
           return true;
-          // returns false if server responded with error
-      return false;  
+        else
+          return false; 
+      } catch (error) {
+        return false;
+      }
+      
     }
     displayShareDialog(file_id) {
       var file = {
@@ -438,7 +470,7 @@ class FileOperator {
     }
     createShareModal(file) {
         const shareModal = document.createElement('div');
-        shareModal.classList.add('ShareModal');
+        shareModal.classList.add('up_ShareModal');
         shareModal.innerHTML = this.fillShareModalHTML(file);
         shareModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
             e.preventDefault();
@@ -458,26 +490,90 @@ class FileOperator {
         });
         return shareModal;
     }
+    enableSharingRequest(fileId) {
+
+    }
     fillShareModalHTML(file) {
         return `<header>
-                <h2 class="ShareModal__header">Share</h2>
+                <h2 class="up_ShareModal__header">Share</h2>
             </header>
-            <div class="ShareModal__content">
-                <h3 class="ShareModal__file">Share item:</h3>
-                <h3 class="ShareModal__filename">${file.name}</h3>
-                <h4 class="ShareModal__filesize">${file.size}</h4>
-                <p class="ShareModal__p">Share link:
-                    <a href="${file.shareLink}" class="ShareModal__sharelink" id="modalShareLink">
+            <div class="up_ShareModal__content">
+                <h3 class="up_ShareModal__file">Share item:</h3>
+                <h3 class="up_ShareModal__filename">${file.name}</h3>
+                <h4 class="up_ShareModal__filesize">${file.size}</h4>
+                <p class="up_ShareModal__p">Share link:
+                    <a href="${file.shareLink}" class="up_ShareModal__sharelink" id="modalShareLink">
                     ${file.shareLink}
                     </a>
                 </p>
-                <div class="ShareModal__btns">
-                    <button class="ShareMOdal__CloseBtn" id="modalCloseBtn">Close</button>
-                    <button class="ShareMOdal__SwitchSBtn" id="modalSwitchBtn">${(file.isShared) ? "Disable" : "Enable"} sharing</button>
+                <div class="up_ShareModal__btns">
+                    <button class="up_ShareMOdal__CloseBtn" id="modalCloseBtn">Close</button>
+                    <button class="up_ShareMOdal__SwitchSBtn" id="modalSwitchBtn">${(file.isShared) ? "Disable" : "Enable"} sharing</button>
                 </div>
             </div>`;
     }
-  
+    createRenameModal(file) {
+      const renameModal = document.createElement('div');
+      renameModal.classList.add('up_DeleteModal');
+      renameModal.innerHTML = `<header>
+            <h2 class="up_DeleteModal__header">Rename</h2>
+        </header>
+        <div class="up_DeleteModal__content">
+            <h3 class="up_DeleteModal__file">Name:</h3>
+            <input type="text" name="newName" value = "${file.name}" class="up_DeleteModal__filename"/>
+            <p class="up_DeleteModal__p" id="RenameModal_text"></p>
+            <div class="up_DeleteModal__btns" id="RenameModal__btns">
+                <button class="up_DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
+                <button class="up_DeleteModal__DeleteBtn" id="modalRenameBtn">Rename</button>
+            </div>
+        </div>`;
+      renameModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
+        e.preventDefault();
+        document.body.removeChild(renameModal);
+      });
+      renameModal.querySelector("#modalRenameBtn").addEventListener('click', (e) => {
+        e.preventDefault();
+        const result = this.renameFileRequest(file._id);
+        
+        if(result == true) {
+          this.removeFileFromDOM(file);
+          document.body.removeChild(renameModal);
+        }
+        else {
+          const renameBtns = renameModal.querySelector("#RenameModal__btns");
+          const renameBtn = renameModal.querySelector("#modalRenameBtn");
+          renameBtns.removeChild(renameBtn);
+          const renameText = renameModal.querySelector("#RenameModal_text");
+          renameText.innerHTML ="Error occured durring operation. Try again later.";
+        } 
+    });
+    return renameModal;
+    }
+    rename(file_id) {
+      var file = this.getFileData(file_id);
+      if(file != null) {
+        const renameModal = this.createRenameModal(file);
+        document.body.appendChild(renameModal);
+      }   
+    }
+    renameFileRequest(fileId, newName) { 
+      const userId = this.auth.getUserId();
+      /*try {
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'DELETE', this.api + `u/${userId}/files/${fileId}`,false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.setRequestHeader("Authorization", this.auth.getUserToken());
+        XHR.send(null);
+        if(XHR.status == 200)
+          return true;
+        else
+          return false; 
+      } catch (error) {
+        return false;
+      }
+      */
+     return false;
+    }
 }
 
-const fileOperator = new FileOperator();
+export default FileOperator;

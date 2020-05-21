@@ -19,7 +19,7 @@
 }
 
 /* nagivation bar */
-.up_navigation {
+.navigation {
     font-family: var(--main-font);
     display: flex;
     padding: 5px 0vw 5px 3vw;
@@ -31,85 +31,85 @@
               0 2px 2px rgba(0,0,0,0.05),
               0 4px 4px rgba(0,0,0,0.05);
 }
-.up_navigation__logo {
+.navigation__logo {
     max-width: 125px;
 }
-.up_navigation__leftBox {
+.navigation__leftBox {
     display: flex;
     align-items: center;
 }
-.up_navigation__list {
+.navigation__list {
     list-style-type: none;
     margin-left: 50px;
 }
-.up_navigation__item {
+.navigation__item {
     display: inline;
     margin-right: 20px;
 }
-.up_navigation__link {
+.navigation__link {
     color: var(--main-red-color);
     text-decoration: none;
     font-size: 0.9rem;
 }
-.up_navigation__link--bolded {
+.navigation__link--bolded {
     text-decoration: underline;
     font-family: var(--main-font);
     font-weight: bold;
 }
-.up_navigation__link:hover {
+.navigation__link:hover {
     color: var(--main-gray-color);
     transition: 0.3s;
     cursor: pointer;
 }
-.up_navigation--email {
+.navigation--email {
     font-family: var(--main-font);
     color: var(--main-red-color);
     font-size: 0.9rem;
 }
-.up_mainSection {
+.mainSection {
     display: flex;
     margin-top: 10px;
 }
-.up_mainSection__header {
+.mainSection__header {
     font-family: var(--main-font);
     margin-top: 20px;
     color: var(--main-gray-color);
 }
-.up_mainSection__menu {
+.mainSection__menu {
     width: 250px;
     margin-left: 10px;
 }
-.up_mainSection__menu-list {
+.mainSection__menu-list {
     list-style-type: none;
 }
-.up_mainSection__menu-item-link {
+.mainSection__menu-item-link {
     color: var(--main-violet-color);
     width: 100%;
     display: block;
     padding: 10px 0px 10px 20px;
     box-sizing: border-box;
 }
-.up_mainSection__menu-item {
+.mainSection__menu-item {
     width: 90%;
     margin-top: 10px;
 }
-.up_mainSection__menu-item:first-child {
+.mainSection__menu-item:first-child {
     margin-top: 0px;
     padding: 0px;
     padding-left: 0px;
 }
-.up_mainSection__menu-item:nth-child(2) {
+.mainSection__menu-item:nth-child(2) {
     margin-top: 20px;
 }
-.up_mainSection__menu-item-link:hover {
+.mainSection__menu-item-link:hover {
     background-color: rgb(238, 238, 238);
     color: rgb(141, 141, 141);
 }
-.up_menu-item-link-active {
+.menu-item-link-active {
     background-color: rgb(238, 238, 238);
     color: rgb(141, 141, 141);
 }
-.up_mainSection__upBtn {
+.mainSection__upBtn {
     font-family: var(--main-font-bolded);
     border: 0px;
     background-color: var(--main-violet-color);
@@ -122,30 +122,30 @@
     font-size: 1rem;
 }
 
-.up_mainSection__upBtn:hover {
+.mainSection__upBtn:hover {
     background-color: #fff;
     color: var(--main-violet-color);
     transition: 0.3s;
 }
-.up_mainSection__f-space-info {
+.mainSection__f-space-info {
     margin-top: 25px;
 }
-.up_mainSection__f-space-h {
+.mainSection__f-space-h {
     font-size: 1rem;
     color: var(--main-violet-color);
 }
-.up_mainSection__f-space-details {
+.mainSection__f-space-details {
     margin-top: 5px;
     font-size: 0.8rem;
 }
 /* files boxes*/
-.up_mainSection__files-box {
+.mainSection__files-box {
     width: calc(95vw - 250px);
 }
-.up_mainSection__file-list {
+.mainSection__file-list {
     list-style-type: none;
 }
-.up_mainSection__file {
+.mainSection__file {
     background-color: rgb(245, 245, 245);
     color: rgb(141, 141, 141);
     margin: 10px 0px;
@@ -154,53 +154,53 @@
     box-sizing: border-box;
     border-radius: 5px;
 }
-.up_mainSection__file-box {
+.mainSection__file-box {
     font-size: 0.9rem;
     cursor: pointer;
 }
-.up_mainSection__file-name {
+.mainSection__file-name {
     margin-left: 10px;
 }
 
-.up_mainSection__file:hover {
+.mainSection__file:hover {
     background-color: var(--main-violet-color);
     color: #fff;
     transition: 0.3s;
 }
-.up_mainSection__menu {
+.mainSection__menu {
     margin-top: 10px;
     font-family: var(--main-font);
     padding: 10px;
 }
-.up_mainSection__menu-item-link {
+.mainSection__menu-item-link {
     text-decoration: none;
 }
-.up_mainSection__file-atrubutes {
+.mainSection__file-atrubutes {
     margin-top: 10px;
     font-size: 0.8rem;
     font-family: var(--main-font);
     color: rgb(141, 141, 141);
 }
-.up_mainSection__file-atrubutes-name {
+.mainSection__file-atrubutes-name {
     margin-left: 40px;
 }
-.up_mainSection__file-atrubutes-size {
+.mainSection__file-atrubutes-size {
     margin-left: 5.5%;
 }
-.up_mainSection__file-atrubutes-up-date {
+.mainSection__file-atrubutes-up-date {
     margin-left: 30.2%;
 }
 
-.up_mainSection__file--cell {
+.mainSection__file--cell {
     width: 33%;
     margin:0px;
     display: inline-block;
 }
-.up_mainSection__file--cell:nth-child(3) {
+.mainSection__file--cell:nth-child(3) {
     width: 10%;
 }
 /* Context menu */
-.up_file__contextmenu {
+.file__contextmenu {
     position: absolute;
     top:100px;
     left: 0px;
@@ -214,7 +214,7 @@
               0 8px 8px rgba(0,0,0,0.12),
               0 16px 16px rgba(0,0,0,0.12);
 }
-.up_file__contextmenu-item {
+.file__contextmenu-item {
     background-color: #fff;
     border: 0px;
     z-index: 1;
@@ -226,25 +226,25 @@
     border-bottom: 1px solid #e2e2e2;
     
 }
-.up_file__contextmenu-item:first-child {
+.file__contextmenu-item:first-child {
     border-radius: 5px 5px 0px 0px;
 }
-.up_file__contextmenu-item:last-child {
+.file__contextmenu-item:last-child {
     border-radius: 0px 0px 5px 5px;
 }
-.up_file__contextmenu-item:hover {
+.file__contextmenu-item:hover {
     color: rgb(78, 78, 78);
     background-color: rgb(230, 230, 230);
     transition: 0.3s;
     cursor: pointer;
 }
-.up_file__contextmenu-btn-text {
+.file__contextmenu-btn-text {
     margin-left: 10px;
 }
 
 
 /* Share modal */
-.up_ShareModal {
+.ShareModal {
     position: absolute;
     top: 20vh;
     left: 35vw;
@@ -263,7 +263,7 @@
     background-color: #fff;
 }
 
-.up_ShareModal__header {
+.ShareModal__header {
     background-color: var(--main-violet-color);
     border-radius: 5px 5px 0px 0px;
     color: #fff;
@@ -273,40 +273,40 @@
     font-size: 1.3rem;
 }
 
-.up_ShareModal__content {
+.ShareModal__content {
     box-sizing: border-box;
     padding: 10px 20px 20px;
     color: rgb(141, 141, 141);
     border-radius: 0px 0px 5px 5px;
 }
-.up_ShareModal__sharelink {
+.ShareModal__sharelink {
     text-decoration: none;
     color: var(--main-violet-color);
     margin-left: 10px;
 }
-.up_ShareModal__p {
+.ShareModal__p {
     font-size: 0.9rem;
     margin-top: 10px;
 }
-.up_ShareModal__file {
+.ShareModal__file {
     margin-top: 5px;
     display: inline-block;
     font-size: 1rem;
     font-weight: 400;
 }
-.up_ShareModal__filename {
+.ShareModal__filename {
     display: inline;
     font-size: 1rem;
     margin-left: 10px;
     font-weight: 400;
 }
-.up_ShareModal__filesize {
+.ShareModal__filesize {
     display: inline;
     margin-left: 5px;
     font-weight: 400;
     font-size: 0.9rem;
 }
-.up_ShareMOdal__CloseBtn {
+.ShareMOdal__CloseBtn {
     background-color: rgb(245, 245, 245);
     border: 0px;
     border-radius: 5px;
@@ -316,7 +316,7 @@
     cursor: pointer;
 }
 
-.up_ShareMOdal__SwitchSBtn {
+.ShareMOdal__SwitchSBtn {
     background-color: var(--main-violet-color);
     border: 0px;
     border-radius: 5px;
@@ -327,14 +327,14 @@
     cursor: pointer;
 }
 
-.up_ShareModal__btns {
+.ShareModal__btns {
     display: flex;
     justify-content: flex-end;
     width: 100%;
 }
 
 /* Delete modal */
-.up_DeleteModal {
+.DeleteModal {
     position: absolute;
     top: 20vh;
     left: 35vw;
@@ -353,7 +353,7 @@
     background-color: #fff;
 }
 
-.up_DeleteModal__header {
+.DeleteModal__header {
     background-color: var(--main-violet-color);
     border-radius: 5px 5px 0px 0px;
     color: #fff;
@@ -363,40 +363,40 @@
     font-size: 1.3rem;
 }
 
-.up_DeleteModal__content {
+.DeleteModal__content {
     box-sizing: border-box;
     padding: 10px 20px 20px;
     color: rgb(141, 141, 141);
     border-radius: 0px 0px 5px 5px;
 }
-.up_DeleteModal__sharelink {
+.DeleteModal__sharelink {
     text-decoration: none;
     color: var(--main-violet-color);
     margin-left: 10px;
 }
-.up_DeleteModal__p {
+.DeleteModal__p {
     font-size: 0.9rem;
     margin-top: 10px;
 }
-.up_DeleteModal__file {
+.DeleteModal__file {
     margin-top: 5px;
     display: inline-block;
     font-size: 1rem;
     font-weight: 400;
 }
-.up_DeleteModal__filename {
+.DeleteModal__filename {
     display: inline;
     font-size: 1rem;
     margin-left: 10px;
     font-weight: 400;
 }
-.up_DeleteModal__filesize {
+.DeleteModal__filesize {
     display: inline;
     margin-left: 5px;
     font-weight: 400;
     font-size: 0.9rem;
 }
-.up_DeleteModal__CloseBtn {
+.DeleteModal__CloseBtn {
     background-color: rgb(245, 245, 245);
     border: 0px;
     border-radius: 5px;
@@ -406,7 +406,7 @@
     cursor: pointer;
 }
 
-.up_DeleteModal__DeleteBtn {
+.DeleteModal__DeleteBtn {
     background-color: var(--main-violet-color);
     border: 0px;
     border-radius: 5px;
@@ -417,7 +417,7 @@
     cursor: pointer;
 }
 
-.up_DeleteModal__btns {
+.DeleteModal__btns {
     display: flex;
     justify-content: flex-end;
     width: 100%;
@@ -425,29 +425,29 @@
 
 /* User settings */ 
 
-.up_mainSection--settingsPanel {
+.mainSection--settingsPanel {
     width: 60vw;
     margin: 0px auto;
     margin-top: 10vh;
 }
-.up_mainSection__form {
+.mainSection__form {
     font-family: var(--main-font);
     margin-top: 30px;
 }
 
-.up_mainSection__form-header {
+.mainSection__form-header {
     margin-top: 20px;
     font-size: 1rem;
     color: var(--main-violet-color);
 }
-.up_mainSection__form-label {
+.mainSection__form-label {
     font-size: 0.8rem;
     display: block;
     margin: 25px 0px 10px;
     font-weight: 600;
 }
 
-.up_mainSection__form-input {
+.mainSection__form-input {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #b3b3b3;
@@ -455,7 +455,7 @@
     width: 200px;
 }
 
-.up_mainSection__form-btn {
+.mainSection__form-btn {
     cursor: pointer;
     color: #fff;
     background-color: var(--main-violet-color);
@@ -467,24 +467,24 @@
     margin-top: 10px;
 }
 
-.up_mainSection__form-btns {
+.mainSection__form-btns {
     display: flex;
     justify-content: flex-end;
 }
 
-.up_cancelBtn {
+.cancelBtn {
     background-color: rgb(238, 238, 238);
     color: rgb(141, 141, 141);
     margin-right: 10px; 
 }
 
-.up_mainSection__h {
+.mainSection__h {
     margin-left: 20px;
     margin-bottom: 20px;
 }
 
 /*Error modal*/ 
-.up_ErrorModal {
+.ErrorModal {
     position: absolute;
     top: 20vh;
     left: 35vw;
@@ -501,7 +501,7 @@
     background-color: #fff;
 }
 
-.up_ErrorModal__header {
+.ErrorModal__header {
     background-color: var(--main-red-color);
     border-radius: 5px 5px 0px 0px;
     color: #fff;
@@ -511,40 +511,40 @@
     font-size: 1.3rem;
 }
 
-.up_ErrorModal__content {
+.ErrorModal__content {
     box-sizing: border-box;
     padding: 10px 20px 20px;
     color: rgb(141, 141, 141);
     border-radius: 0px 0px 5px 5px;
 }
-.up_ErrorModal__sharelink {
+.ErrorModal__sharelink {
     text-decoration: none;
     color: var(--main-violet-color);
     margin-left: 10px;
 }
-.up_ErrorModal__p {
+.ErrorModal__p {
     font-size: 0.9rem;
     margin-top: 10px;
 }
-.up_ErrorModal__file {
+.ErrorModal__file {
     margin-top: 5px;
     display: inline-block;
     font-size: 1rem;
     font-weight: 400;
 }
-.up_ErrorModal__filename {
+.ErrorModal__filename {
     display: inline;
     font-size: 1rem;
     margin-left: 10px;
     font-weight: 400;
 }
-.up_ErrorModal__filesize {
+.ErrorModal__filesize {
     display: inline;
     margin-left: 5px;
     font-weight: 400;
     font-size: 0.9rem;
 }
-.up_ErrorModal__CloseBtn {
+.ErrorModal__CloseBtn {
     background-color: rgb(245, 245, 245);
     border: 0px;
     border-radius: 5px;
@@ -554,7 +554,7 @@
     cursor: pointer;
 }
 
-.up_ErrorModal__btns {
+.ErrorModal__btns {
     display: flex;
     justify-content: flex-end;
     width: 100%;

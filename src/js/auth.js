@@ -1,8 +1,9 @@
-class Auth {
-    api = 'https://witdrive-api.azurewebsites.net:443/api/';
-    constructor() {
-        this.validateRedirection();
-        this.initNavBar();
+export default class Auth {
+    constructor(api) {
+        this.api = api;
+    }
+    setRouter(router) {
+        this.router = router;
     }
     getRegisterParameters(form) {
         return {
@@ -229,7 +230,7 @@ class Auth {
             if(result.status == 200) {
                 this.saveToLocalStorage(result.response);
                 //There will be called redirection by router
-                this.routerRedirect("userpanel");
+                this.router.loadRoute("files");
             }
             else if(result.status == 401) {
                 this.displayErrorModal(userloginErrorMsg);
@@ -260,25 +261,23 @@ class Auth {
         const UserAuthData = JSON.parse(localStorage.getItem("UserAuthData"));
         return UserAuthData.user.username;
     }
+    getUserId() {
+        const UserAuthData = JSON.parse(localStorage.getItem("UserAuthData"));
+        return UserAuthData.user.id;
+    }
+    getUserToken() {
+        const UserAuthData = JSON.parse(localStorage.getItem("UserAuthData"));
+        return UserAuthData.token;
+    }
     validateUserAuthData() {
 
     }
     logout() {
         localStorage.removeItem("UserAuthData");
-        this.routerRedirect("index");
+        this.router.loadRoute('');
     }
     isUserLoged() {
         return localStorage.getItem("UserAuthData") != null;
-    }
-    routerRedirect(page) {
-        window.location.href = `${page}.html`;
-    }
-    routerGetCurrentRoute() {
-        let route = window.location.href;
-        route = route.split("/");
-        route = route[route.length - 1];
-        route = route.split(".")[0];
-        return route;
     }
     initpasswordChangeForm() {
         const passwordChangeForm = document.querySelector("#passwordChangeForm");
@@ -291,7 +290,7 @@ class Auth {
             });
             passwordChangeForm.querySelector("#mainSection__form-cancel-btn").addEventListener('click', (e) => {
                 e.preventDefault();
-                this.routerRedirect("userpanel");
+                router.loadRoute('files');
             });
         }
     }
@@ -341,76 +340,5 @@ class Auth {
         XHR.setRequestHeader('Content-Type', 'application/json');
         XHR.send(JSON.stringify(req_params));
         return XHR;
-    }
-    initNavBar() {
-        const accountNav = document.querySelector("#userAccountNav");
-        if (this.isUserLoged()) {
-            const username = this.getUserName();
-            accountNav.innerHTML = `
-            <li class="navigation__item navigation--email">${username}</li>
-            <li class="navigation__item navigation__link" id="settingsBtn"><i class="icon-cog"></i></li>
-            <li class="navigation__item navigation__link navigation__link--bolded" id="logoutBtn">Log out</li>
-            `;
-            accountNav.querySelector("#logoutBtn").addEventListener('click', e => {
-                e.preventDefault();
-                this.logout();
-            });
-            accountNav.querySelector("#settingsBtn").addEventListener('click', e => {
-                e.preventDefault();
-                this.routerRedirect("userSettings");
-            });
-        }
-        else {
-            const currentRoute = this.routerGetCurrentRoute();
-            if(currentRoute == "login")
-                accountNav.innerHTML = `
-                <li class="navigation__item"><a href="register.html" class="navigation__link navigation__link--bolded">Sign up</a></li>`;
-            else if(currentRoute == "register")
-                accountNav.innerHTML = `
-                <li class="navigation__item"><a href="login.html" class="navigation__link">Sign in</a></li>`;
-            else
-                accountNav.innerHTML = `
-                <li class="navigation__item"><a href="login.html" class="navigation__link">Sign in</a></li>
-                <li class="navigation__item"><a href="register.html" class="navigation__link navigation__link--bolded">Sign up</a></li>`;
-        }
-    }
-    validateRedirection() {
-        const currentRoute = this.routerGetCurrentRoute();
-        if(this.isUserLoged()) {
-            if(currentRoute == "login" || currentRoute == "register" || currentRoute == "PasswordReset") {
-                this.routerRedirect("userpanel");
-            }
-            if(currentRoute == "userSettings")
-                this.initpasswordChangeForm();
-        }
-        else {
-            switch (currentRoute) {
-                case "userpanel":
-                    this.routerRedirect("index");
-                    break;
-                case "userSettings":
-                    this.routerRedirect("index");
-                    break;
-                case "login":
-                    this.initLoginForm();
-                    break;
-                case "register":
-                    this.initRegisterForm();
-                    break;
-                case "PasswordReset":
-                    this.initPassResetForm();
-                    break;
-                case "index":
-                    this.initRegisterForm();
-                    break;
-                case "newPasswordForm":
-                    this.initNewPassForm();
-                    break;
-                default:
-                    break;
-            }
-        }
     } 
 }
-
-const auth = new Auth();
