@@ -274,7 +274,7 @@ export default class Auth {
     }
     logout() {
         localStorage.removeItem("UserAuthData");
-        this.router.loadRoute('');
+        this.router.loadRoute('/');
     }
     isUserLoged() {
         return localStorage.getItem("UserAuthData") != null;

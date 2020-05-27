@@ -138,7 +138,7 @@ export default class Router{
         }
         else {
             switch (currentRoute) {
-                case "userpanel":
+                case "files":
                     this.loadRoute('');
                     break;
                 case "userSettings":

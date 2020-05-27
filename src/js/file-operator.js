@@ -89,6 +89,12 @@ class FileOperator {
     this.loadFiles();
     this.contextMenu = new ContextMenu(this);
     this.contextMenu.setup();
+    const folderBtn = document.querySelector("#newFolderBtn");
+    if(folderBtn != null)
+      folderBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.OpenNewFolderModal();
+      });
   }
   // Load files 
   getFilesFromServer() {
@@ -101,6 +107,9 @@ class FileOperator {
       XHR.send();
       if(XHR.status == 200)
         this.files = JSON.parse(XHR.response);
+      else if(XHR.status == 401) {
+        this.auth.logout();
+      }
     } catch (error) {
       return false;
     } 
@@ -260,13 +269,13 @@ class FileOperator {
     };*/
   }
   getFileData(id) {
-    let directory = this.files.directories[1];
+    let directory = this.files;
       for (let index = 0; index < directory.files.length; index++) {
         const el = directory.files[index];
-        if(el._id === id)
+        if(el.ID === id)
           return el;
       }
-      for (let index = 0; index < directory.files.length; index++) {
+      for (let index = 0; index < directory.directories.length; index++) {
         const el = directory.directories[index];
         if(el._id === id)
           return el;
@@ -299,11 +308,11 @@ class FileOperator {
   }
   createFolderTemplate(folder) {
     const folderElement = document.createElement('li');
-    folderElement.id = `folder_${folder._id}`;
+    folderElement.id = `folder_${folder.ID}`;
     folderElement.classList.add('up_mainSection__file');
     //fileElement.draggable=true;
-    let foldername = folder.name.substring(0, Math.min(folder.name.length,40));
-    if(foldername.length < folder.name.length)
+    let foldername = folder.Name.substring(0, Math.min(folder.Name.length,40));
+    if(foldername.length < folder.Name.length)
       foldername = foldername + "...";
     folderElement.innerHTML = `<div class="up_mainSection__file-box" >
                                 <span><i class="up_mainSection__file-icon icon-folder-1"></i></span>
@@ -311,7 +320,7 @@ class FileOperator {
                                   ${foldername}
                                 </span>
                                 <span class="up_mainSection__file-uploadTime up_mainSection__file--cell">
-                                  ${this.convertUploadDate(folder.created)}
+                                  ${this.convertUploadDate(folder.Created)}
                                 </span>
                                 <span class="up_mainSection__file-filesize up_mainSection__file--cell">
                                   -
@@ -322,11 +331,11 @@ class FileOperator {
   }
   createFileTemplate(file){
     const fileElement = document.createElement('li');
-    fileElement.id = `file_${file._id}`;
+    fileElement.id = `file_${file.ID}`;
     fileElement.classList.add('up_mainSection__file');
     //fileElement.draggable=true;
-    let filename = file.name.substring(0, Math.min(file.name.length,40));
-    if(filename.length < file.name.length)
+    let filename = file.Name.substring(0, Math.min(file.Name.length,40));
+    if(filename.length < file.Name.length)
       filename = filename + "...";
     fileElement.innerHTML = `<div class="up_mainSection__file-box" >
                                 <span><i class="up_mainSection__file-icon icon-doc-inv"></i></span>
@@ -334,10 +343,10 @@ class FileOperator {
                                   ${filename}
                                 </span>
                                 <span class="up_mainSection__file-uploadTime up_mainSection__file--cell">
-                                  ${this.convertUploadDate(file.created)}
+                                  ${this.convertUploadDate(file.Created)}
                                 </span>
                                 <span class="up_mainSection__file-filesize up_mainSection__file--cell">
-                                  ${this.convertFileSize(file.size)}
+                                  ${this.convertFileSize(file.Size)}
                                 </span>
                                 
                               </div>`;
@@ -388,9 +397,9 @@ class FileOperator {
       });
       deleteModal.querySelector("#modalDeleteBtn").addEventListener('click', (e) => {
           e.preventDefault();
-          // There should be call to method that calling api to delete
-          const result = this.deleteFileRequest(file._id);
-          
+          e.target.disabled = true;
+          const result = this.deleteFileRequest(file.ID);
+          e.target.disabled = false;
           if(result == true) {
             this.removeFileFromDOM(file);
             document.body.removeChild(deleteModal);
@@ -407,19 +416,18 @@ class FileOperator {
   }
   removeFileFromDOM(file) {
     const fileList = document.querySelector('#fileList');
-    if(file.type == "file")
-      fileList.removeChild(fileList.querySelector(`#file_${file._id}`));
-    else
-      fileList.removeChild(fileList.querySelector(`#folder_${file._id}`));
+    //if(file.type == "file")
+      fileList.removeChild(fileList.querySelector(`#file_${file.ID}`));
+    //else
+    //  fileList.removeChild(fileList.querySelector(`#folder_${file.ID}`));
   }
-
   fillDeleteModalHTML(file) {
     return `<header>
                <h2 class="up_DeleteModal__header">Delete</h2>
            </header>
            <div class="up_DeleteModal__content">
                <h3 class="up_DeleteModal__file">File:</h3>
-               <h3 class="up_DeleteModal__filename">${file.name}</h3>
+               <h3 class="up_DeleteModal__filename">${file.Name}</h3>
                <h4 class="up_DeleteModal__filesize">${this.convertFileSize(file.size)}</h4>
                <p class="up_DeleteModal__p" id="DeleteModal_text">Do you really want to delete this file?</p>
                <div class="up_DeleteModal__btns" id="DeleteModal__btns">
@@ -434,7 +442,7 @@ class FileOperator {
            </header>
            <div class="up_DeleteModal__content">
                <h3 class="up_DeleteModal__file">Folder:</h3>
-               <h3 class="up_DeleteModal__filename">${file.name}</h3>
+               <h3 class="up_DeleteModal__filename">${file.Name}</h3>
                <p class="up_DeleteModal__p" id="DeleteModal_text">Do you really want to delete this folder?</p>
                <div class="up_DeleteModal__btns" id="DeleteModal__btns">
                    <button class="up_DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
@@ -452,6 +460,8 @@ class FileOperator {
       XHR.send();
       if(XHR.status == 200)
         return true;
+      else if(XHR.status == 401)
+        this.auth.logout();
       else
         return false; 
     } catch (error) {
@@ -460,41 +470,85 @@ class FileOperator {
     
   }
   displayShareDialog(file_id) {
-    var file = {
-        isShared : true,
-        id: "txZ+plsL7z8=",
-        name: "TestFile.dat",
-        created: new Date(637237873697212390),
-        size: "40.1MB",
-        shareLink : "localhost:5001/sharedlink/uniquelink"
-    };
+   
+    const file = this.getFileData(file_id);
     const shareModal = this.createShareModal(file);
     document.body.appendChild(shareModal);
   }
   createShareModal(file) {
       const shareModal = document.createElement('div');
       shareModal.classList.add('up_ShareModal');
+      file.shareLink = '-';
       shareModal.innerHTML = this.fillShareModalHTML(file);
       shareModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
           e.preventDefault();
+          console.log(shareModal);
           document.body.removeChild(shareModal);
       });
       shareModal.querySelector("#modalSwitchBtn").addEventListener('click', (e) => {
           e.preventDefault();
-          file.shareLink = '-';
-          file.isShared = !file.isShared;
-          console.log(file.isShared);
-          e.target.innerHTML = `${(file.isShared) ? "Disable" : "Enable"} sharing`;
+          e.target.disabled = true;
           const sharelink = shareModal.querySelector('#modalShareLink');
-          // There should be call to method that calling api for unique link
-          sharelink.href = file.shareLink;
-          sharelink.innerHTML = file.shareLink;
+          if(!file.Shared) {
+            const result = this.enableSharingRequest(file.ID);
+            if(result.status) {
+              file.shareLink = result.shareLink;
+              file.Shared = true;
+              e.target.innerHTML = "Disable sharing";
+              sharelink.href = file.shareLink;
+              sharelink.textContent = file.shareLink;
+            }
+          }
+          else {
+            const result = this.disableSharingRequest(file.ID);
+            if(result) {
+              file.shareLink = '-';
+              file.Shared = false;
+              e.target.innerHTML = "Enable sharing";
+              sharelink.href = file.shareLink;
+              sharelink.textContent = file.shareLink;
+            }
+          }
+          e.target.disabled = false;
 
       });
       return shareModal;
   }
   enableSharingRequest(fileId) {
-
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'PATCH', this.api + `u/${userId}/files/share/${fileId}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      if(XHR.status == 200)
+        return {status: true, shareLink : 'https://wi......'};
+      else if(XHR.status == 401)
+        this.auth.logout();
+      else
+        return {status: false, shareLink : '-'};
+    } catch (error) {
+      return {status: false, shareLink : '-'};
+    }
+  }
+  disableSharingRequest(fileId) {
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'PATCH', this.api + `u/${userId}/files/disable-sharing/${fileId}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      if(XHR.status == 200)
+        return true;
+      else if(XHR.status == 401)
+        this.auth.logout();
+      else
+        return false;
+    } catch (error) {
+      return false;
+    }
   }
   fillShareModalHTML(file) {
       return `<header>
@@ -502,32 +556,28 @@ class FileOperator {
           </header>
           <div class="up_ShareModal__content">
               <h3 class="up_ShareModal__file">Share item:</h3>
-              <h3 class="up_ShareModal__filename">${file.name}</h3>
-              <h4 class="up_ShareModal__filesize">${file.size}</h4>
-              <p class="up_ShareModal__p">Share link:
-                  <a href="${file.shareLink}" class="up_ShareModal__sharelink" id="modalShareLink">
-                  ${file.shareLink}
-                  </a>
-              </p>
+              <h3 class="up_ShareModal__filename">${file.Name}</h3>
+              <h4 class="up_ShareModal__filesize">${this.convertFileSize(file.Size)}</h4>
+              <p class="up_ShareModal__p">Share link: <a href="${file.shareLink} " class="up_ShareModal__sharelink" id="modalShareLink">${file.shareLink}</a></p>
               <div class="up_ShareModal__btns">
                   <button class="up_ShareMOdal__CloseBtn" id="modalCloseBtn">Close</button>
-                  <button class="up_ShareMOdal__SwitchSBtn" id="modalSwitchBtn">${(file.isShared) ? "Disable" : "Enable"} sharing</button>
+                  <button class="up_ShareMOdal__SwitchSBtn" id="modalSwitchBtn">${(file.Shared) ? "Disable" : "Enable"} sharing</button>
               </div>
           </div>`;
   }
   createRenameModal(file) {
     const renameModal = document.createElement('div');
-    renameModal.classList.add('up_DeleteModal');
+    renameModal.classList.add('up_RenameModal');
     renameModal.innerHTML = `<header>
-          <h2 class="up_DeleteModal__header">Rename</h2>
+          <h2 class="up_RenameModal__header">Rename element</h2>
       </header>
-      <div class="up_DeleteModal__content">
-          <h3 class="up_DeleteModal__file">Name:</h3>
-          <input type="text" name="newName" value = "${file.name}" class="up_DeleteModal__filename"/>
-          <p class="up_DeleteModal__p" id="RenameModal_text"></p>
-          <div class="up_DeleteModal__btns" id="RenameModal__btns">
-              <button class="up_DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
-              <button class="up_DeleteModal__DeleteBtn" id="modalRenameBtn">Rename</button>
+      <div class="up_RenameModal__content">
+          <h3 class="up_RenameModal__file">Name:</h3>
+          <input type="text" name="newName" value = "${file.Name}" id="newName" class="up_RenameModal__filename"/>
+          <p class="up_RenameModal__p" id="RenameModal_text"></p>
+          <div class="up_RenameModal__btns" id="RenameModal__btns">
+              <button class="up_RenameModal__CloseBtn" id="modalCloseBtn">Close</button>
+              <button class="up_RenameModal__RenameBtn" id="modalRenameBtn">Rename</button>
           </div>
       </div>`;
     renameModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
@@ -536,10 +586,12 @@ class FileOperator {
     });
     renameModal.querySelector("#modalRenameBtn").addEventListener('click', (e) => {
       e.preventDefault();
-      const result = this.renameFileRequest(file._id);
+      const newName = renameModal.querySelector('#newName').value;
+      const result = this.renameFileRequest(file.ID, newName);
       
       if(result == true) {
-        this.removeFileFromDOM(file);
+        file.Name = newName;
+        this.updateFileNameEl(file.ID, newName);
         document.body.removeChild(renameModal);
       }
       else {
@@ -551,6 +603,13 @@ class FileOperator {
       } 
   });
   return renameModal;
+  }
+  updateFileNameEl(fileId, newName) {
+    let filename = newName.substring(0, Math.min(newName.length,40));
+    if(filename.length < newName.length)
+      filename = filename + "...";
+    const fileBox = document.querySelector(`#file_${fileId}`);
+    fileBox.querySelector('.up_mainSection__file-name').textContent = newName;
   }
   rename(file_id) {
     var file = this.getFileData(file_id);
@@ -575,7 +634,89 @@ class FileOperator {
       return false;
     }
     */
-   return false;
+   return {status : 400};
+  }
+  newFolderRequest(newName) {
+      const userId = this.auth.getUserId();
+      /*try {
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'DELETE', this.api + `u/${userId}/files/${fileId}`,false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.setRequestHeader("Authorization", this.auth.getUserToken());
+        XHR.send(null);
+        if(XHR.status == 200)
+          return true;
+        else
+          return false; 
+      } catch (error) {
+        return false;
+      }
+      */
+     return {status : 200};
+  }
+  CreateFolderModal() {
+    const newFolderModal = document.createElement('div');
+    newFolderModal.classList.add('up_NewFolderModal');
+    newFolderModal.innerHTML = `
+      <header>
+          <h2 class="up_NewFolderModal__header">New folder</h2>
+      </header>
+      <div class="up_NewFolderModal__content">
+          <h3 class="up_NewFolderModal__name">Name:</h3>
+          <input type="text" name="newName" placeholder="New folder" id="newName" class="up_NewFolderModal__foldername"/>
+          <p class="up_NewFolderModal__p" id="newFolderModal_text"></p>
+          <div class="up_NewFolderModal__btns" id="newFolderModal__btns">
+              <button class="up_NewFolderModal__CloseBtn" id="modalCloseBtn">Close</button>
+              <button class="up_NewFolderModal__CreateBtn" id="modalCreateBtn">Create</button>
+          </div>
+      </div>`;
+    newFolderModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
+      e.preventDefault();
+      document.body.removeChild(newFolderModal);
+    });
+    newFolderModal.querySelector("#modalCreateBtn").addEventListener('click', (e) => {
+      e.preventDefault();
+      const newName = newFolderModal.querySelector('#newName').value;
+      if(newName.length > 0) {
+        const result = this.newFolderRequest(newName);
+        if(result.status == 200) {
+          document.body.removeChild(newFolderModal);
+          const newFolder = {
+            ID : 6,
+            Name : newName,
+            Created : '2020-05-27T09:14:09.554Z'
+          };
+          const folderElement = this.createFolderTemplate(newFolder);
+          document.querySelector('#fileList').appendChild(folderElement);
+        }
+        else {
+          const newFolderBtns = newFolderModal.querySelector("#newFolderModal__btns");
+          const newFolderBtn = newFolderModal.querySelector("#modalCreateBtn");
+          newFolderBtns.removeChild(newFolderBtn);
+          const newFolderText = newFolderModal.querySelector("#newFolderModal_text");
+          newFolderText.innerHTML ="Error occured durring operation. Try again later.";
+          return null;
+        }
+      }
+      else {
+        const newFolderBtns = newFolderModal.querySelector("#newFolderModal__btns");
+        const newFolderBtn = newFolderModal.querySelector("#modalCreateBtn");
+        newFolderBtns.removeChild(newFolderBtn);
+        const newFolderText = newFolderModal.querySelector("#newFolderModal_text");
+        newFolderText.innerHTML ="Error occured durring operation. Try again later.";
+        return null;
+      } 
+    });
+    document.body.appendChild(newFolderModal);
+    
+  }
+  OpenNewFolderModal() {
+    const folderBtn = document.querySelector("#newFolderBtn");
+    folderBtn.disabled = true;
+    const newFolder = this.CreateFolderModal();
+    if(newFolder != null) 
+      document.querySelector("#fileList").appendChild(newFolder);
+      folderBtn.disabled = false;
   }
 }
 

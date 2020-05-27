@@ -27,6 +27,7 @@ export default params => {
 <div class="up_mainSection__files-box">
             <header>
                 <h1 class="up_mainSection__header">Files</h1>
+                <button class="up_mainSeciton__newFoderBtn" id="newFolderBtn">+ New folder</button>
                 <div class="up_mainSection__file-atrubutes">
                     <span class="up_mainSection__file-atrubutes-name">Name</span>
                     <span class="up_mainSection__file-atrubutes-up-date">Upload date</span>
