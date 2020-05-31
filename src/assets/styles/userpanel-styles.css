@@ -754,3 +754,23 @@
     justify-content: flex-end;
     width: 100%;
 }
+
+.up_back_to_pFolder {
+    background-color: var(--main-violet-color);
+    border: 0px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: rgb(255, 255, 255);
+    padding: 15px 30px;
+    margin-top: 10px;
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    display: none;
+}
+
+.up_back_to_pFolder:hover {
+    background-color: var(--main-darker-red-color);
+    transition: 0.3s;
+}

@@ -6,6 +6,7 @@ import passwordResetView from '../views/main_page/PasswordReset.js'
 import userView from '../views/user_panel/files.js'
 import _404View from '../views/404.js'
 import userSettings from '../views/user_panel/userSettings.js'
+import sharedfile from '../views/user_panel/sharedFile.js'
 
 const routes = [
     {
@@ -31,6 +32,10 @@ const routes = [
     {
         path: '/files/:directory',
         getTemplate: userView,
+    },
+    {
+        path: '/sharedfile/:shareid',
+        getTemplate: sharedfile,
     },
     {
         path: '/register',

@@ -1,7 +1,7 @@
 export default params =>
 `<nav class="navigation">
         <div class="navigation__leftBox">
-            <img class="navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
+            <img class="navigation__logo" src="../assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
             <ul class="navigation__list">
                 <li class="navigation__item"><a onclick="router.loadRoute('')" class="navigation__link">Home page</a></li>
                 <li class="navigation__item"><a onclick="router.loadRoute('faq')" class="navigation__link">FAQ</a></li>
@@ -15,7 +15,7 @@ export default params =>
         </div>
     </nav>
     <section class="main404Section">
-        <img src="assets/imgs/logo_1.svg" alt="Logo" class="main404Section__logo"/>
+        <img src="../assets/imgs/logo_1.svg" alt="Logo" class="main404Section__logo"/>
         <h1 class="main404Section__header1">Error 404 - Page not found</h1>
         <h2 class="main404Section__header2">The link is broken or the page has been moved. If you neeed help, please contact us.</h2>
         <a onclick="router.loadRoute('')" class="main404Section__home-link">Go to home page</a>

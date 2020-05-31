@@ -1,7 +1,7 @@
 export default params => {
     return `<nav class="up_navigation">
 <div class="up_navigation__leftBox">
-    <img class="up_navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
+    <img class="up_navigation__logo" src="../assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
 </div>
 <div class="up_navigation__rightBox">
     <ul class="up_navigation__list" id="userAccountNav">
@@ -14,6 +14,7 @@ export default params => {
     <ul class="up_mainSection__menu-list">
         <li class="up_mainSection__menu-item">
             <button class="up_mainSection__upBtn">Upload</button>
+            <input type="file"  class="up_mainSection__upBtn" style="display:none;" id="fileInput"/>
         </li>
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('files','myFiles')" class="up_mainSection__menu-item-link">My files</a></li>
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('files', 'shared')" class="up_mainSection__menu-item-link">Shared</a></li>
@@ -27,6 +28,7 @@ export default params => {
 <div class="up_mainSection__files-box">
             <header>
                 <h1 class="up_mainSection__header">Files</h1>
+                
                 <button class="up_mainSeciton__newFoderBtn" id="newFolderBtn">+ New folder</button>
                 <div class="up_mainSection__file-atrubutes">
                     <span class="up_mainSection__file-atrubutes-name">Name</span>
@@ -34,6 +36,7 @@ export default params => {
                     <span class="up_mainSection__file-atrubutes-size">Size</span>
                 </div>
             </header>
+            <button class="up_back_to_pFolder" id="parentFolderBtn">. .</button>
             <ul class="up_mainSection__file-list" id="fileList"></ul>
         </div>`;
 };

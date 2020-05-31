@@ -1,7 +1,7 @@
 export default params => {
     return `<nav class="up_navigation">
 <div class="up_navigation__leftBox">
-    <img class="up_navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
+    <img class="up_navigation__logo" src="../assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
 </div>
 </nav>
 <section class="up_mainSection">

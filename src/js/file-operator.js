@@ -4,14 +4,14 @@ class ContextMenu {
   }
   setup() {
       document.body.addEventListener('contextmenu', (e) => {
-          e.preventDefault();
+          
           let constextMenu = document.querySelector('.up_file__contextmenu');
           if(constextMenu !== null) {
               document.body.removeChild(constextMenu);
           }
           const clikedItemClass = e.target.getAttribute("class");
-
-          if(['up_mainSection__file', 'up_mainSection__file-box', 'up_mainSection__file-name', 'up_mainSection__file-filesize', 'up_mainSection__file-uploadTime'].indexOf(clikedItemClass) >= 0) {
+          if(['up_mainSection__file', 'up_mainSection__file-box', 'up_mainSection__file-name up_mainSection__file--cell', 'up_mainSection__file-filesize up_mainSection__file--cell', 'up_mainSection__file-uploadTime up_mainSection__file--cell'].indexOf(clikedItemClass) >= 0) {
+              e.preventDefault();
               let fileId = e.target.closest(".up_mainSection__file").id;
               if(fileId.substring(0,4) == "file")
                 fileId = fileId.substring(5);
@@ -22,7 +22,6 @@ class ContextMenu {
           }
       });
       document.addEventListener('click', (e) => {
-          e.preventDefault();
           let constextMenu = document.querySelector('.up_file__contextmenu');
           if(constextMenu !== null) {
               document.body.removeChild(constextMenu);
@@ -33,10 +32,7 @@ class ContextMenu {
       const contextmenu = document.createElement('div');
       contextmenu.classList.add('up_file__contextmenu');
       contextmenu.id = `CM_file_${fileid}`;
-      contextmenu.innerHTML = `<button class="up_file__contextmenu-item" id="file__cm-moveBtn">
-              <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
-              <span class="up_file__contextmenu-btn-text">Move</span>
-          </button>
+      contextmenu.innerHTML = `
           <button class="up_file__contextmenu-item" id="file__cm-downloadBtn">
               <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
               <span class="up_file__contextmenu-btn-text">Download</span>
@@ -107,6 +103,7 @@ class FileOperator {
       XHR.send();
       if(XHR.status == 200)
         this.files = JSON.parse(XHR.response);
+        
       else if(XHR.status == 401) {
         this.auth.logout();
       }
@@ -282,25 +279,60 @@ class FileOperator {
       }
       return null;
   }
-  loadFilesToView(file_name) {
-    /*
-    var len = this.files.directories.length;
-    var i=0;
-    for  (i;i<len;++i)
-    {
-      if(this.files.directories[i].name==file_name)
-        break;
-    }
-    */
+  bindParentFolderBtn(parentFolderBtn) {
+    parentFolderBtn.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      this.loadFilesToView(mainFolder.ParentID);
+     });
+     parentFolderBtn.addEventListener('drop', (e) => {
+      let elementID = e.dataTransfer.getData('text');
+      const fileList = document.querySelector('#fileList');
+          fileList.removeChild(fileList.querySelector(`#${elementID}`));
+        if(elementID.slice(0,4) == 'file') {
+          elementID = elementID.slice(5);
+          const file = this.findFile(elementID);
+          this.files.files = this.removeItemFromArr(elementID,this.files.files);
+          //folder.files.push(file); - parent folder
+        }
+        else if (elementID.slice(0,6) == 'folder') {
+          elementID = elementID.slice(7);
+          const dir = this.findFolderObj(elementID);
+          this.files.directories = this.removeItemFromArr(elementID,this.files.directories);
+          //folder.directories.push(dir); - parent folder
+        }
+    });
+    parentFolderBtn.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+  }
+  loadFilesToView(folderID) {
+
    const mainFolder = this.files;
+    
+   if(mainFolder.ParentID != null) {
+    const parentFolderBtn = document.querySelector("#parentFolderBtn");
+    if(parentFolderBtn != null){
+       parentFolderBtn.style.display = "inline-block";
+       this.bindParentFolderBtn(parentFolderBtn);
+    }
+   }
+   else 
+   {
+    const parentFolderBtn = document.querySelector("#parentFolderBtn");
+    if(parentFolderBtn != null){
+       parentFolderBtn.style.display = "none";
+    }
+   }
+   
+   console.log(mainFolder);
     //const mainFolder = this.files.directories[i];
     const fileList = document.querySelector("#fileList");
-    /*
+    fileList.innerHTML = null;
     mainFolder.directories.forEach(file => {
       const fileBox = this.createFolderTemplate(file);
       fileList.appendChild(fileBox);
     });
-    */
+    
     mainFolder.files.forEach(file => {
       const fileBox = this.createFileTemplate(file);
       fileList.appendChild(fileBox);
@@ -310,7 +342,7 @@ class FileOperator {
     const folderElement = document.createElement('li');
     folderElement.id = `folder_${folder.ID}`;
     folderElement.classList.add('up_mainSection__file');
-    //fileElement.draggable=true;
+    folderElement.draggable=true;
     let foldername = folder.Name.substring(0, Math.min(folder.Name.length,40));
     if(foldername.length < folder.Name.length)
       foldername = foldername + "...";
@@ -327,13 +359,72 @@ class FileOperator {
                                 </span>
                                 
                               </div>`;
+    folderElement.addEventListener('dblclick', (e) => {
+      let folderID = folderElement.id.slice(7);
+      const directoryObj = this.findFolderObj(folderID);
+      if(directoryObj != null) {
+        this.files = directoryObj;
+        this.loadFilesToView(null);
+      }
+    });
+    folderElement.addEventListener('drop', (e) => {
+      let elementID = e.dataTransfer.getData('text');
+      const fileList = document.querySelector('#fileList');
+      if(elementID != folderElement.id) {
+          fileList.removeChild(fileList.querySelector(`#${elementID}`));
+        if(elementID.slice(0,4) == 'file') {
+          elementID = elementID.slice(5);
+          const file = this.findFile(elementID);
+          this.files.files = this.removeItemFromArr(elementID,this.files.files);
+          folder.files.push(file);
+        }
+        else if (elementID.slice(0,6) == 'folder') {
+          elementID = elementID.slice(7);
+          const dir = this.findFolderObj(elementID);
+          this.files.directories = this.removeItemFromArr(elementID,this.files.directories);
+          folder.directories.push(dir);
+        }
+      }
+      
+    });
+    folderElement.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+    folderElement.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text',e.target.id);
+    });
     return folderElement;
+  }
+  removeItemFromArr(id, arr) {
+    return arr.filter(function(item) {
+      return item.ID !== id
+    });
+  }
+  findFolderObj(folderId) {
+    let directories = this.files.directories;
+    for (let index = 0; index < directories.length; index++) {
+      const directory = directories[index];
+      if(directory.ID == folderId) {
+        return directory;
+      }
+    }
+    return null;
+  }
+  findFile(objId) {
+    let dir = this.files.files;
+    for (let index = 0; index < dir.length; index++) {
+      const obj = dir[index];
+      if(obj.ID == objId) {
+        return obj;
+      }
+    }
+    return null;
   }
   createFileTemplate(file){
     const fileElement = document.createElement('li');
     fileElement.id = `file_${file.ID}`;
     fileElement.classList.add('up_mainSection__file');
-    //fileElement.draggable=true;
+    fileElement.draggable=true;
     let filename = file.Name.substring(0, Math.min(file.Name.length,40));
     if(filename.length < file.Name.length)
       filename = filename + "...";
@@ -350,6 +441,10 @@ class FileOperator {
                                 </span>
                                 
                               </div>`;
+    fileElement.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text',e.target.id);
+    });
+
     return fileElement;
   }
   loadFiles() {
@@ -470,7 +565,6 @@ class FileOperator {
     
   }
   displayShareDialog(file_id) {
-   
     const file = this.getFileData(file_id);
     const shareModal = this.createShareModal(file);
     document.body.appendChild(shareModal);
@@ -478,7 +572,8 @@ class FileOperator {
   createShareModal(file) {
       const shareModal = document.createElement('div');
       shareModal.classList.add('up_ShareModal');
-      file.shareLink = '-';
+      console.log(this.files);
+      if(file.Shared) file.ShareID = '1434fsaf3414';
       shareModal.innerHTML = this.fillShareModalHTML(file);
       shareModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
           e.preventDefault();
@@ -491,22 +586,23 @@ class FileOperator {
           const sharelink = shareModal.querySelector('#modalShareLink');
           if(!file.Shared) {
             const result = this.enableSharingRequest(file.ID);
+            console.log(result);
             if(result.status) {
-              file.shareLink = result.shareLink;
+              file.ShareID = result.ShareID;
               file.Shared = true;
               e.target.innerHTML = "Disable sharing";
-              sharelink.href = file.shareLink;
-              sharelink.textContent = file.shareLink;
+              sharelink.href = file.ShareID;
+              sharelink.textContent = file.ShareID;
             }
           }
           else {
             const result = this.disableSharingRequest(file.ID);
             if(result) {
-              file.shareLink = '-';
+              file.ShareID = '-';
               file.Shared = false;
               e.target.innerHTML = "Enable sharing";
-              sharelink.href = file.shareLink;
-              sharelink.textContent = file.shareLink;
+              sharelink.href = file.ShareID;
+              sharelink.textContent = file.ShareID;
             }
           }
           e.target.disabled = false;
@@ -523,13 +619,13 @@ class FileOperator {
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
       if(XHR.status == 200)
-        return {status: true, shareLink : 'https://wi......'};
+        return {status: true, ShareID : XHR.response};
       else if(XHR.status == 401)
         this.auth.logout();
       else
-        return {status: false, shareLink : '-'};
+        return {status: false, shareID : '-'};
     } catch (error) {
-      return {status: false, shareLink : '-'};
+      return {status: false, shareID : '-'};
     }
   }
   disableSharingRequest(fileId) {
@@ -551,6 +647,7 @@ class FileOperator {
     }
   }
   fillShareModalHTML(file) {
+      const sharelink = (file.Shared) ? `${this.auth.getDomain()}/sharedfile/${file.ShareID}` : '-';
       return `<header>
               <h2 class="up_ShareModal__header">Share</h2>
           </header>
@@ -558,7 +655,7 @@ class FileOperator {
               <h3 class="up_ShareModal__file">Share item:</h3>
               <h3 class="up_ShareModal__filename">${file.Name}</h3>
               <h4 class="up_ShareModal__filesize">${this.convertFileSize(file.Size)}</h4>
-              <p class="up_ShareModal__p">Share link: <a href="${file.shareLink} " class="up_ShareModal__sharelink" id="modalShareLink">${file.shareLink}</a></p>
+              <p class="up_ShareModal__p">Share link: <a href="${sharelink} " class="up_ShareModal__sharelink" id="modalShareLink">${sharelink}</a></p>
               <div class="up_ShareModal__btns">
                   <button class="up_ShareMOdal__CloseBtn" id="modalCloseBtn">Close</button>
                   <button class="up_ShareMOdal__SwitchSBtn" id="modalSwitchBtn">${(file.Shared) ? "Disable" : "Enable"} sharing</button>
@@ -682,12 +779,17 @@ class FileOperator {
         if(result.status == 200) {
           document.body.removeChild(newFolderModal);
           const newFolder = {
-            ID : 6,
+            ID : (Math.random()*100).toFixed(0).toString(),
             Name : newName,
-            Created : '2020-05-27T09:14:09.554Z'
+            Created : '2020-05-27T09:14:09.554Z',
+            ParentID : this.files.ID,
+            directories : [],
+            files : []
           };
           const folderElement = this.createFolderTemplate(newFolder);
           document.querySelector('#fileList').appendChild(folderElement);
+          this.files.directories.push(newFolder);
+          console.log(this.files);
         }
         else {
           const newFolderBtns = newFolderModal.querySelector("#newFolderModal__btns");

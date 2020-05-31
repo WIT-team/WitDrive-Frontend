@@ -120,7 +120,7 @@ export default class Router{
     getCurrentRoute() {
         let route = window.location.href;
         route = route.split("/");
-        route = route[route.length - 1];
+        route = route[3];
         return route;
     }
     validateRedirection() {

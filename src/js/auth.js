@@ -269,12 +269,9 @@ export default class Auth {
         const UserAuthData = JSON.parse(localStorage.getItem("UserAuthData"));
         return UserAuthData.token;
     }
-    validateUserAuthData() {
-
-    }
     logout() {
         localStorage.removeItem("UserAuthData");
-        this.router.loadRoute('/');
+        this.router.loadRoute('');
     }
     isUserLoged() {
         return localStorage.getItem("UserAuthData") != null;
@@ -340,5 +337,10 @@ export default class Auth {
         XHR.setRequestHeader('Content-Type', 'application/json');
         XHR.send(JSON.stringify(req_params));
         return XHR;
+    }
+    getDomain() {
+        let route = window.location.href;
+        route = route.split("/");
+        return `${route[0]}//${route[2]}`;
     } 
 }
