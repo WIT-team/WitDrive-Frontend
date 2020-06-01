@@ -715,7 +715,7 @@ class FileOperator {
                                 <span class="up_mainSection__file-filesize up_mainSection__file--cell">
                                   -
                                 </span>
-                                
+                                <span><i class="up_mainSection__file-icon icon-cancel" id="DisableSharingIcBtn"></i></span>
                               </div>`;
     folderElement.querySelector('#DisableSharingIcBtn').addEventListener('click', (e) => {
      if(this.disableSharingRequest(folder.ID)) {
