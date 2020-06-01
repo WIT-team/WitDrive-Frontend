@@ -88,6 +88,7 @@
     display: block;
     padding: 10px 0px 10px 20px;
     box-sizing: border-box;
+    cursor: pointer;
 }
 .up_mainSection__menu-item {
     width: 90%;

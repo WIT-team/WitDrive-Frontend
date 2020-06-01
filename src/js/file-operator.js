@@ -81,16 +81,50 @@ class FileOperator {
       this.auth = auth;
   }
   // Methods 
-  setup() {
-    this.loadFiles();
-    this.contextMenu = new ContextMenu(this);
-    this.contextMenu.setup();
-    const folderBtn = document.querySelector("#newFolderBtn");
-    if(folderBtn != null)
+  setup(currentRoute) {
+    if(currentRoute == "files") {
+      this.loadFiles();
+      const folderBtn = document.querySelector("#newFolderBtn");
+      if(folderBtn != null)
       folderBtn.addEventListener('click', (e) => {
         e.preventDefault();
         this.OpenNewFolderModal();
       });
+      this.contextMenu = new ContextMenu(this);
+      this.contextMenu.setup();
+    }
+    else if(currentRoute == "shared") {
+      this.getSharedFilesFromServer();
+      this.loadSharedToView();
+    }
+    else if(currentRoute == "bin") {
+
+    }
+    
+  }
+  getSharedFilesFromServer() {
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'GET', this.api + `u/${userId}/files/get-shared-list`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      if(XHR.status == 200)
+        this.files = JSON.parse(XHR.response);
+      else if(XHR.status == 401) {
+        this.auth.logout();
+      }
+      console.log(this.files);
+    } catch (error) {
+      return false;
+    } 
+  }
+  loadSharedToView() {
+    this.files.forEach(file => {
+      const fileBox = this.createSharedFileTemplate(file);
+      fileList.appendChild(fileBox);
+    });
   }
   // Load files 
   getFilesFromServer() {
@@ -103,167 +137,13 @@ class FileOperator {
       XHR.send();
       if(XHR.status == 200)
         this.files = JSON.parse(XHR.response);
-        
       else if(XHR.status == 401) {
         this.auth.logout();
       }
+      console.log(this.files);
     } catch (error) {
       return false;
     } 
-    /*
-    this.files = {
-        "_id": "0",
-        "name": "root",
-        "type" : "directory",
-        "created": 637237873697270785,
-        "directories": [
-          {
-            "_id": "",
-            "name": "RecycleBin",
-            "created": 637237873697206347,
-            "shared" : "true",
-            "type" : "directory",
-            "directories": [],
-            "files": [
-              {
-              "_id": "1",
-                "name": "TestFile.dat",
-                "created": "30-04-2020 15:19",
-                "size": "637237873697270785"
-              }
-            ]
-          },
-          {
-            "_id": 5,
-            "name": "Files",
-            "created": 0,
-            "type" : "directory",
-            "directories": [
-              {
-                "_id": "6",
-                "type" : "directory",
-                "name": "Folder ____ Xg4tOy+Hxj8=bvTi3zZ64T8=fh115r6O6j8=",
-                "created": 0,
-                "directories": [],
-                "files": [
-                  {
-                    "_id": "nEajLE6j0T8=",
-                    "name": "file_3",
-                    "created": 637237873697258132,
-                    "size": 0
-                  }
-                ]
-              },
-              {
-                "_id": "7",
-                "type" : "directory",
-                "name": "Folder ____ 4YttrfDF5j8=",
-                "created": 0,
-                "directories": [],
-                "files": [
-                  {
-                    "_id": "Folder ____ 4YttrfDF5j8=",
-                    "name": "file_4",
-                    "created": 637237873697258158,
-                    "size": 0
-                  }
-                ]
-              },
-              {
-                "_id": "8",
-                "type" : "directory",
-                "name": "Folder ____ 5VG8QfIo7j8=",
-                "created": 0,
-                "directories": [],
-                "files": [
-                  {
-                    "_id": "wfI7eWD5zT8=",
-                    "name": "file_5",
-                    "created": 637237873697258189,
-                    "size": 0
-                  }
-                ]
-              },
-            ],
-            "files": [
-              {
-                "_id": "1",
-                "type" : "file",
-                "name": "TestaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaFile.dat",
-                "created": "0",
-                "size": "237810"
-              },
-              {
-                "_id": "2",
-                "type" : "file",
-                "name": "TestFile2.dat",
-                "created": "0",
-                "size": "537237810"
-              },
-              {
-                "_id": "3",
-                "type" : "file",
-                "name": "TestFile3.dat",
-                "created": "0",
-                "size": "37810"
-              },
-              {
-                "_id": "4",
-                "type" : "file",
-                "name": "TestFile4.dat",
-                "created": "0",
-                "size": "637237810"
-              }
-            ]
-          },
-          {
-            "_id": null,
-            "name": "2",
-            "created": 0,
-            "directories": [
-              {
-                "_id": null,
-                "name": "4tYG3",
-                "created": 0,
-                "directories": [
-                  {
-                    "_id": null,
-                    "name": "xj8=",
-                    "created": 0,
-                    "directories": [],
-                    "files": [
-                      {
-                        "_id": "d5EotrtIxD8=",
-                        "name": "file_2",
-                        "created": 637237873697257865,
-                        "size": 0
-                      }
-                    ]
-                  }
-                ],
-                "files": []
-              }
-            ],
-            "files": []
-          },
-          
-          {
-            "_id": null,
-            "name": "0",
-            "created": 0,
-            "directories": [],
-            "files": []
-          },
-          {
-            "_id": null,
-            "name": "00232451",
-            "created": 0,
-            "directories": [],
-            "files": []
-          }
-        ],
-        "files": []
-    };*/
   }
   getFileData(id) {
     let directory = this.files;
@@ -324,7 +204,6 @@ class FileOperator {
     }
    }
    
-   console.log(mainFolder);
     //const mainFolder = this.files.directories[i];
     const fileList = document.querySelector("#fileList");
     fileList.innerHTML = null;
@@ -482,10 +361,10 @@ class FileOperator {
   createDeleteModal(file) {
     const deleteModal = document.createElement('div');
       deleteModal.classList.add('up_DeleteModal');
-      if(file.type == "file")
+      //if(file.hasOwnProperty('directories')) // file.Type == 1 - file 
         deleteModal.innerHTML = this.fillDeleteModalHTML(file);
-      else
-        deleteModal.innerHTML = this.folderDeleteModalHTML(file);
+      //else
+      //  deleteModal.innerHTML = this.folderDeleteModalHTML(file);
       deleteModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
           e.preventDefault();
           document.body.removeChild(deleteModal);
@@ -523,7 +402,7 @@ class FileOperator {
            <div class="up_DeleteModal__content">
                <h3 class="up_DeleteModal__file">File:</h3>
                <h3 class="up_DeleteModal__filename">${file.Name}</h3>
-               <h4 class="up_DeleteModal__filesize">${this.convertFileSize(file.size)}</h4>
+               <h4 class="up_DeleteModal__filesize">${this.convertFileSize(file.Size)}</h4>
                <p class="up_DeleteModal__p" id="DeleteModal_text">Do you really want to delete this file?</p>
                <div class="up_DeleteModal__btns" id="DeleteModal__btns">
                    <button class="up_DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
@@ -572,12 +451,9 @@ class FileOperator {
   createShareModal(file) {
       const shareModal = document.createElement('div');
       shareModal.classList.add('up_ShareModal');
-      console.log(this.files);
-      if(file.Shared) file.ShareID = '1434fsaf3414';
       shareModal.innerHTML = this.fillShareModalHTML(file);
       shareModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
           e.preventDefault();
-          console.log(shareModal);
           document.body.removeChild(shareModal);
       });
       shareModal.querySelector("#modalSwitchBtn").addEventListener('click', (e) => {
@@ -591,8 +467,9 @@ class FileOperator {
               file.ShareID = result.ShareID;
               file.Shared = true;
               e.target.innerHTML = "Disable sharing";
-              sharelink.href = file.ShareID;
-              sharelink.textContent = file.ShareID;
+              const sh = `${this.auth.getDomain()}/sharedfile/${file.ShareID}`;
+              sharelink.href = sh;
+              sharelink.textContent = sh;
             }
           }
           else {
@@ -819,6 +696,38 @@ class FileOperator {
     if(newFolder != null) 
       document.querySelector("#fileList").appendChild(newFolder);
       folderBtn.disabled = false;
+  }
+  createSharedFolderTemplate() {
+
+  }
+  createSharedFileTemplate(file) {
+    const fileElement = document.createElement('li');
+    fileElement.id = `file_${file.ID}`;
+    fileElement.classList.add('up_mainSection__file');
+    let filename = file.Name.substring(0, Math.min(file.Name.length,40));
+    if(filename.length < file.Name.length)
+      filename = filename + "...";
+    fileElement.innerHTML = `<div class="up_mainSection__file-box" >
+                                
+                                <span><i class="up_mainSection__file-icon icon-doc-inv"></i></span>
+                                <span class="up_mainSection__file-name up_mainSection__file--cell">
+                                  ${filename}
+                                </span>
+                                <span class="up_mainSection__file-uploadTime up_mainSection__file--cell">
+                                  ${this.convertUploadDate(file.Created)}
+                                </span>
+                                <span class="up_mainSection__file-filesize up_mainSection__file--cell">
+                                  ${this.convertFileSize(file.Size)}
+                                </span>
+                                <span><i class="up_mainSection__file-icon icon-cancel" id="DisableSharingIcBtn"></i></span>
+                              </div>`;
+    fileElement.querySelector('#DisableSharingIcBtn').addEventListener('click', (e) => {
+      if(this.disableSharingRequest(file.ID)) {
+        const fileList = document.querySelector('#fileList');
+        fileList.removeChild(fileList.querySelector(`#file_${file.ID}`));
+      }
+    });                    
+    return fileElement;
   }
 }
 

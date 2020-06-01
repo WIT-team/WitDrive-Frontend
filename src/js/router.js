@@ -133,8 +133,8 @@ export default class Router{
             }
             if(currentRoute == "userSettings")
                 this.auth.initpasswordChangeForm();
-            if(currentRoute == "files")
-                this.fileoperator.setup();
+            if(currentRoute == "files" || currentRoute == "shared" || currentRoute == "bin")
+                this.fileoperator.setup(currentRoute);
         }
         else {
             switch (currentRoute) {

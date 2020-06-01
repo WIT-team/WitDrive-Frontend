@@ -1,9 +1,15 @@
 export default params => {
-    return `<nav class="up_navigation">
-<div class="up_navigation__leftBox">
-    <img class="up_navigation__logo" src="../assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
-</div>
-</nav>
+    return `
+    <nav class="up_navigation">
+    <div class="up_navigation__leftBox">
+        <img class="up_navigation__logo" src="../assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
+    </div>
+    <div class="up_navigation__rightBox">
+        <ul class="up_navigation__list" id="userAccountNav">
+           
+        </ul>
+    </div>
+    </nav>
 <section class="up_mainSection">
     <div class="up_mainSection__files-box">
             <header>

@@ -17,7 +17,7 @@ export default params => {
             <input type="file"  class="up_mainSection__upBtn" style="display:none;" id="fileInput"/>
         </li>
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('files')" class="up_mainSection__menu-item-link">My files</a></li>
-        <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('shared')" class="up_mainSection__menu-item-link">Shared</a></li>
+        <li class="up_mainSection__menu-item"><a onclick="router.loadRoute( 'shared')" class="up_mainSection__menu-item-link">Shared</a></li>
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('bin')" class="up_mainSection__menu-item-link">Recycle bin</a></li>
     </ul>
     <div class="up_mainSection__f-space-info">
@@ -27,9 +27,7 @@ export default params => {
 </div>
 <div class="up_mainSection__files-box">
             <header>
-                <h1 class="up_mainSection__header">Files</h1>
-                
-                <button class="up_mainSeciton__newFoderBtn" id="newFolderBtn">+ New folder</button>
+                <h1 class="up_mainSection__header">Shared</h1>
                 <div class="up_mainSection__file-atrubutes">
                     <span class="up_mainSection__file-atrubutes-name">Name</span>
                     <span class="up_mainSection__file-atrubutes-up-date">Upload date</span>
