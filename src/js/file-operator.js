@@ -697,8 +697,33 @@ class FileOperator {
       document.querySelector("#fileList").appendChild(newFolder);
       folderBtn.disabled = false;
   }
-  createSharedFolderTemplate() {
-
+  createSharedFolderTemplate(folder) {
+    const folderElement = document.createElement('li');
+    folderElement.id = `folder_${folder.ID}`;
+    folderElement.classList.add('up_mainSection__file');
+    let foldername = folder.Name.substring(0, Math.min(folder.Name.length,40));
+    if(foldername.length < folder.Name.length)
+      foldername = foldername + "...";
+    folderElement.innerHTML = `<div class="up_mainSection__file-box" >
+                                <span><i class="up_mainSection__file-icon icon-folder-1"></i></span>
+                                <span class="up_mainSection__file-name up_mainSection__file--cell">
+                                  ${foldername}
+                                </span>
+                                <span class="up_mainSection__file-uploadTime up_mainSection__file--cell">
+                                  ${this.convertUploadDate(folder.Created)}
+                                </span>
+                                <span class="up_mainSection__file-filesize up_mainSection__file--cell">
+                                  -
+                                </span>
+                                
+                              </div>`;
+    folderElement.querySelector('#DisableSharingIcBtn').addEventListener('click', (e) => {
+     if(this.disableSharingRequest(folder.ID)) {
+       const fileList = document.querySelector('#fileList');
+       fileList.removeChild(fileList.querySelector(`#folder_${folder.ID}`));
+     }
+    }); 
+    return folderElement;
   }
   createSharedFileTemplate(file) {
     const fileElement = document.createElement('li');
