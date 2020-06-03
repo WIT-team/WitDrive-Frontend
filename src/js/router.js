@@ -138,6 +138,9 @@ export default class Router{
         }
         else {
             switch (currentRoute) {
+                case "":
+                    this.auth.initRegisterForm();
+                    break;
                 case "files":
                     this.loadRoute('');
                     break;

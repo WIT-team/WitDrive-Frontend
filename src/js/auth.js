@@ -293,17 +293,18 @@ export default class Auth {
     }
     changePassword(form) {
         const req_params = {
-            oldPassword : form.elements.namedItem("oldPassword").value,
-            newPassword : form.elements.namedItem("newPassword").value,
-            newPassword_r : form.elements.namedItem("newPassword_r").value,
+            OldPassword : form.elements.namedItem("oldPassword").value,
+            NewPassword : form.elements.namedItem("newPassword").value,
+            NewPassword_r : form.elements.namedItem("newPassword_r").value,
         }
         
         const userPasswordsCErrorMsg = [{
             code : "InvalidPasswords",
             description : "Invalid inputs!"
         }];
-        if(req_params.oldPassword.length > 0 && this.validatePassword(req_params.newPassword, req_params.newPassword_r)) {
+        if(req_params.OldPassword.length > 0 && this.validatePassword(req_params.NewPassword, req_params.NewPassword_r)) {
             try {
+                delete req_params.NewPassword_r;
                 const result = this.sendChangePasswordRequest(req_params);
                 if(result.status == 200) {
                     alert("Password changed");
@@ -332,9 +333,11 @@ export default class Auth {
         }
     }
     sendChangePasswordRequest(req_params) {
+        const userId = this.getUserId();
         const XHR = new XMLHttpRequest();
-        XHR.open( 'POST', this.api + "auth/changePassword",false);
+        XHR.open( 'POST', `${this.api}/account/u/${userId}/edit-password`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.setRequestHeader("Authorization", "Bearer " + this.getUserToken());
         XHR.send(JSON.stringify(req_params));
         return XHR;
     }

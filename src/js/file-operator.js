@@ -212,7 +212,6 @@ class FileOperator {
       else if(XHR.status == 401) {
         this.auth.logout();
       }
-      console.log(this.files);
     } catch (error) {
       return false;
     } 
