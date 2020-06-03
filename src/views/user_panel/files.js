@@ -12,9 +12,9 @@ export default params => {
 <section class="up_mainSection">
 <div class="up_mainSection__menu">
     <ul class="up_mainSection__menu-list">
-        <li class="up_mainSection__menu-item">
-            <button class="up_mainSection__upBtn">Upload</button>
-            <input type="file"  class="up_mainSection__upBtn" style="display:none;" id="fileInput"/>
+        <li  class="up_mainSection__menu-item">
+            <button id="upl" class="up_mainSection__upBtn">Upload</button>
+            <input style="display:none;" id="inp" type="file" multiple></input>
         </li>
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('files')" class="up_mainSection__menu-item-link">My files</a></li>
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('shared')" class="up_mainSection__menu-item-link">Shared</a></li>

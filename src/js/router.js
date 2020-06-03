@@ -107,14 +107,14 @@ export default class Router{
             const currentRoute = this.getCurrentRoute();
             if(currentRoute == "login")
                 accountNav.innerHTML = `
-                <li class="navigation__item"><a href="#" onclick="router.loadRoute('register')" class="navigation__link navigation__link--bolded">Sign up</a></li>`;
+                <li class="navigation__item"><a onclick="router.loadRoute('register')" class="navigation__link navigation__link--bolded">Sign up</a></li>`;
             else if(currentRoute == "register")
                 accountNav.innerHTML = `
-                <li class="navigation__item"><a href="#" onclick="router.loadRoute('login')" class="navigation__link">Sign in</a></li>`;
+                <li class="navigation__item"><a onclick="router.loadRoute('login')" class="navigation__link">Sign in</a></li>`;
             else
                 accountNav.innerHTML = `
-                <li class="navigation__item"><a href="#" onclick="router.loadRoute('login')" class="navigation__link">Sign in</a></li>
-                <li class="navigation__item"><a href="#" onclick="router.loadRoute('register')"  class="navigation__link navigation__link--bolded">Sign up</a></li>`;
+                <li class="navigation__item"><a onclick="router.loadRoute('login')" class="navigation__link">Sign in</a></li>
+                <li class="navigation__item"><a onclick="router.loadRoute('register')"  class="navigation__link navigation__link--bolded">Sign up</a></li>`;
         }
     }
     getCurrentRoute() {

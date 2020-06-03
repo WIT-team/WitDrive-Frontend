@@ -92,6 +92,22 @@ class FileOperator {
       });
       this.contextMenu = new ContextMenu(this);
       this.contextMenu.setup();
+      
+      const UploadBtn = document.querySelector("#upl");
+      const InputBtn = document.querySelector("#inp");
+      if(UploadBtn != null)
+        UploadBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          console.log(this.files);
+          InputBtn.click();
+      });
+      if(InputBtn != null)
+      InputBtn.addEventListener('change', (e) => {
+          e.preventDefault();
+          const fileList = InputBtn.files;
+          
+          this.uploadFilesToServer(fileList);
+      });
     }
     else if(currentRoute == "shared") {
       this.getSharedFilesFromServer();
@@ -102,6 +118,62 @@ class FileOperator {
     }
     
   }
+   // DownLoad files 
+  downloadFilesFromServer(fileId) {
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'GET', this.api + `u/${userId}/files/download/${fileId}`,false);
+      XHR.setRequestHeader('Content-Type', 'multipart/form-data');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      console.log(userId);
+      console.log(fileId);
+      console.log(this.api + `u/${userId}/files/download/${fileId}`);
+      if(XHR.status == 400)
+      {
+        //this.auth.logout();
+      }
+        else
+        {
+          console.log(JSON.parse(XHR.response));
+        }
+    } catch (error) {
+      return false;
+    }
+  }
+    // Upload files
+  uploadFilesToServer(fileList) {
+      const userId = this.auth.getUserId();
+      var dirID = this.files.ID;
+
+      for (var i = 0; i < fileList.length; i++)
+      {
+        try {
+          var formData = new FormData();
+          formData.append("file", fileList[i]);
+          const XHR = new XMLHttpRequest();
+          XHR.open( 'POST', this.api + `u/${userId}/files/upload?directoryId=`+dirID,false);
+          //XHR.setRequestHeader('Content-Type', 'multipart/form-data');
+          XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+          XHR.send(formData);
+          if(XHR.status == 200)
+          {
+            if(i==fileList.length-1)
+            {
+              const fList = document.querySelector("#fileList");
+              fList.innerHTML = "";
+              this.loadFiles();
+            }
+          }
+          else if(XHR.status == 400) {
+            this.auth.logout();
+          }
+        } catch (error) {
+        return false;
+        }
+      }
+    }
   getSharedFilesFromServer() {
     const userId = this.auth.getUserId();
     try {
