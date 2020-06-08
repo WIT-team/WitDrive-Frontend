@@ -124,11 +124,10 @@ export default class Router{
         return route;
     }
     validateRedirection() {
-        
         const currentRoute = this.getCurrentRoute();
         if(this.auth.isUserLoged()) {
             if(currentRoute == "login" || currentRoute == "register" || currentRoute == "PasswordReset") {
-                this.loadRoute('files', 'myfiles');
+                this.loadRoute('files');
                 this.fileoperator.setup();
             }
             if(currentRoute == "userSettings")

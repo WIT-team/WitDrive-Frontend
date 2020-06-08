@@ -125,7 +125,7 @@ export default class Auth {
                 else {
                     const errors = JSON.parse(result.response);
                     this.displayErrorModal(errors);
-                    registerForm.reset();
+                    form.reset();
                 }   
             }
             else {

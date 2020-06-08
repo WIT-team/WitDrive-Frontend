@@ -775,3 +775,8 @@
     background-color: var(--main-darker-red-color);
     transition: 0.3s;
 }
+
+.up_mainSection--sharedFile {
+    width: 90vw;
+    margin: 0px auto;
+}

@@ -5,12 +5,10 @@ export default params => {
         <img class="up_navigation__logo" src="../assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
     </div>
     <div class="up_navigation__rightBox">
-        <ul class="up_navigation__list" id="userAccountNav">
-           
-        </ul>
+        <ul class="up_navigation__list" id="userAccountNav"></ul>
     </div>
     </nav>
-<section class="up_mainSection">
+<section class="up_mainSection up_mainSection--sharedFile">
     <div class="up_mainSection__files-box">
             <header>
                 <h1 class="up_mainSection__header">Files</h1>
