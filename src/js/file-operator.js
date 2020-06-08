@@ -20,7 +20,24 @@ class ContextMenu {
               constextMenu = this.createCM_DOMel(e.clientX, e.clientY,fileId);
               document.body.appendChild(constextMenu);
           }
+          if(e.target.id == "files-box") {
+            e.preventDefault();
+            const cntxt = document.createElement('div');
+            cntxt.classList.add('up_file__contextmenu');
+            cntxt.innerHTML = `
+                <button class="up_file__contextmenu-item" id="PasteBtn">
+                  <span class="up_file__contextmenu-btn-text">Paste</span>
+                </button>
+            `;
+            cntxt.style.top = e.clientY + "px";
+            cntxt.style.left = e.clientX + "px";
+            document.body.appendChild(cntxt);
+            cntxt.querySelector("#PasteBtn").addEventListener('click', (e) => {
+              console.log("Pasted!");
+            });
+          }
       });
+      
       document.addEventListener('click', (e) => {
           let constextMenu = document.querySelector('.up_file__contextmenu');
           if(constextMenu !== null) {
@@ -40,6 +57,10 @@ class ContextMenu {
           <button class="up_file__contextmenu-item" id="file__cm-renameBtn">
               <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
               <span class="up_file__contextmenu-btn-text">Rename</span>
+          </button>
+          <button class="up_file__contextmenu-item" id="file__cm-CopyBtn">
+            <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+            <span class="up_file__contextmenu-btn-text">Copy</span>
           </button>
           <button class="up_file__contextmenu-item" id="file__cm-deleteBtn">
               <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
@@ -96,50 +117,94 @@ class FileOperator {
       });
       this.contextMenu = new ContextMenu(this);
       this.contextMenu.setup();
-      
-      const UploadBtn = document.querySelector("#upl");
-      const InputBtn = document.querySelector("#inp");
-      if(UploadBtn != null)
-        UploadBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          console.log(this.files);
-          InputBtn.click();
-      });
-      if(InputBtn != null)
-      InputBtn.addEventListener('change', (e) => {
-          e.preventDefault();
-          const fileList = InputBtn.files;
-          
-          this.uploadFilesToServer(fileList);
-      });
+      this.bindDownloadAndUpload();
+     
     }
     else if(currentRoute == "shared") {
       this.getSharedFilesFromServer();
       this.loadSharedToView();
+      this.contextMenu = new ContextMenu(this);
+      this.contextMenu.setup();
     }
     else if(currentRoute == "bin") {
 
     }
+    else if(currentRoute == "sharedfile") {
+      const shareId = this.router.getParameters()[0];
+      this.getShById(shareId);
+     
+    }
     
   }
+  setRouter(router) {
+    this.router = router;
+  }
+  getShById(shareId) {
+    const result = this.getShRequest(shareId);
+    if(result.status == 200) {
+      const file = JSON.parse(result.response);
+      const fileElement = this.createShFileTmpWithDwnl(file, shareId);
+      const fileList = document.querySelector("#fileList");
+      fileList.innerHTML = null;
+      fileList.appendChild(fileElement);
+    }
+  }
+  getShRequest(shareId) {
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'GET', this.api + `/shared/file-info/${shareId}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.send();
+      if(XHR.status == 200) {
+        return XHR;
+      }
+      else if(XHR.status == 400) {
+        this.auth.router.loadRoute('404');
+        return XHR;
+      }
+      else {
+        this.router.loadRoute('404');
+      }
+    } catch (error) {
+      this.router.loadRoute('404');
+      return {status : 500};
+    } 
+  }
+  bindDownloadAndUpload() {
+    const UploadBtn = document.querySelector("#upl");
+    const InputBtn = document.querySelector("#inp");
+    if(UploadBtn != null)
+      UploadBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log(this.files);
+        InputBtn.click();
+    });
+    if(InputBtn != null)
+    InputBtn.addEventListener('change', (e) => {
+        e.preventDefault();
+        const fileList = InputBtn.files;
+        
+        this.uploadFilesToServer(fileList);
+    });
+  }
    // DownLoad files 
-   downloadFilesFromServer(fileId) {
+  downloadFilesFromServer(fileId) {
     const userId = this.auth.getUserId();
-
+    const fileData = this.getFileData(fileId);
     let anchor = document.createElement("a");
-document.body.appendChild(anchor);
-let downloadingFile = this.api + `u/${userId}/files/download/${fileId}`;
+    document.body.appendChild(anchor);
+    let downloadingFile = this.api + `u/${userId}/files/download/${fileId}`;
 
-let headers = new Headers();
-headers.append('Authorization', "Bearer " + this.auth.getUserToken());
+    let headers = new Headers();
+    headers.append('Authorization', "Bearer " + this.auth.getUserToken());
 
-fetch(downloadingFile, { headers })
-    .then(response => response.blob())
-    .then(blobby => {
+    fetch(downloadingFile, { headers })
+      .then(response => response.blob())
+      .then(blobby => {
         let objectUrl = window.URL.createObjectURL(blobby);
 
         anchor.href = objectUrl;
-        anchor.download = 'downloaded_file';
+        anchor.download = fileData.Name;
         anchor.click();
 
         window.URL.revokeObjectURL(objectUrl);
@@ -190,7 +255,6 @@ fetch(downloadingFile, { headers })
       else if(XHR.status == 401) {
         this.auth.logout();
       }
-      console.log(this.files);
     } catch (error) {
       return false;
     } 
@@ -221,6 +285,14 @@ fetch(downloadingFile, { headers })
   }
   getFileData(id) {
     let directory = this.files;
+    if(Array.isArray(directory)) {
+       for (let index = 0; index < directory.length; index++) {
+        const el = directory[index];
+        if(el.ID === id)
+          return el;
+      }
+    }
+    else {
       for (let index = 0; index < directory.files.length; index++) {
         const el = directory.files[index];
         if(el.ID === id)
@@ -231,7 +303,8 @@ fetch(downloadingFile, { headers })
         if(el._id === id)
           return el;
       }
-      return null;
+    }
+    return null;
   }
   bindParentFolderBtn(parentFolderBtn) {
     parentFolderBtn.addEventListener('dblclick', (e) => {
@@ -634,7 +707,8 @@ fetch(downloadingFile, { headers })
     });
     renameModal.querySelector("#modalRenameBtn").addEventListener('click', (e) => {
       e.preventDefault();
-      const newName = renameModal.querySelector('#newName').value;
+      let newName = renameModal.querySelector('#newName').value;
+      newName = newName.replace('/','\\');
       const result = this.renameFileRequest(file.ID, newName);
       
       if(result == true) {
@@ -789,14 +863,7 @@ fetch(downloadingFile, { headers })
                                 <span class="up_mainSection__file-filesize up_mainSection__file--cell">
                                   -
                                 </span>
-                                <span><i class="up_mainSection__file-icon icon-cancel" id="DisableSharingIcBtn"></i></span>
                               </div>`;
-    folderElement.querySelector('#DisableSharingIcBtn').addEventListener('click', (e) => {
-     if(this.disableSharingRequest(folder.ID)) {
-       const fileList = document.querySelector('#fileList');
-       fileList.removeChild(fileList.querySelector(`#folder_${folder.ID}`));
-     }
-    }); 
     return folderElement;
   }
   createSharedFileTemplate(file) {
@@ -818,14 +885,36 @@ fetch(downloadingFile, { headers })
                                 <span class="up_mainSection__file-filesize up_mainSection__file--cell">
                                   ${this.convertFileSize(file.Size)}
                                 </span>
-                                <span><i class="up_mainSection__file-icon icon-cancel" id="DisableSharingIcBtn"></i></span>
+                              </div>`;               
+    return fileElement;
+  }
+  createShFileTmpWithDwnl(file, shareId) {
+    const fileElement = document.createElement('li');
+    fileElement.id = `file_${file.ID}`;
+    fileElement.classList.add('up_mainSection__file');
+    let filename = file.Name.substring(0, Math.min(file.Name.length,40));
+    if(filename.length < file.Name.length)
+      filename = filename + "...";
+    fileElement.innerHTML = `<div class="up_mainSection__file-box" >
+                                
+                                <span><i class="up_mainSection__file-icon icon-doc-inv"></i></span>
+                                <span class="up_mainSection__file-name up_mainSection__file--cell">
+                                  ${filename}
+                                </span>
+                                <span class="up_mainSection__file-uploadTime up_mainSection__file--cell">
+                                  ${this.convertUploadDate(file.Created)}
+                                </span>
+                                <span class="up_mainSection__file-filesize up_mainSection__file--cell">
+                                  ${this.convertFileSize(file.Size)}
+                                </span>
+                                <span id="sharedDownloadBtn"><i class="icon-download"></i></span>
                               </div>`;
-    fileElement.querySelector('#DisableSharingIcBtn').addEventListener('click', (e) => {
-      if(this.disableSharingRequest(file.ID)) {
-        const fileList = document.querySelector('#fileList');
-        fileList.removeChild(fileList.querySelector(`#file_${file.ID}`));
-      }
-    });                    
+    fileElement.querySelector("#sharedDownloadBtn").addEventListener('click', (e) => {
+      const a = document.createElement('a');
+      a.href = `${this.api}/shared/${shareId}`;
+      a.download = file.Name;
+      a.click();
+    });               
     return fileElement;
   }
 }

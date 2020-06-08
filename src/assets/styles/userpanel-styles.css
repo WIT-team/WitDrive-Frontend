@@ -142,6 +142,7 @@
 /* files boxes*/
 .up_mainSection__files-box {
     width: calc(95vw - 250px);
+    min-height: 80vh;
 }
 .up_mainSection__file-list {
     list-style-type: none;

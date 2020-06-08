@@ -12,7 +12,7 @@ import sharedfile from '../views/user_panel/sharedFile.js'
 const routes = [
     {
         path: '/404',
-        getTemplate: (params) => _404View,
+        getTemplate: _404View,
     },
     {
         path: '/',

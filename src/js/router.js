@@ -5,7 +5,8 @@ export default class Router{
         this.routes = routes;
         this.auth = auth;
         this.fileoperator = fileoperator;
-
+        this.fileoperator.setRouter(this);
+        this.auth.setRouter(this);
         window.router = this;
         window.addEventListener('popstate', function(){
             window.router.undoRoute(window.location.pathname.split('/')[1]);
@@ -123,6 +124,13 @@ export default class Router{
         route = route[3];
         return route;
     }
+    getParameters() {
+        let route = window.location.href;
+        route = route.split("/");
+        if(route.length > 3)
+            return route.slice(4);
+        return [];
+    }
     validateRedirection() {
         const currentRoute = this.getCurrentRoute();
         if(this.auth.isUserLoged()) {
@@ -132,7 +140,7 @@ export default class Router{
             }
             if(currentRoute == "userSettings")
                 this.auth.initpasswordChangeForm();
-            if(currentRoute == "files" || currentRoute == "shared" || currentRoute == "bin")
+            if(currentRoute == "files" || currentRoute == "shared" || currentRoute == "bin" || currentRoute == "sharedfile")
                 this.fileoperator.setup(currentRoute);
         }
         else {
@@ -161,6 +169,9 @@ export default class Router{
                 case "newPasswordForm":
                     this.auth.initNewPassForm();
                     break;
+                case "sharedfile":
+                    console.log(currentRoute);
+                    this.fileoperator.setup("sharedfile");
                 default:
                     break;
             }

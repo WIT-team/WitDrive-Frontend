@@ -36,9 +36,10 @@ export default class Auth {
                                 && this.validateEmail(reg_params.email);
         if(validationResult == true) {
             const result = this.sendRegisterRequest(reg_params);
-            if(result.status == 201)
+            if(result.status == 201) {
+                this.router.loadRoute('login');
                 alert("Congrats, registered!");
-                //There will be called redirection to login page instead of alert
+            }  
             else {
                 const errors = JSON.parse(result.response);
                 this.displayErrorModal(errors);
