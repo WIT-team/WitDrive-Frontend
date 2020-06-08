@@ -65,6 +65,10 @@ class ContextMenu {
         e.preventDefault();
         this.fileOp.rename(fileid);
       });
+      downloadBtn.addEventListener('click',(e) => {
+        e.preventDefault();
+        this.fileOp.downloadFilesFromServer(fileid);	
+    });
       contextmenu.style.top = posY + "px";
       contextmenu.style.left = posX + "px";
       return contextmenu;
@@ -119,28 +123,27 @@ class FileOperator {
     
   }
    // DownLoad files 
-  downloadFilesFromServer(fileId) {
+   downloadFilesFromServer(fileId) {
     const userId = this.auth.getUserId();
-    try {
-      const XHR = new XMLHttpRequest();
-      XHR.open( 'GET', this.api + `u/${userId}/files/download/${fileId}`,false);
-      XHR.setRequestHeader('Content-Type', 'multipart/form-data');
-      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
-      XHR.send();
-      console.log(userId);
-      console.log(fileId);
-      console.log(this.api + `u/${userId}/files/download/${fileId}`);
-      if(XHR.status == 400)
-      {
-        //this.auth.logout();
-      }
-        else
-        {
-          console.log(JSON.parse(XHR.response));
-        }
-    } catch (error) {
-      return false;
-    }
+
+    let anchor = document.createElement("a");
+document.body.appendChild(anchor);
+let downloadingFile = this.api + `u/${userId}/files/download/${fileId}`;
+
+let headers = new Headers();
+headers.append('Authorization', "Bearer " + this.auth.getUserToken());
+
+fetch(downloadingFile, { headers })
+    .then(response => response.blob())
+    .then(blobby => {
+        let objectUrl = window.URL.createObjectURL(blobby);
+
+        anchor.href = objectUrl;
+        anchor.download = 'downloaded_file';
+        anchor.click();
+
+        window.URL.revokeObjectURL(objectUrl);
+    });
   }
     // Upload files
   uploadFilesToServer(fileList) {
