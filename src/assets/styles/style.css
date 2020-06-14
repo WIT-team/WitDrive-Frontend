@@ -671,6 +671,7 @@
 
 
 .mainSection__resetPassword-link {
+    cursor: pointer;
     text-decoration: none;
     font-size: 0.8rem;
     display: block;
@@ -740,4 +741,20 @@
 .mainSection__h {
     margin-left: 20px;
     margin-bottom: 20px;
+}
+
+.mainPasswordResetSection__nextS {
+    color: #7371d5;
+    font-family: var(--main-font);
+    cursor: pointer;
+    float: right;
+}
+
+.mainPasswordResetSection__nextS:hover {
+    color: var(--main-gray-color);
+    transition: 0.3s;
+}
+
+.navigation__logo {
+    cursor: pointer;
 }

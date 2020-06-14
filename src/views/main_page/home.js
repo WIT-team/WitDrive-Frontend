@@ -1,7 +1,7 @@
 export default 
 `<nav class="navigation">
         <div class="navigation__leftBox">
-            <img class="navigation__logo" src="assets/imgs/logo_2.svg"></img>
+            <img class="navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('files')"></img>
             <ul class="navigation__list">
                 <li class="navigation__item"><a class="navigation__link" onclick="router.loadRoute('faq')">FAQ</a></li>
             </ul>
@@ -42,8 +42,8 @@ all their memories on our servers.
     </section>
     <div class="alertBar">
         <p class="alertBar__p">Our website uses cookies. Make sure you accept that.</p>
-        <a href="" class="alertBar__btn">Accept</a>
-        <a href="javascript:history.back()" class="alertBar__btn">Deny</a>
+        <!--<a class="alertBar__btn" id="">Accept</a>-->
+        <a href="https://www.google.com/" class="alertBar__btn">Deny</a>
     </div>
     <section class="stepsSection">
         <h2 class="stepsSection__header1">
@@ -133,7 +133,7 @@ all their memories on our servers.
             </ul>
             <ul class="footer__list">
                 <h5 class="footer__list-header">Social</h5>
-                <li class="footer__list-item"><a class="footer__list-link" href="#">Github</a></li>
+                <li class="footer__list-item"><a class="footer__list-link" href="https://github.com/WIT-team">Github</a></li>
                 <li class="footer__list-item"><a class="footer__list-link" href="mailto:wit-team@gmail.com">E-mail</a></li>
             </ul>
             <ul class="footer__list">

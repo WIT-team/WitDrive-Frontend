@@ -1,7 +1,7 @@
 export default `
 <nav class="up_navigation">
 <div class="up_navigation__leftBox">
-    <img class="up_navigation__logo" src="assets/imgs/logo_2.svg"></img>
+    <img class="up_navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('files')"></img>
 </div>
 <div class="up_navigation__rightBox">
     <ul class="up_navigation__list" id="userAccountNav"></ul>
@@ -13,8 +13,8 @@ export default `
         <h2 class="up_mainSection__h">Settings</h2>
     </header>
     <ul class="up_mainSection__menu-list">
-        <li class="up_mainSection__menu-item"><a href="#" class="up_mainSection__menu-item-link">Password</a></li>
-        <li class="up_mainSection__menu-item"><a href="#" class="up_mainSection__menu-item-link">Delete account</a></li>
+        <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('passwordChange')" class="up_mainSection__menu-item-link">Password</a></li>
+        <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('deleteAccount')" class="up_mainSection__menu-item-link">Delete account</a></li>
     </ul>
 </div>
 <div class="up_mainSection__settings-box">

@@ -1,7 +1,7 @@
 export default params => {
     return `<nav class="up_navigation">
 <div class="up_navigation__leftBox">
-    <img class="up_navigation__logo" src="../assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
+    <img class="up_navigation__logo" src="../assets/imgs/logo_2.svg" onclick="router.loadRoute('files')"></img>
 </div>
 <div class="up_navigation__rightBox">
     <ul class="up_navigation__list" id="userAccountNav">
@@ -18,7 +18,6 @@ export default params => {
         </li>
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('files')" class="up_mainSection__menu-item-link">My files</a></li>
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('shared')" class="up_mainSection__menu-item-link">Shared</a></li>
-        <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('bin')" class="up_mainSection__menu-item-link">Recycle bin</a></li>
     </ul>
     <div class="up_mainSection__f-space-info">
         <h2 class="up_mainSection__f-space-h">Free space</h2>

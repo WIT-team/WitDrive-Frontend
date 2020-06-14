@@ -1,7 +1,7 @@
 export default
 `<nav class="navigation">
     <div class="navigation__leftBox">
-        <img class="navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
+        <img class="navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('files')"></img>
         <ul class="navigation__list">
         <li class="navigation__item"><a class="navigation__link" onclick="router.loadRoute('')">Home page</a></li>
         </ul>
@@ -62,20 +62,19 @@ export default
 </section>
 <div class="alertBar">
     <p class="alertBar__p">If you need more details, contact with us:</p>
-    <a href="" onclick="router.loadRoute('help') class="alertBar__btn">click for help</a>
+    <a onclick="router.loadRoute('help') class="alertBar__btn">click for help</a>
 </div>
 <footer class="footer">
 <div class="footer__top">
     <ul class="footer__list">
         <h5 class="footer__list-header">Links</h5>
-        <li class="footer__list-item"><a class="footer__list-link" href="#">Sign in</a></li>
-        <li class="footer__list-item"><a class="footer__list-link" href="#">About</a></li>
-        <li class="footer__list-item"><a class="footer__list-link" href="#">FAQ</a></li>
+        <li class="footer__list-item"><a class="footer__list-link" onclick="router.loadRoute('login')">Sign in</a></li>
+        <li class="footer__list-item"><a class="footer__list-link" onclick="router.loadRoute('faq')">FAQ</a></li>
     </ul>
     <ul class="footer__list">
         <h5 class="footer__list-header">Social</h5>
-        <li class="footer__list-item"><a class="footer__list-link" href="#">Github</a></li>
-        <li class="footer__list-item"><a class="footer__list-link" href="#">E-mail</a></li>
+        <li class="footer__list-item"><a class="footer__list-link" href="https://github.com/WIT-team">Github</a></li>
+        <li class="footer__list-item"><a class="footer__list-link" href="mailto:wit-team@gmail.com">E-mail</a></li>
     </ul>
     <ul class="footer__list">
         <h5 class="footer__list-header">Contact</h5>

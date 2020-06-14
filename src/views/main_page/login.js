@@ -1,7 +1,7 @@
 export default 
 `<nav class="navigation">
         <div class="navigation__leftBox">
-            <img class="navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('')"></img>
+            <img class="navigation__logo" src="assets/imgs/logo_2.svg" onclick="router.loadRoute('files')"></img>
             <ul class="navigation__list">
                 <li class="navigation__item"><a class="navigation__link" onclick="router.loadRoute('')">Home page</a></li>
                 <li class="navigation__item"><a class="navigation__link" onclick="router.loadRoute('faq')">FAQ</a></li>
@@ -21,11 +21,7 @@ export default
                 <input type="text" name="username" id="usernameInput" class="mainSection__form--input" placeholder="James-Smith">
                 <label for="password" class="mainSection__form--label">Password:</label>
                 <input type="password" name="password" id="passwordInput" class="mainSection__form--input" placeholder="Password">
-                <!--
-                <input type="checkbox" name="remember" value="true" class="mainSection__checkbox">
-                <label for="remember" class="mainSection__checkbox-label">Remember my password</label>
-                -->
-                <a onclick="router.loadRoute('PasswordReset')" class="mainSection__resetPassword-link">Reset my password</a>
+                <a onclick="router.loadRoute('forgot-password')" class="mainSection__resetPassword-link">Reset my password</a>
                 <button type="submit" class="mainSection__SubmitBtn mainSection__SubmitBtn--login" id="SubmitBtn">Sign in</button>
                 <p class="mainSection__create-new-accountBtn">
                     or <a class="mainSection__new-account-link" onclick="router.loadRoute('register')">create new account</a>
@@ -44,7 +40,7 @@ export default
             </ul>
             <ul class="footer__list">
                 <h5 class="footer__list-header">Social</h5>
-                <li class="footer__list-item"><a class="footer__list-link" href="#">Github</a></li>
+                <li class="footer__list-item"><a class="footer__list-link" href="https://github.com/WIT-team">Github</a></li>
                 <li class="footer__list-item"><a class="footer__list-link" href="mailto:wit-drive@gmail.com">E-mail</a></li>
             </ul>
             <ul class="footer__list">

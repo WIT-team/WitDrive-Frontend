@@ -87,21 +87,12 @@ export default class Router{
             const username = this.auth.getUserName();
             accountNav.innerHTML = `
             <li class="navigation__item navigation--email">${username}</li>
-            <li class="navigation__item navigation__link" id="filesBtn"><i class="icon-database"></i></li>
-            <li class="navigation__item navigation__link" id="settingsBtn"><i class="icon-cog"></i></li>
+            <li class="navigation__item navigation__link" onclick="router.loadRoute('passwordChange')"><i class="icon-cog"></i></li>
             <li class="navigation__item navigation__link navigation__link--bolded" id="logoutBtn">Log out</li>
             `;
             accountNav.querySelector("#logoutBtn").addEventListener('click', e => {
                 e.preventDefault();
                 this.auth.logout();
-            });
-            accountNav.querySelector("#filesBtn").addEventListener('click', e => {
-                e.preventDefault();
-                this.loadRoute('files');
-            });
-            accountNav.querySelector("#settingsBtn").addEventListener('click', e => {
-                e.preventDefault();
-                this.loadRoute('userSettings');
             });
         }
         else {
@@ -134,12 +125,14 @@ export default class Router{
     validateRedirection() {
         const currentRoute = this.getCurrentRoute();
         if(this.auth.isUserLoged()) {
-            if(currentRoute == "login" || currentRoute == "register" || currentRoute == "PasswordReset") {
+            if(currentRoute == "login" || currentRoute == "register" || currentRoute == "reset-password" || currentRoute == "forgot-password") {
                 this.loadRoute('files');
                 this.fileoperator.setup();
             }
-            if(currentRoute == "userSettings")
+            if(currentRoute == "passwordChange")
                 this.auth.initpasswordChangeForm();
+            if(currentRoute == "deleteAccount")
+                this.auth.initdeleteAccountForm();
             if(currentRoute == "files" || currentRoute == "shared" || currentRoute == "bin" || currentRoute == "sharedfile")
                 this.fileoperator.setup(currentRoute);
         }
@@ -151,7 +144,10 @@ export default class Router{
                 case "files":
                     this.loadRoute('');
                     break;
-                case "userSettings":
+                case "passwordChange":
+                    this.loadRoute('');
+                    break;
+                case "deleteAccount":
                     this.loadRoute('');
                     break;
                 case "login":
@@ -160,8 +156,11 @@ export default class Router{
                 case "register":
                     this.auth.initRegisterForm();
                     break;
-                case "PasswordReset":
-                    this.auth.initPassResetForm();
+                case "forgot-password":
+                    this.auth.initforgotPassForm();
+                    break;
+                case "reset-password":
+                    this.auth.initResetPassForm();
                     break;
                 case "index":
                     this.auth.initRegisterForm();

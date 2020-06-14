@@ -1,3 +1,14 @@
+function loadingON()
+{
+  
+  const El = document.querySelector('#loading');
+  El.style="background-color: rgba(233, 233, 233, 0.7);position: fixed;width: 100%;height: 100%;z-index: 100;display: block;";
+}
+function loadingOFF()
+{
+  const El = document.querySelector('#loading');
+  El.style="background-color: rgba(233, 233, 233, 0.7);position: fixed;width: 100%;height: 100%;z-index: 100;display: none;";
+}
 export default class Auth {
     constructor(api) {
         this.api = api;
@@ -103,14 +114,14 @@ export default class Auth {
             this.register(registerForm);
         });
     }
-    initPassResetForm() {
-        const pResetForm = document.querySelector("#passwordResetForm");
+    initforgotPassForm() {
+        const pResetForm = document.querySelector("#forgotPasswordForm");
         pResetForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            this.resetPassword(pResetForm);
+            this.forgotPassword(pResetForm);
         });
     }
-    resetPassword(form) {
+    forgotPassword(form) {
         const email = form.elements.namedItem("email").value;
         try {
             if(email.length > 0) {
@@ -119,8 +130,16 @@ export default class Auth {
                     const mainSection = document.querySelector("#mainPasswordResetSection");
                     const successH = document.createElement("h2");
                     successH.classList.add("mainPasswordResetSection__successH");
-                    successH.textContent = "To reset password check your email and follow next steps."
+                    successH.textContent = "To reset password check your email and follow next steps.";
                     mainSection.appendChild(successH);
+                    const nextSBtn = document.createElement("a");
+                    nextSBtn.addEventListener('click', _ => {
+                        this.router.loadRoute('reset-password');
+                    });
+                    nextSBtn.classList.add("mainPasswordResetSection__nextS");
+                    nextSBtn.textContent = 'Next step';
+                    
+                    mainSection.appendChild(nextSBtn);
                     mainSection.removeChild(form);
                 }
                 else {
@@ -144,7 +163,7 @@ export default class Auth {
             }]);
         }
     }
-    initNewPassForm() {
+    initResetPassForm() {
         const newPasswordForm = document.querySelector("#newPasswordForm");
         newPasswordForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -153,16 +172,19 @@ export default class Auth {
     }
     newPassword(form) {
         const req_params = {
-            newPassword : form.elements.namedItem("newPassword").value,
-            newPassword_r : form.elements.namedItem("newPassword_r").value,
+            Email : form.elements.namedItem("email").value,
+            Code : form.elements.namedItem("code").value,
+            Password : form.elements.namedItem("newPassword").value,
+            ConfirmPassword : form.elements.namedItem("newPassword_r").value,
         }
         
         const newPasswordErrorMsg = [{
             code : "InvalidPasswords",
             description : "Invalid inputs!"
         }];
-        if(this.validatePassword(req_params.newPassword, req_params.newPassword_r)) {
+        if(this.validatePassword(req_params.Password, req_params.ConfirmPassword)) {
             try {
+                console.log(req_params);
                 const result = this.sendNewPasswordRequest(req_params);
                 if(result.status == 200) {
                     const mainSection = document.querySelector("#newPasswordSection");
@@ -171,8 +193,9 @@ export default class Auth {
                     successH.textContent = "Your password has been succesfuly changed!"
                     mainSection.appendChild(successH);
                     mainSection.removeChild(form);
+                    
                 }
-                else if(result.status == 401) {
+                else if(result.status == 400) {
                     this.displayErrorModal(newPasswordErrorMsg);
                 }
                 else {
@@ -194,26 +217,33 @@ export default class Auth {
         }
     }
     sendNewPasswordRequest(req_params) {
+        console.log(req_params);
         const XHR = new XMLHttpRequest();
-        XHR.open( 'POST', this.api + "auth/newPassword",false);
+        XHR.open( 'POST',`${this.api}recovery/reset-password`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
         XHR.send(JSON.stringify(req_params));
         return XHR; 
     }
     sendPResetRequest(email) {
-        const reg_params = {email:email};
         const XHR = new XMLHttpRequest();
-        XHR.open( 'POST', this.api + "auth/resetPassword",false);
+        XHR.open( 'POST',`${this.api}recovery/forgot-password`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
-        XHR.send(JSON.stringify(reg_params));
+        XHR.send(JSON.stringify({Email:email}));
+        console.log(JSON.stringify({Email:email}));
+        console.log(`${this.api}recovery/forgot-password`);
         return XHR;
     }
     initLoginForm() {
         const loginForm = document.querySelector("#loginForm");
         if(loginForm != null) {
             loginForm.addEventListener('submit', (e) => {
+
                 e.preventDefault();
+                loadingON();
+                setTimeout(() => { 
                 this.login(loginForm);
+                loadingOFF();
+            }, 100);
             });
         }
     }
@@ -230,7 +260,6 @@ export default class Auth {
             const result = this.sendLoginRequest(req_params);
             if(result.status == 200) {
                 this.saveToLocalStorage(result.response);
-                //There will be called redirection by router
                 this.router.loadRoute("files");
             }
             else if(result.status == 401) {
@@ -272,6 +301,7 @@ export default class Auth {
     }
     logout() {
         localStorage.removeItem("UserAuthData");
+        localStorage.removeItem("rootId");
         this.router.loadRoute('');
     }
     isUserLoged() {
@@ -284,7 +314,11 @@ export default class Auth {
             const submitBtn = passwordChangeForm.querySelector("#mainSection__form-Sbtn");
             submitBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                loadingON();
+                setTimeout(() => { 
                 this.changePassword(passwordChangeForm);
+                loadingOFF();
+            }, 100);
             });
             passwordChangeForm.querySelector("#mainSection__form-cancel-btn").addEventListener('click', (e) => {
                 e.preventDefault();
@@ -336,7 +370,7 @@ export default class Auth {
     sendChangePasswordRequest(req_params) {
         const userId = this.getUserId();
         const XHR = new XMLHttpRequest();
-        XHR.open( 'POST', `${this.api}/account/u/${userId}/edit-password`,false);
+        XHR.open( 'POST', `${this.api}u/${userId}/account/edit-password`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
         XHR.setRequestHeader("Authorization", "Bearer " + this.getUserToken());
         XHR.send(JSON.stringify(req_params));
@@ -347,4 +381,45 @@ export default class Auth {
         route = route.split("/");
         return `${route[0]}//${route[2]}`;
     } 
+    // Account delete
+    initdeleteAccountForm() {
+        const deleteAccountForm = document.querySelector("#deleteAccountForm");
+        deleteAccountForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.deleteAccount(deleteAccountForm);
+        });
+        deleteAccountForm.querySelector("#mainSection__form-cancel-btn").addEventListener('click', (e) => {
+            e.preventDefault();
+            router.loadRoute('files');
+        });
+    }
+    deleteAccount(form) {
+        const password = form.elements.namedItem("Password").value;
+        if(password.length > 0) {
+            const result = this.deleteAccountRequest(password);
+                if(result.status == 200) {
+                    alert("Account deleted.");
+                    this.logout();
+                }
+                else if(result.status == 401) {
+                    this.logout();
+                }
+                else {
+                    this.displayErrorModal([{
+                        code : "UknownError",
+                        description : "Uknown error. Please try again later."
+                    }]);
+                }   
+                form.reset();
+        }
+    }
+    deleteAccountRequest(password) {
+        const userId = this.getUserId();
+        const XHR = new XMLHttpRequest();
+        XHR.open( 'DELETE', `${this.api}u/${userId}/account`,false);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.setRequestHeader("Authorization", "Bearer " + this.getUserToken());
+        XHR.send(JSON.stringify({Password : password}));
+        return XHR;
+    }
 }

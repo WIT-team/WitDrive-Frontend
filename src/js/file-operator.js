@@ -13,14 +13,19 @@ class ContextMenu {
           if(['up_mainSection__file', 'up_mainSection__file-box', 'up_mainSection__file-name up_mainSection__file--cell', 'up_mainSection__file-filesize up_mainSection__file--cell', 'up_mainSection__file-uploadTime up_mainSection__file--cell'].indexOf(clikedItemClass) >= 0) {
               e.preventDefault();
               let fileId = e.target.closest(".up_mainSection__file").id;
-              if(fileId.substring(0,4) == "file")
+              if(fileId.substring(0,4) == "file") {
                 fileId = fileId.substring(5);
-              else
+                constextMenu = this.createCM_DOMel(e.clientX, e.clientY,fileId);
+              }
+              else {
                 fileId = fileId.substring(7);
-              constextMenu = this.createCM_DOMel(e.clientX, e.clientY,fileId);
+                constextMenu = this.createDirCM_DOMel(e.clientX, e.clientY,fileId);
+              }
+                
+              
               document.body.appendChild(constextMenu);
           }
-          if(e.target.id == "files-box") {
+          if(e.target.id == "files-box" && this.fileOp.canPaste()) {
             e.preventDefault();
             const cntxt = document.createElement('div');
             cntxt.classList.add('up_file__contextmenu');
@@ -33,7 +38,7 @@ class ContextMenu {
             cntxt.style.left = e.clientX + "px";
             document.body.appendChild(cntxt);
             cntxt.querySelector("#PasteBtn").addEventListener('click', (e) => {
-              console.log("Pasted!");
+              this.fileOp.Paste();
             });
           }
       });
@@ -51,29 +56,34 @@ class ContextMenu {
       contextmenu.id = `CM_file_${fileid}`;
       contextmenu.innerHTML = `
           <button class="up_file__contextmenu-item" id="file__cm-downloadBtn">
-              <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+              <i class="up_file__contextmenu-btn-icon icon-download"></i>
               <span class="up_file__contextmenu-btn-text">Download</span>
           </button>
           <button class="up_file__contextmenu-item" id="file__cm-renameBtn">
-              <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+              <i class="up_file__contextmenu-btn-icon icon-pencil"></i>
               <span class="up_file__contextmenu-btn-text">Rename</span>
           </button>
           <button class="up_file__contextmenu-item" id="file__cm-CopyBtn">
-            <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+            <i class="up_file__contextmenu-btn-icon icon-docs"></i>
             <span class="up_file__contextmenu-btn-text">Copy</span>
           </button>
           <button class="up_file__contextmenu-item" id="file__cm-deleteBtn">
-              <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+              <i class="up_file__contextmenu-btn-icon icon-trash"></i>
               <span class="up_file__contextmenu-btn-text">Delete</span>
           </button>
           <button class="up_file__contextmenu-item" id="file__cm-shareBtn">
-              <i class="up_file__contextmenu-btn-icon icon-doc-inv"></i>
+              <i class="up_file__contextmenu-btn-icon icon-share"></i>
               <span class="up_file__contextmenu-btn-text">Share...</span>
           </button>`;
       const downloadBtn = contextmenu.querySelector('#file__cm-downloadBtn');
       const deleteBtn = contextmenu.querySelector('#file__cm-deleteBtn');
       const shareBtn = contextmenu.querySelector('#file__cm-shareBtn');
+      const copyBtn = contextmenu.querySelector('#file__cm-CopyBtn');
       const renameBtn = contextmenu.querySelector('#file__cm-renameBtn');
+      copyBtn.addEventListener('click',(e) => {
+        e.preventDefault();
+        this.fileOp.Copy({ID:fileid, Type:1});
+      });
       shareBtn.addEventListener('click',(e) => {
           e.preventDefault();
           this.fileOp.displayShareDialog(fileid);
@@ -94,18 +104,136 @@ class ContextMenu {
       contextmenu.style.left = posX + "px";
       return contextmenu;
   }
+  createDirCM_DOMel(posX, posY, fileid) {
+    const contextmenu = document.createElement('div');
+    contextmenu.classList.add('up_file__contextmenu');
+    contextmenu.id = `CM_file_${fileid}`;
+    contextmenu.innerHTML = `
+        <button class="up_file__contextmenu-item" id="file__cm-renameBtn">
+            <i class="up_file__contextmenu-btn-icon icon-pencil"></i>
+            <span class="up_file__contextmenu-btn-text">Rename</span>
+        </button>
+        <button class="up_file__contextmenu-item" id="file__cm-CopyBtn">
+          <i class="up_file__contextmenu-btn-icon icon-docs"></i>
+          <span class="up_file__contextmenu-btn-text">Copy</span>
+        </button>
+        <button class="up_file__contextmenu-item" id="file__cm-deleteBtn">
+            <i class="up_file__contextmenu-btn-icon icon-trash"></i>
+            <span class="up_file__contextmenu-btn-text">Delete</span>
+        </button>
+        <button class="up_file__contextmenu-item" id="file__cm-shareBtn">
+            <i class="up_file__contextmenu-btn-icon icon-share"></i>
+            <span class="up_file__contextmenu-btn-text">Share...</span>
+        </button>`;
+    const deleteBtn = contextmenu.querySelector('#file__cm-deleteBtn');
+    const shareBtn = contextmenu.querySelector('#file__cm-shareBtn');
+    const copyBtn = contextmenu.querySelector('#file__cm-CopyBtn');
+    const renameBtn = contextmenu.querySelector('#file__cm-renameBtn');
+    copyBtn.addEventListener('click',(e) => {
+      e.preventDefault();
+      this.fileOp.Copy({ID:fileid, Type:2});
+    });
+    shareBtn.addEventListener('click',(e) => {
+        e.preventDefault();
+        this.fileOp.displayShareDialog(fileid);
+    });
+    deleteBtn.addEventListener('click',(e) => {
+        e.preventDefault();
+        this.fileOp.deleteFile(fileid);
+    });
+    renameBtn.addEventListener('click',(e) => {
+      e.preventDefault();
+      this.fileOp.rename(fileid);
+    });
+    contextmenu.style.top = posY + "px";
+    contextmenu.style.left = posX + "px";
+    return contextmenu;
 }
-
+}
+function loadingON()
+{
+  
+  const El = document.querySelector('#loading');
+  El.style="background-color: rgba(233, 233, 233, 0.7);position: fixed;width: 100%;height: 100%;z-index: 100;display: block;";
+}
+function loadingOFF()
+{
+  const El = document.querySelector('#loading');
+  El.style="background-color: rgba(233, 233, 233, 0.7);position: fixed;width: 100%;height: 100%;z-index: 100;display: none;";
+}
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
 class FileOperator {
   // Properties
   files = [];
-
+  parentFolderBtnBinded = false;
+  copiedElement = null;
   //Constructors
   constructor(auth, api) {
       this.api = api;
       this.auth = auth;
   }
   // Methods 
+
+  // Copy & Paste 
+  canPaste() {return this.copiedElement != null; }
+  Paste() {
+    if(this.copiedElement!= null) {
+      if(this.copiedElement.Type == 1) {
+        const result = this.PasteFileRequest(this.copiedElement.ID);
+        if(result.status == 200) {
+          const file = JSON.parse(result.response);
+          const fileTemplate = this.createFileTemplate(file);
+          const fileList = document.querySelector("#fileList");
+          fileList.appendChild(fileTemplate);
+          this.files.files.push(file);
+        }
+      }
+      else if(this.copiedElement.Type == 2) {
+        const result = this.PasteDirRequest(this.copiedElement.ID);
+        if(result.status == 200) {
+          const dir = JSON.parse(result.response);
+          const dirTemplate = this.createFolderTemplate(dir);
+          const fileList = document.querySelector("#fileList");
+          fileList.appendChild(dirTemplate);
+          this.files.directories.push(dir);
+        }
+      } 
+    }
+  }
+  Copy(element) {this.copiedElement = {ID: element.ID, Type: element.Type}};
+  PasteDirRequest(dirId) {
+    const userId = this.auth.getUserId();
+    const dstDirId  = this.files.ID;
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'PUT', `${this.api}u/${userId}/dir/copy?dirId=${dirId}&dstDirId=${dstDirId}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      return XHR; 
+    } catch (error) {}
+  }
+  PasteFileRequest(fileId) {
+    const userId = this.auth.getUserId();
+    const dirId = this.files.ID;
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'PUT', `${this.api}/u/${userId}/files/copy?fileId=${fileId}&dirId=${dirId}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      return XHR; 
+    } catch (error) {}
+  }
+
+  // setup 
   setup(currentRoute) {
     if(currentRoute == "files") {
       this.loadFiles();
@@ -139,35 +267,41 @@ class FileOperator {
   setRouter(router) {
     this.router = router;
   }
+  setRootId(rootId) {
+    localStorage.setItem("rootId", rootId);
+  }
+  getRootId() {
+    return localStorage.getItem("rootId");
+  }
   getShById(shareId) {
     const result = this.getShRequest(shareId);
     if(result.status == 200) {
-      const file = JSON.parse(result.response);
-      const fileElement = this.createShFileTmpWithDwnl(file, shareId);
       const fileList = document.querySelector("#fileList");
       fileList.innerHTML = null;
-      fileList.appendChild(fileElement);
+      const files = JSON.parse(result.response);
+      console.log(files);
+      files.forEach(element => {
+        let fileElement;
+        if(element.Type == 1)
+          fileElement = this.createShFileTmpWithDwnl(element, shareId);
+        else
+          fileElement = this.createShDirTmpWithDwnl(element, shareId);
+        fileList.appendChild(fileElement);
+      });
+    }
+    else {
+      this.router.loadRoute('404');
     }
   }
   getShRequest(shareId) {
-    try {
-      const XHR = new XMLHttpRequest();
-      XHR.open( 'GET', this.api + `/shared/file-info/${shareId}`,false);
+    const XHR = new XMLHttpRequest(); 
+    try {  
+      XHR.open( 'GET',`${this.api}shared/info/${shareId}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.send();
-      if(XHR.status == 200) {
-        return XHR;
-      }
-      else if(XHR.status == 400) {
-        this.auth.router.loadRoute('404');
-        return XHR;
-      }
-      else {
-        this.router.loadRoute('404');
-      }
+      return XHR;
     } catch (error) {
-      this.router.loadRoute('404');
-      return {status : 500};
+      return XHR;
     } 
   }
   bindDownloadAndUpload() {
@@ -176,14 +310,12 @@ class FileOperator {
     if(UploadBtn != null)
       UploadBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        console.log(this.files);
         InputBtn.click();
     });
     if(InputBtn != null)
     InputBtn.addEventListener('change', (e) => {
         e.preventDefault();
         const fileList = InputBtn.files;
-        
         this.uploadFilesToServer(fileList);
     });
   }
@@ -193,7 +325,7 @@ class FileOperator {
     const fileData = this.getFileData(fileId);
     let anchor = document.createElement("a");
     document.body.appendChild(anchor);
-    let downloadingFile = this.api + `u/${userId}/files/download/${fileId}`;
+    let downloadingFile = `${this.api}u/${userId}/files/${fileId}`;
 
     let headers = new Headers();
     headers.append('Authorization', "Bearer " + this.auth.getUserToken());
@@ -209,12 +341,14 @@ class FileOperator {
 
         window.URL.revokeObjectURL(objectUrl);
     });
+  
   }
     // Upload files
   uploadFilesToServer(fileList) {
       const userId = this.auth.getUserId();
       var dirID = this.files.ID;
-
+      loadingON();
+      setTimeout(() => {   
       for (var i = 0; i < fileList.length; i++)
       {
         try {
@@ -222,16 +356,21 @@ class FileOperator {
           formData.append("file", fileList[i]);
           const XHR = new XMLHttpRequest();
           XHR.open( 'POST', this.api + `u/${userId}/files/upload?directoryId=`+dirID,false);
-          //XHR.setRequestHeader('Content-Type', 'multipart/form-data');
           XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
           XHR.send(formData);
+          
           if(XHR.status == 200)
           {
             if(i==fileList.length-1)
             {
+              loadingOFF();
               const fList = document.querySelector("#fileList");
               fList.innerHTML = "";
-              this.loadFiles();
+              const result = this.getDirData(dirID);
+              if(result.status == 200) {
+                this.files = JSON.parse(result.response);
+                this.loadFilesToView(null);
+              }
             }
           }
           else if(XHR.status == 400) {
@@ -241,12 +380,14 @@ class FileOperator {
         return false;
         }
       }
-    }
+    }, 100);
+  }
+
   getSharedFilesFromServer() {
     const userId = this.auth.getUserId();
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'GET', this.api + `u/${userId}/files/get-shared-list`,false);
+      XHR.open( 'GET', this.api + `u/${userId}/share/shared-list`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
@@ -261,7 +402,13 @@ class FileOperator {
   }
   loadSharedToView() {
     this.files.forEach(file => {
-      const fileBox = this.createSharedFileTemplate(file);
+      let fileBox;
+      if(file.Type == 1) {
+        fileBox = this.createSharedFileTemplate(file);
+      }
+      else {
+        fileBox = this.createSharedFolderTemplate(file);
+      }
       fileList.appendChild(fileBox);
     });
   }
@@ -270,12 +417,14 @@ class FileOperator {
     const userId = this.auth.getUserId();
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'GET', this.api + `u/${userId}/files/root`,false);
+      XHR.open( 'GET', this.api + `u/${userId}/dir/root`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
-      if(XHR.status == 200)
+      if(XHR.status == 200) {
         this.files = JSON.parse(XHR.response);
+        this.setRootId(this.files.ID);
+      }  
       else if(XHR.status == 401) {
         this.auth.logout();
       }
@@ -300,7 +449,7 @@ class FileOperator {
       }
       for (let index = 0; index < directory.directories.length; index++) {
         const el = directory.directories[index];
-        if(el._id === id)
+        if(el.ID === id)
           return el;
       }
     }
@@ -309,7 +458,11 @@ class FileOperator {
   bindParentFolderBtn(parentFolderBtn) {
     parentFolderBtn.addEventListener('dblclick', (e) => {
       e.preventDefault();
-      this.loadFilesToView(mainFolder.ParentID);
+      const result = this.getDirData(this.files.ParentID);
+      if(result.status == 200) {
+        this.files = JSON.parse(result.response);
+        this.loadFilesToView(null);
+      }
      });
      parentFolderBtn.addEventListener('drop', (e) => {
       let elementID = e.dataTransfer.getData('text');
@@ -318,14 +471,22 @@ class FileOperator {
         if(elementID.slice(0,4) == 'file') {
           elementID = elementID.slice(5);
           const file = this.findFile(elementID);
-          this.files.files = this.removeItemFromArr(elementID,this.files.files);
-          //folder.files.push(file); - parent folder
+          if(file != null) {
+            const result = this.moveFileRequest(file.ID, this.files.ParentID);
+            if(result.status == 200)
+              this.files.files = this.removeItemFromArr(elementID,this.files.files);
+          }
         }
         else if (elementID.slice(0,6) == 'folder') {
           elementID = elementID.slice(7);
           const dir = this.findFolderObj(elementID);
-          this.files.directories = this.removeItemFromArr(elementID,this.files.directories);
-          //folder.directories.push(dir); - parent folder
+          if(dir != null) {
+            const result = this.moveFolderRequest(dir.ID, this.files.ParentID);
+            if(result.status == 200) {
+              this.files.directories = this.removeItemFromArr(elementID,this.files.directories);
+              folder.directories.push(dir);
+            }
+          }
         }
     });
     parentFolderBtn.addEventListener('dragover', (e) => {
@@ -333,14 +494,15 @@ class FileOperator {
     });
   }
   loadFilesToView(folderID) {
-
    const mainFolder = this.files;
-    
-   if(mainFolder.ParentID != null) {
+   if(mainFolder.ID != this.getRootId()) {
     const parentFolderBtn = document.querySelector("#parentFolderBtn");
     if(parentFolderBtn != null){
        parentFolderBtn.style.display = "inline-block";
-       this.bindParentFolderBtn(parentFolderBtn);
+       if (!this.parentFolderBtnBinded){
+        this.bindParentFolderBtn(parentFolderBtn);
+        this.parentFolderBtnBinded = true;
+       }
     }
    }
    else 
@@ -350,8 +512,6 @@ class FileOperator {
        parentFolderBtn.style.display = "none";
     }
    }
-   
-    //const mainFolder = this.files.directories[i];
     const fileList = document.querySelector("#fileList");
     fileList.innerHTML = null;
     mainFolder.directories.forEach(file => {
@@ -389,8 +549,11 @@ class FileOperator {
       let folderID = folderElement.id.slice(7);
       const directoryObj = this.findFolderObj(folderID);
       if(directoryObj != null) {
-        this.files = directoryObj;
-        this.loadFilesToView(null);
+        const result = this.getDirData(directoryObj.ID);
+        if(result.status == 200) {
+          this.files = JSON.parse(result.response);
+          this.loadFilesToView(null);
+        }
       }
     });
     folderElement.addEventListener('drop', (e) => {
@@ -401,14 +564,23 @@ class FileOperator {
         if(elementID.slice(0,4) == 'file') {
           elementID = elementID.slice(5);
           const file = this.findFile(elementID);
-          this.files.files = this.removeItemFromArr(elementID,this.files.files);
-          folder.files.push(file);
+          if(file != null) {
+            const result = this.moveFileRequest(file.ID, folder.ID);
+            if(result.status == 200)
+              this.files.files = this.removeItemFromArr(elementID,this.files.files);
+              folder.files.push(file);
+          }
         }
         else if (elementID.slice(0,6) == 'folder') {
           elementID = elementID.slice(7);
           const dir = this.findFolderObj(elementID);
-          this.files.directories = this.removeItemFromArr(elementID,this.files.directories);
-          folder.directories.push(dir);
+          if(dir != null) {
+            const result = this.moveFolderRequest(dir.ID, folder.ID);
+            if(result.status == 200) {
+              this.files.directories = this.removeItemFromArr(elementID,this.files.directories);
+              folder.directories.push(dir);
+            }
+          }
         }
       }
       
@@ -420,6 +592,45 @@ class FileOperator {
       e.dataTransfer.setData('text',e.target.id);
     });
     return folderElement;
+  }
+  getDirData(dirId)  {
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'GET', `${ this.api}u/${userId}/dir/${dirId}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      return XHR;
+    } catch (error) {
+      return null;
+    }
+  }
+  moveFileRequest(fileId, dirId) {
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'PATCH', `${this.api}u/${userId}/files/move?fileId=${fileId}&dirId=${dirId}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      return XHR;
+    } catch (error) {
+      return null;
+    }
+  }
+  moveFolderRequest(srcDirId, dstDirId) {
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'PATCH', `${this.api}u/${userId}/dir/move?srcDirId=${srcDirId}&dstDirId=${dstDirId}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      return XHR;
+    } catch (error) {
+      return null;
+    }
   }
   removeItemFromArr(id, arr) {
     return arr.filter(function(item) {
@@ -463,7 +674,7 @@ class FileOperator {
                                   ${this.convertUploadDate(file.Created)}
                                 </span>
                                 <span class="up_mainSection__file-filesize up_mainSection__file--cell">
-                                  ${this.convertFileSize(file.Size)}
+                                  ${this.convertFileSize(file.Length)}
                                 </span>
                                 
                               </div>`;
@@ -474,8 +685,10 @@ class FileOperator {
     return fileElement;
   }
   loadFiles() {
+
     this.getFilesFromServer();
     this.loadFilesToView("Files");
+
   }
   convertFileSize(sizeInBytes) {
     if(sizeInBytes < 1024)
@@ -490,7 +703,7 @@ class FileOperator {
   }
   convertUploadDate(uploadDate) {
     const date = new Date(uploadDate);
-    let day = (date.getDay() > 9) ? date.getDay() : "0" + date.getDay();
+    let day = (date.getDate() > 9) ? date.getDate() : "0" + date.getDate();
     let month = (date.getMonth() + 1 > 9) ? date.getMonth() + 1: "0" + (date.getMonth() + 1);
     let hours = (date.getHours() > 9) ? date.getHours() : "0" + date.getHours();
     let minutes = (date.getMinutes() > 9) ? date.getMinutes() : "0" + date.getMinutes();
@@ -508,15 +721,18 @@ class FileOperator {
   createDeleteModal(file) {
     const deleteModal = document.createElement('div');
       deleteModal.classList.add('up_DeleteModal');
-      //if(file.hasOwnProperty('directories')) // file.Type == 1 - file 
+      if(file.Type == 1) // 1 - file 
         deleteModal.innerHTML = this.fillDeleteModalHTML(file);
-      //else
-      //  deleteModal.innerHTML = this.folderDeleteModalHTML(file);
+      else {
+        deleteModal.innerHTML = this.folderDeleteModalHTML(file);
+      } 
       deleteModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
           e.preventDefault();
           document.body.removeChild(deleteModal);
       });
       deleteModal.querySelector("#modalDeleteBtn").addEventListener('click', (e) => {
+        loadingON();
+        setTimeout(() => {  
           e.preventDefault();
           e.target.disabled = true;
           const result = this.deleteFileRequest(file.ID);
@@ -531,16 +747,18 @@ class FileOperator {
             deleteBtns.removeChild(deleteBtn);
             const deleteText = deleteModal.querySelector("#DeleteModal_text");
             deleteText.innerHTML ="Error occured durring delete operation. Try later.";
-          } 
+          }
+          loadingOFF(); 
+        }, 100);
       });
       return deleteModal;
   }
   removeFileFromDOM(file) {
     const fileList = document.querySelector('#fileList');
-    //if(file.type == "file")
+    if(file.Type == 1)
       fileList.removeChild(fileList.querySelector(`#file_${file.ID}`));
-    //else
-    //  fileList.removeChild(fileList.querySelector(`#folder_${file.ID}`));
+    else
+      fileList.removeChild(fileList.querySelector(`#folder_${file.ID}`));
   }
   fillDeleteModalHTML(file) {
     return `<header>
@@ -549,7 +767,7 @@ class FileOperator {
            <div class="up_DeleteModal__content">
                <h3 class="up_DeleteModal__file">File:</h3>
                <h3 class="up_DeleteModal__filename">${file.Name}</h3>
-               <h4 class="up_DeleteModal__filesize">${this.convertFileSize(file.Size)}</h4>
+               <h4 class="up_DeleteModal__filesize">${this.convertFileSize(file.Length)}</h4>
                <p class="up_DeleteModal__p" id="DeleteModal_text">Do you really want to delete this file?</p>
                <div class="up_DeleteModal__btns" id="DeleteModal__btns">
                    <button class="up_DeleteModal__CloseBtn" id="modalCloseBtn">Close</button>
@@ -575,10 +793,12 @@ class FileOperator {
     const userId = this.auth.getUserId();
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'DELETE', this.api + `u/${userId}/files/${fileId}`,false);
+      XHR.open( 'DELETE', this.api + `u/${userId}/dir/${fileId}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      // loadingON();
       XHR.send();
+       loadingOFF();
       if(XHR.status == 200)
         return true;
       else if(XHR.status == 401)
@@ -588,7 +808,7 @@ class FileOperator {
     } catch (error) {
       return false;
     }
-    
+
   }
   displayShareDialog(file_id) {
     const file = this.getFileData(file_id);
@@ -605,11 +825,12 @@ class FileOperator {
       });
       shareModal.querySelector("#modalSwitchBtn").addEventListener('click', (e) => {
           e.preventDefault();
+          loadingON();
+          setTimeout(() => { 
           e.target.disabled = true;
           const sharelink = shareModal.querySelector('#modalShareLink');
           if(!file.Shared) {
             const result = this.enableSharingRequest(file.ID);
-            console.log(result);
             if(result.status) {
               file.ShareID = result.ShareID;
               file.Shared = true;
@@ -620,7 +841,9 @@ class FileOperator {
             }
           }
           else {
+            console.log(this.files);
             const result = this.disableSharingRequest(file.ID);
+            console.log(this.files);
             if(result) {
               file.ShareID = '-';
               file.Shared = false;
@@ -630,7 +853,8 @@ class FileOperator {
             }
           }
           e.target.disabled = false;
-
+          loadingOFF();
+        }, 100);
       });
       return shareModal;
   }
@@ -638,7 +862,7 @@ class FileOperator {
     const userId = this.auth.getUserId();
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'PATCH', this.api + `u/${userId}/files/share/${fileId}`,false);
+      XHR.open( 'PATCH',`${this.api}u/${userId}/share/enable?elementId=${fileId}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
@@ -656,11 +880,11 @@ class FileOperator {
     const userId = this.auth.getUserId();
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'PATCH', this.api + `u/${userId}/files/disable-sharing/${fileId}`,false);
+      XHR.open( 'PATCH',`${this.api}u/${userId}/share/disable?elementId=${fileId}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
-      if(XHR.status == 200)
+      if(XHR.status == 200) 
         return true;
       else if(XHR.status == 401)
         this.auth.logout();
@@ -678,7 +902,7 @@ class FileOperator {
           <div class="up_ShareModal__content">
               <h3 class="up_ShareModal__file">Share item:</h3>
               <h3 class="up_ShareModal__filename">${file.Name}</h3>
-              <h4 class="up_ShareModal__filesize">${this.convertFileSize(file.Size)}</h4>
+              <h4 class="up_ShareModal__filesize">${(file.Type == 1) ? this.convertFileSize(file.Length) : ""} </h4>
               <p class="up_ShareModal__p">Share link: <a href="${sharelink} " class="up_ShareModal__sharelink" id="modalShareLink">${sharelink}</a></p>
               <div class="up_ShareModal__btns">
                   <button class="up_ShareMOdal__CloseBtn" id="modalCloseBtn">Close</button>
@@ -708,12 +932,20 @@ class FileOperator {
     renameModal.querySelector("#modalRenameBtn").addEventListener('click', (e) => {
       e.preventDefault();
       let newName = renameModal.querySelector('#newName').value;
+      renameModal.querySelector('#newName').select();
       newName = newName.replace('/','\\');
-      const result = this.renameFileRequest(file.ID, newName);
       
-      if(result == true) {
+      let result;
+      if(file.Type == 1)
+        result = this.renameFileRequest(file.ID, newName);
+      else
+        result = this.renameFolderRequest(file.ID, newName);
+      if(result.status == 200) {
         file.Name = newName;
-        this.updateFileNameEl(file.ID, newName);
+        if(file.Type == 1)
+          this.updateFileNameEl(file.ID, newName);
+        else
+          this.updateFolderNameEl(file.ID, newName);
         document.body.removeChild(renameModal);
       }
       else {
@@ -733,6 +965,13 @@ class FileOperator {
     const fileBox = document.querySelector(`#file_${fileId}`);
     fileBox.querySelector('.up_mainSection__file-name').textContent = newName;
   }
+  updateFolderNameEl(fileId, newName) {
+    let filename = newName.substring(0, Math.min(newName.length,40));
+    if(filename.length < newName.length)
+      filename = filename + "...";
+    const fileBox = document.querySelector(`#folder_${fileId}`);
+    fileBox.querySelector('.up_mainSection__file-name').textContent = newName;
+  }
   rename(file_id) {
     var file = this.getFileData(file_id);
     if(file != null) {
@@ -742,39 +981,41 @@ class FileOperator {
   }
   renameFileRequest(fileId, newName) { 
     const userId = this.auth.getUserId();
-    /*try {
+    try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'DELETE', this.api + `u/${userId}/files/${fileId}`,false);
+      XHR.open( 'PATCH', `${this.api}u/${userId}/files/rename?fileId=${fileId}&name=${newName}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
-      XHR.setRequestHeader("Authorization", this.auth.getUserToken());
-      XHR.send(null);
-      if(XHR.status == 200)
-        return true;
-      else
-        return false; 
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      return XHR;
     } catch (error) {
-      return false;
+      return null;
     }
-    */
-   return {status : 400};
+  }
+  renameFolderRequest(folderId, newName) { 
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'PATCH', `${ this.api}/u/${userId}/dir/rename?dirId=${folderId}&name=${newName}`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      return XHR;
+    } catch (error) {
+      return null;
+    }
   }
   newFolderRequest(newName) {
       const userId = this.auth.getUserId();
-      /*try {
+      const actualDirId = this.files.ID;
+      try {
         const XHR = new XMLHttpRequest();
-        XHR.open( 'DELETE', this.api + `u/${userId}/files/${fileId}`,false);
+        XHR.open( 'POST', `${this.api}/u/${userId}/dir/create?dirId=${actualDirId}&name=${newName}`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
-        XHR.setRequestHeader("Authorization", this.auth.getUserToken());
-        XHR.send(null);
-        if(XHR.status == 200)
-          return true;
-        else
-          return false; 
-      } catch (error) {
-        return false;
-      }
-      */
-     return {status : 200};
+        XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+        XHR.send();
+        return XHR; 
+      } catch (error) {}
   }
   CreateFolderModal() {
     const newFolderModal = document.createElement('div');
@@ -803,18 +1044,10 @@ class FileOperator {
         const result = this.newFolderRequest(newName);
         if(result.status == 200) {
           document.body.removeChild(newFolderModal);
-          const newFolder = {
-            ID : (Math.random()*100).toFixed(0).toString(),
-            Name : newName,
-            Created : '2020-05-27T09:14:09.554Z',
-            ParentID : this.files.ID,
-            directories : [],
-            files : []
-          };
+          const newFolder = JSON.parse(result.response);
           const folderElement = this.createFolderTemplate(newFolder);
           document.querySelector('#fileList').appendChild(folderElement);
           this.files.directories.push(newFolder);
-          console.log(this.files);
         }
         else {
           const newFolderBtns = newFolderModal.querySelector("#newFolderModal__btns");
@@ -883,7 +1116,7 @@ class FileOperator {
                                   ${this.convertUploadDate(file.Created)}
                                 </span>
                                 <span class="up_mainSection__file-filesize up_mainSection__file--cell">
-                                  ${this.convertFileSize(file.Size)}
+                                  ${this.convertFileSize(file.Length)}
                                 </span>
                               </div>`;               
     return fileElement;
@@ -905,13 +1138,39 @@ class FileOperator {
                                   ${this.convertUploadDate(file.Created)}
                                 </span>
                                 <span class="up_mainSection__file-filesize up_mainSection__file--cell">
-                                  ${this.convertFileSize(file.Size)}
+                                  ${this.convertFileSize(file.Length)}
                                 </span>
                                 <span id="sharedDownloadBtn"><i class="icon-download"></i></span>
                               </div>`;
     fileElement.querySelector("#sharedDownloadBtn").addEventListener('click', (e) => {
       const a = document.createElement('a');
-      a.href = `${this.api}/shared/${shareId}`;
+      a.href = `${this.api}/shared/${shareId}?fileId=${file.ID}`;
+      a.download = file.Name;
+      a.click();
+    });               
+    return fileElement;
+  }
+  createShDirTmpWithDwnl(file,shareId) {
+    const fileElement = document.createElement('li');
+    fileElement.id = `folder_${file.ID}`;
+    fileElement.classList.add('up_mainSection__file');
+    let filename = file.Name.substring(0, Math.min(file.Name.length,40));
+    if(filename.length < file.Name.length)
+      filename = filename + "...";
+    fileElement.innerHTML = `<div class="up_mainSection__file-box" >
+                                
+                                <span><i class="up_mainSection__file-icon icon-doc-inv"></i></span>
+                                <span class="up_mainSection__file-name up_mainSection__file--cell">
+                                  ${filename}
+                                </span>
+                                <span class="up_mainSection__file-uploadTime up_mainSection__file--cell">
+                                  ${this.convertUploadDate(file.Created)}
+                                </span>
+                                <span id="sharedDownloadBtn"><i class="icon-download"></i></span>
+                              </div>`;
+    fileElement.querySelector("#sharedDownloadBtn").addEventListener('click', (e) => {
+      const a = document.createElement('a');
+      a.href = `${this.api}shared/${shareId}?fileId=${file.ID}`;
       a.download = file.Name;
       a.click();
     });               
