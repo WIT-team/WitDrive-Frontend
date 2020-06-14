@@ -94,10 +94,10 @@ export default class Auth {
                 </div>
             </div>`;
         errorModal.innerHTML = modalBody;
-        document.body.appendChild(errorModal); 
+        this.router.routerDataEl.appendChild(errorModal); 
         errorModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
             e.preventDefault();
-            document.body.removeChild(errorModal);
+            this.router.routerDataEl.removeChild(errorModal);
         });
     }
     sendRegisterRequest(req_params) {
@@ -242,7 +242,7 @@ export default class Auth {
                 loadingON();
                 setTimeout(() => { 
                 this.login(loginForm);
-                loadingOFF();
+                //loadingOFF();
             }, 100);
             });
         }

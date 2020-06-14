@@ -21,7 +21,7 @@ export default params => {
     </ul>
     <div class="up_mainSection__f-space-info">
         <h2 class="up_mainSection__f-space-h">Free space</h2>
-        <p class="up_mainSection__f-space-details">1,3GB of 15GB used</p>
+        <p id="space-details" class="up_mainSection__f-space-details">-</p>
     </div>
 </div>
 <div class="up_mainSection__files-box" id="files-box">

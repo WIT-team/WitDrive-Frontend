@@ -1,9 +1,19 @@
 import _404View from '../views/404.js'
-
+function loadingON()
+{
+  const El = document.querySelector('#loading');
+  El.style="background-color: rgba(233, 233, 233, 0.7);position: fixed;width: 100%;height: 100%;z-index: 100;display: block;";
+}
+function loadingOFF()
+{
+  const El = document.querySelector('#loading');
+  El.style="background-color: rgba(233, 233, 233, 0.7);position: fixed;width: 100%;height: 100%;z-index: 100;display: none;";
+}
 export default class Router{
     constructor(routes, auth, fileoperator){
         this.routes = routes;
         this.auth = auth;
+        this.routerDataEl = document.querySelector('[router-data]');
         this.fileoperator = fileoperator;
         this.fileoperator.setRouter(this);
         this.auth.setRouter(this);
@@ -16,27 +26,37 @@ export default class Router{
     }
 
     loadRoute(...urlSegments){
+
         const matchedRoute = this._matchUrlToRoute(urlSegments);
-
-        const url = `/${urlSegments.join('/')}`;
-        history.pushState({}, '', url);
-
-        const routerOutletElement = document.querySelectorAll('[router-data]')[0];
+        loadingON();
+        setTimeout(() => {
+            const url = `/${urlSegments.join('/')}`;
+            history.pushState({}, '', url);
+            const routerOutletElement = document.querySelectorAll('[router-data]')[0];
             
-        routerOutletElement.innerHTML = matchedRoute.getTemplate(matchedRoute.params);
+            routerOutletElement.innerHTML = matchedRoute.getTemplate(matchedRoute.params);
 
-        this.initNavBar();
-        this.validateRedirection();
+            setTimeout(() => {
+                loadingOFF();
+                this.initNavBar();
+                this.validateRedirection();
+            },100);
+        },100);
     }
 
     undoRoute(...urlSegments){
         const matchedRoute = this._matchUrlToRoute(urlSegments);
+        loadingON();
+        setTimeout(() => {
 
         const routerOutletElement = document.querySelectorAll('[router-data]')[0];
         routerOutletElement.innerHTML = matchedRoute.getTemplate(matchedRoute.params);
-
+        setTimeout(() => {
+            loadingOFF();
         this.initNavBar();
         this.validateRedirection();
+    },100);
+},100);
     }
 
     _matchUrlToRoute(urlSegments){
