@@ -223,7 +223,7 @@ class FileOperator {
     const dirId = this.files.ID;
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'PUT', `${this.api}/u/${userId}/files/copy?fileId=${fileId}&dirId=${dirId}`,false);
+      XHR.open( 'PUT', `${this.api}u/${userId}/files/copy?fileId=${fileId}&dirId=${dirId}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
@@ -277,7 +277,6 @@ class FileOperator {
       const fileList = document.querySelector("#fileList");
       fileList.innerHTML = null;
       const files = JSON.parse(result.response);
-      console.log(files);
       files.forEach(element => {
         let fileElement;
         if(element.Type == 1)
@@ -327,7 +326,9 @@ class FileOperator {
 
     let headers = new Headers();
     headers.append('Authorization', "Bearer " + this.auth.getUserToken());
-
+    loadingON();
+      setTimeout(() => {
+        loadingOFF();
     fetch(downloadingFile, { headers })
       .then(response => response.blob())
       .then(blobby => {
@@ -339,7 +340,8 @@ class FileOperator {
 
         window.URL.revokeObjectURL(objectUrl);
     });
-  
+    
+      },100);
   }
   getSpaseFromServer()
   {
@@ -895,6 +897,22 @@ class FileOperator {
           e.preventDefault();
           this.router.routerDataEl.removeChild(shareModal);
       });
+      shareModal.querySelector("#copyLinkhBtn").addEventListener('click', (e) => {
+        e.preventDefault();
+        if (navigator.clipboard) {
+          // поддержка имеется, включить соответствующую функцию проекта.
+          const sharelink2 = shareModal.querySelector('#modalShareLink');
+          navigator.clipboard.writeText(sharelink2.textContent)
+          .then(() => {
+            // Получилось!
+          })
+          .catch(err => {
+            console.log('Something went wrong', err);
+          });
+        } else {
+          alert("Sorry. Update your browser");
+        }
+    });
       shareModal.querySelector("#modalSwitchBtn").addEventListener('click', (e) => {
           e.preventDefault();
           loadingON();
@@ -913,9 +931,7 @@ class FileOperator {
             }
           }
           else {
-            console.log(this.files);
             const result = this.disableSharingRequest(file.ID);
-            console.log(this.files);
             if(result) {
               file.ShareID = '-';
               file.Shared = false;
@@ -979,6 +995,7 @@ class FileOperator {
               <div class="up_ShareModal__btns">
                   <button class="up_ShareMOdal__CloseBtn" id="modalCloseBtn">Close</button>
                   <button class="up_ShareMOdal__SwitchSBtn" id="modalSwitchBtn">${(file.Shared) ? "Disable" : "Enable"} sharing</button>
+                  <button class="up_ShareMOdal__SwitchSBtn" id="copyLinkhBtn">Copy link</button>
               </div>
           </div>`;
   }
@@ -1008,8 +1025,7 @@ class FileOperator {
         loadingOFF();
       let newName = renameModal.querySelector('#newName').value;
       renameModal.querySelector('#newName').select();
-      newName = newName.replace('/','\\');
-      
+      newName = newName.replace("/",'\\');
       let result;
       if(file.Type == 1)
         result = this.renameFileRequest(file.ID, newName);
@@ -1073,7 +1089,7 @@ class FileOperator {
     const userId = this.auth.getUserId();
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'PATCH', `${ this.api}/u/${userId}/dir/rename?dirId=${folderId}&name=${newName}`,false);
+      XHR.open( 'PATCH', `${ this.api}u/${userId}/dir/rename?dirId=${folderId}&name=${newName}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
@@ -1087,7 +1103,7 @@ class FileOperator {
       const actualDirId = this.files.ID;
       try {
         const XHR = new XMLHttpRequest();
-        XHR.open( 'POST', `${this.api}/u/${userId}/dir/create?dirId=${actualDirId}&name=${newName}`,false);
+        XHR.open( 'POST', `${this.api}u/${userId}/dir/create?dirId=${actualDirId}&name=${newName}`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
         XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
         XHR.send();
@@ -1114,6 +1130,10 @@ class FileOperator {
       e.preventDefault();
       this.router.routerDataEl.removeChild(newFolderModal);
     });
+    newFolderModal.querySelector('#newName').addEventListener('keyup', _ => {
+      const newFolderText = newFolderModal.querySelector("#newFolderModal_text");
+      newFolderText.innerHTML = '';
+    });
     newFolderModal.querySelector("#modalCreateBtn").addEventListener('click', (e) => {
       e.preventDefault();
       const newName = newFolderModal.querySelector('#newName').value;
@@ -1129,9 +1149,9 @@ class FileOperator {
         else {
           const newFolderBtns = newFolderModal.querySelector("#newFolderModal__btns");
           const newFolderBtn = newFolderModal.querySelector("#modalCreateBtn");
-          newFolderBtns.removeChild(newFolderBtn);
+          //newFolderBtns.removeChild(newFolderBtn);
           const newFolderText = newFolderModal.querySelector("#newFolderModal_text");
-          newFolderText.innerHTML ="Error occured durring operation. Try again later.";
+          newFolderText.innerHTML ="Error occured durring operation. Try again.";
           return null;
         }
       }

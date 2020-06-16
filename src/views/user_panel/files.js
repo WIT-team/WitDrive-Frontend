@@ -20,7 +20,7 @@ export default params => {
         <li class="up_mainSection__menu-item"><a onclick="router.loadRoute('shared')" class="up_mainSection__menu-item-link">Shared</a></li>
     </ul>
     <div class="up_mainSection__f-space-info">
-        <h2 class="up_mainSection__f-space-h">Free space</h2>
+        <h2 class="up_mainSection__f-space-h">Disk space</h2>
         <p id="space-details" class="up_mainSection__f-space-details">-</p>
     </div>
 </div>
