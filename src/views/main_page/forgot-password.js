@@ -20,7 +20,7 @@ export default
             <label for="username" class="mainSection__form--label">Your e-mail:</label>
             <input type="email" name="email" id="emailInput" class="mainSection__form--input" placeholder="James-Smith@mail.com">
             <div class="mainPasswordResetSection__btns">
-                <a href="#" class="mainSection__CancelBtn">Cancel</a>
+                <a onclick="router.loadRoute('login')" class="mainSection__CancelBtn">Cancel</a>
             <button type="submit" class="mainSection__SubmitBtn mainSection__SubmitBtn--reset" id="SubmitBtn">Reset</button>
             </div>
         </form>

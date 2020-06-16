@@ -448,6 +448,7 @@
     text-decoration: none;
     color: var(--main-violet-color);
     font-weight: 600;
+    cursor: pointer;
 }
 
 .mainSection__new-account-link:hover {
@@ -638,7 +639,7 @@
     padding: 10px 0px;
     color: var(--main-violet-color);
     text-align: center;
-    
+    cursor: pointer;
 }
 .mainSection__CancelBtn:hover {
     color: rgb(141, 141, 141);

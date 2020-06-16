@@ -41,6 +41,9 @@ export default class Auth {
         return re.test(email);
     }
     register(registerForm) {
+        loadingON();
+        setTimeout(() => {
+        loadingOFF();
         const reg_params = this.getRegisterParameters(registerForm);
         const validationResult = this.validateUsername(reg_params.username) &&
                                 this.validatePassword(reg_params.password, reg_params.r_password)
@@ -78,6 +81,7 @@ export default class Auth {
             ];
             this.displayErrorModal(errors);
         }
+    },100);
     }
     displayErrorModal(erorrs) {
         const errorModal = document.createElement('div');
@@ -94,10 +98,10 @@ export default class Auth {
                 </div>
             </div>`;
         errorModal.innerHTML = modalBody;
-        document.body.appendChild(errorModal); 
+        this.router.routerDataEl.appendChild(errorModal); 
         errorModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
             e.preventDefault();
-            document.body.removeChild(errorModal);
+            this.router.routerDataEl.removeChild(errorModal);
         });
     }
     sendRegisterRequest(req_params) {
@@ -184,7 +188,6 @@ export default class Auth {
         }];
         if(this.validatePassword(req_params.Password, req_params.ConfirmPassword)) {
             try {
-                console.log(req_params);
                 const result = this.sendNewPasswordRequest(req_params);
                 if(result.status == 200) {
                     const mainSection = document.querySelector("#newPasswordSection");
@@ -217,7 +220,6 @@ export default class Auth {
         }
     }
     sendNewPasswordRequest(req_params) {
-        console.log(req_params);
         const XHR = new XMLHttpRequest();
         XHR.open( 'POST',`${this.api}recovery/reset-password`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
@@ -229,8 +231,6 @@ export default class Auth {
         XHR.open( 'POST',`${this.api}recovery/forgot-password`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
         XHR.send(JSON.stringify({Email:email}));
-        console.log(JSON.stringify({Email:email}));
-        console.log(`${this.api}recovery/forgot-password`);
         return XHR;
     }
     initLoginForm() {
@@ -242,7 +242,7 @@ export default class Auth {
                 loadingON();
                 setTimeout(() => { 
                 this.login(loginForm);
-                loadingOFF();
+                //loadingOFF();
             }, 100);
             });
         }
@@ -263,18 +263,27 @@ export default class Auth {
                 this.router.loadRoute("files");
             }
             else if(result.status == 401) {
+                loadingOFF();
+                setTimeout(() => {
                 this.displayErrorModal(userloginErrorMsg);
+                },100);
             }
             else {
+                loadingOFF();
+                setTimeout(() => {
                 this.displayErrorModal([{
                     code : "UknownError",
                     description : "Uknown error. Please try again later."
                 }]);
+            },100);
             }   
             form.reset();
         }
         else {
+            loadingOFF();
+            setTimeout(() => {
             this.displayErrorModal(userloginErrorMsg);
+            },100);
         }
     }
     sendLoginRequest(req_params) {

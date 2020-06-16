@@ -26,7 +26,6 @@ export default
             <label for="newPassword_r" class="newPassword__form-label">Repeat new password:</label>
             <input type="password" name="newPassword_r" class="newPassword__form-input" placeholder="Repeat new password">
             <div class="newPassword__form-btns">
-                <button class="newPassword__form-btn cancelBtn" id="newPassword__form-cancel-btn">Cancel</button>
                 <button type="submit" class="newPassword__form-btn" id="newPassword__form-Sbtn">Change</button>
             </div>
         </form>

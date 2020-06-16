@@ -152,7 +152,6 @@ class ContextMenu {
 }
 function loadingON()
 {
-  
   const El = document.querySelector('#loading');
   El.style="background-color: rgba(233, 233, 233, 0.7);position: fixed;width: 100%;height: 100%;z-index: 100;display: block;";
 }
@@ -160,14 +159,6 @@ function loadingOFF()
 {
   const El = document.querySelector('#loading');
   El.style="background-color: rgba(233, 233, 233, 0.7);position: fixed;width: 100%;height: 100%;z-index: 100;display: none;";
-}
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
 }
 class FileOperator {
   // Properties
@@ -184,6 +175,9 @@ class FileOperator {
   // Copy & Paste 
   canPaste() {return this.copiedElement != null; }
   Paste() {
+    loadingON();
+    setTimeout(() => {
+      loadingOFF();
     if(this.copiedElement!= null) {
       if(this.copiedElement.Type == 1) {
         const result = this.PasteFileRequest(this.copiedElement.ID);
@@ -199,13 +193,17 @@ class FileOperator {
         const result = this.PasteDirRequest(this.copiedElement.ID);
         if(result.status == 200) {
           const dir = JSON.parse(result.response);
-          const dirTemplate = this.createFolderTemplate(dir);
-          const fileList = document.querySelector("#fileList");
-          fileList.appendChild(dirTemplate);
-          this.files.directories.push(dir);
+          if(this.getDirByName(dir.Name) == null) {
+            const dirTemplate = this.createFolderTemplate(dir);
+            const fileList = document.querySelector("#fileList");
+            fileList.appendChild(dirTemplate);
+            this.files.directories.push(dir);
+          }
         }
       } 
     }
+  },100);
+
   }
   Copy(element) {this.copiedElement = {ID: element.ID, Type: element.Type}};
   PasteDirRequest(dirId) {
@@ -225,7 +223,7 @@ class FileOperator {
     const dirId = this.files.ID;
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'PUT', `${this.api}/u/${userId}/files/copy?fileId=${fileId}&dirId=${dirId}`,false);
+      XHR.open( 'PUT', `${this.api}u/${userId}/files/copy?fileId=${fileId}&dirId=${dirId}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
@@ -296,7 +294,6 @@ class FileOperator {
       const fileList = document.querySelector("#fileList");
       fileList.innerHTML = null;
       const files = JSON.parse(result.response);
-      console.log(files);
       files.forEach(element => {
         let fileElement;
         if(element.Type == 1)
@@ -341,12 +338,14 @@ class FileOperator {
     const userId = this.auth.getUserId();
     const fileData = this.getFileData(fileId);
     let anchor = document.createElement("a");
-    document.body.appendChild(anchor);
+    this.router.routerDataEl.appendChild(anchor);
     let downloadingFile = `${this.api}u/${userId}/files/${fileId}`;
 
     let headers = new Headers();
     headers.append('Authorization', "Bearer " + this.auth.getUserToken());
-
+    loadingON();
+      setTimeout(() => {
+        loadingOFF();
     fetch(downloadingFile, { headers })
       .then(response => response.blob())
       .then(blobby => {
@@ -358,14 +357,73 @@ class FileOperator {
 
         window.URL.revokeObjectURL(objectUrl);
     });
-  
+    
+      },100);
+  }
+  getSpaseFromServer()
+  {
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'GET', this.api + `u/${userId}/account/available-space`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      if(XHR.status == 401)
+        this.auth.logout();
+      else
+      {
+        return JSON.parse(XHR.response);
+      }
+    } catch (error) {
+      return false;
+    } 
+  }
+  setSpaceToView(space)
+  {
+    const el = document.querySelector("#space-details");
+    var used = this.convertFileSize(space.Used);
+    var aval = this.convertFileSize(space.Available);
+    el.textContent=used+" of "+aval+" used";
   }
     // Upload files
   uploadFilesToServer(fileList) {
       const userId = this.auth.getUserId();
       var dirID = this.files.ID;
       loadingON();
-      setTimeout(() => {   
+      setTimeout(() => {
+        var space = this.getSpaseFromServer();
+      var totalSize=0;
+      for (var i = 0; i < fileList.length; i++)
+      {
+        totalSize= totalSize+fileList[i].size;
+      }
+      if(totalSize>=space.Left)
+      {
+        loadingOFF();
+        const errorModal = document.createElement('div');
+        errorModal.classList.add('ErrorModal');
+        let modalBody = `<header>
+                <h2 class="ErrorModal__header">Ups, something gone wrong!</h2>
+            </header>
+            <div class="ErrorModal__content">`;
+            
+            modalBody += `<p class="ErrorModal__p">You have not enough disk space, you can buy more.</p>`;
+            
+            modalBody += `<div class="ErrorModal__btns" id="ErrorModal__btns">
+                    <button class="ErrorModal__CloseBtn" id="modalCloseBtn">Close</button>
+                </div>
+            </div>`;
+        errorModal.innerHTML = modalBody;
+        this.router.routerDataEl.appendChild(errorModal); 
+        errorModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
+            e.preventDefault();
+            this.router.routerDataEl.removeChild(errorModal);
+        });
+        return false;
+      }
+      else
+      {
       for (var i = 0; i < fileList.length; i++)
       {
         try {
@@ -397,6 +455,8 @@ class FileOperator {
         return false;
         }
       }
+      this.setSpaceToView(this.getSpaseFromServer());
+    }
     }, 100);
   }
 
@@ -408,6 +468,7 @@ class FileOperator {
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
+      this.setSpaceToView(this.getSpaseFromServer());
       if(XHR.status == 200)
         this.files = JSON.parse(XHR.response);
       else if(XHR.status == 401) {
@@ -469,6 +530,14 @@ class FileOperator {
         if(el.ID === id)
           return el;
       }
+    }
+    return null;
+  }
+  getDirByName(dirName) {
+    for (let index = 0; index < directory.directories.length; index++) {
+      const el = directory.directories[index];
+      if(el.Name === dirName)
+        return el;
     }
     return null;
   }
@@ -704,9 +773,13 @@ class FileOperator {
     return fileElement;
   }
   loadFiles() {
-
+    var space = this.getSpaseFromServer();
     this.getFilesFromServer();
     this.loadFilesToView("Files");
+    
+    setTimeout(() => {   
+    this.setSpaceToView(space);
+    },100);
 
   }
   convertFileSize(sizeInBytes) {
@@ -734,7 +807,7 @@ class FileOperator {
     var file = this.getFileData(file_id);
     if(file != null) {
       const deleteModal = this.createDeleteModal(file);
-      document.body.appendChild(deleteModal);    
+      this.router.routerDataEl.appendChild(deleteModal);    
     }
   }
   createDeleteModal(file) {
@@ -747,7 +820,7 @@ class FileOperator {
       } 
       deleteModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
           e.preventDefault();
-          document.body.removeChild(deleteModal);
+          this.router.routerDataEl.removeChild(deleteModal);
       });
       deleteModal.querySelector("#modalDeleteBtn").addEventListener('click', (e) => {
         loadingON();
@@ -758,7 +831,7 @@ class FileOperator {
           e.target.disabled = false;
           if(result == true) {
             this.removeFileFromDOM(file);
-            document.body.removeChild(deleteModal);
+            this.router.routerDataEl.removeChild(deleteModal);
           }
           else {
             const deleteBtns = deleteModal.querySelector("#DeleteModal__btns");
@@ -817,6 +890,7 @@ class FileOperator {
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       // loadingON();
       XHR.send();
+      this.setSpaceToView(this.getSpaseFromServer());
        loadingOFF();
       if(XHR.status == 200)
         return true;
@@ -832,7 +906,7 @@ class FileOperator {
   displayShareDialog(file_id) {
     const file = this.getFileData(file_id);
     const shareModal = this.createShareModal(file);
-    document.body.appendChild(shareModal);
+    this.router.routerDataEl.appendChild(shareModal);
   }
   createShareModal(file) {
       const shareModal = document.createElement('div');
@@ -840,8 +914,24 @@ class FileOperator {
       shareModal.innerHTML = this.fillShareModalHTML(file);
       shareModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
           e.preventDefault();
-          document.body.removeChild(shareModal);
+          this.router.routerDataEl.removeChild(shareModal);
       });
+      shareModal.querySelector("#copyLinkhBtn").addEventListener('click', (e) => {
+        e.preventDefault();
+        if (navigator.clipboard) {
+          // поддержка имеется, включить соответствующую функцию проекта.
+          const sharelink2 = shareModal.querySelector('#modalShareLink');
+          navigator.clipboard.writeText(sharelink2.textContent)
+          .then(() => {
+            // Получилось!
+          })
+          .catch(err => {
+            console.log('Something went wrong', err);
+          });
+        } else {
+          alert("Sorry. Update your browser");
+        }
+    });
       shareModal.querySelector("#modalSwitchBtn").addEventListener('click', (e) => {
           e.preventDefault();
           loadingON();
@@ -860,9 +950,7 @@ class FileOperator {
             }
           }
           else {
-            console.log(this.files);
             const result = this.disableSharingRequest(file.ID);
-            console.log(this.files);
             if(result) {
               file.ShareID = '-';
               file.Shared = false;
@@ -926,6 +1014,7 @@ class FileOperator {
               <div class="up_ShareModal__btns">
                   <button class="up_ShareMOdal__CloseBtn" id="modalCloseBtn">Close</button>
                   <button class="up_ShareMOdal__SwitchSBtn" id="modalSwitchBtn">${(file.Shared) ? "Disable" : "Enable"} sharing</button>
+                  <button class="up_ShareMOdal__SwitchSBtn" id="copyLinkhBtn">Copy link</button>
               </div>
           </div>`;
   }
@@ -946,14 +1035,16 @@ class FileOperator {
       </div>`;
     renameModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
       e.preventDefault();
-      document.body.removeChild(renameModal);
+      this.router.routerDataEl.removeChild(renameModal);
     });
     renameModal.querySelector("#modalRenameBtn").addEventListener('click', (e) => {
       e.preventDefault();
+      loadingON();
+      setTimeout(() => {
+        loadingOFF();
       let newName = renameModal.querySelector('#newName').value;
       renameModal.querySelector('#newName').select();
-      newName = newName.replace('/','\\');
-      
+      newName = newName.replace("/",'\\');
       let result;
       if(file.Type == 1)
         result = this.renameFileRequest(file.ID, newName);
@@ -965,7 +1056,7 @@ class FileOperator {
           this.updateFileNameEl(file.ID, newName);
         else
           this.updateFolderNameEl(file.ID, newName);
-        document.body.removeChild(renameModal);
+          this.router.routerDataEl.removeChild(renameModal);
       }
       else {
         const renameBtns = renameModal.querySelector("#RenameModal__btns");
@@ -974,8 +1065,10 @@ class FileOperator {
         const renameText = renameModal.querySelector("#RenameModal_text");
         renameText.innerHTML ="Error occured durring operation. Try again later.";
       } 
+      },100);
   });
   return renameModal;
+
   }
   updateFileNameEl(fileId, newName) {
     let filename = newName.substring(0, Math.min(newName.length,40));
@@ -995,8 +1088,8 @@ class FileOperator {
     var file = this.getFileData(file_id);
     if(file != null) {
       const renameModal = this.createRenameModal(file);
-      document.body.appendChild(renameModal);
-    }   
+      this.router.routerDataEl.appendChild(renameModal);
+    }
   }
   renameFileRequest(fileId, newName) { 
     const userId = this.auth.getUserId();
@@ -1015,7 +1108,7 @@ class FileOperator {
     const userId = this.auth.getUserId();
     try {
       const XHR = new XMLHttpRequest();
-      XHR.open( 'PATCH', `${ this.api}/u/${userId}/dir/rename?dirId=${folderId}&name=${newName}`,false);
+      XHR.open( 'PATCH', `${ this.api}u/${userId}/dir/rename?dirId=${folderId}&name=${newName}`,false);
       XHR.setRequestHeader('Content-Type', 'application/json');
       XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
       XHR.send();
@@ -1029,7 +1122,7 @@ class FileOperator {
       const actualDirId = this.files.ID;
       try {
         const XHR = new XMLHttpRequest();
-        XHR.open( 'POST', `${this.api}/u/${userId}/dir/create?dirId=${actualDirId}&name=${newName}`,false);
+        XHR.open( 'POST', `${this.api}u/${userId}/dir/create?dirId=${actualDirId}&name=${newName}`,false);
         XHR.setRequestHeader('Content-Type', 'application/json');
         XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
         XHR.send();
@@ -1054,7 +1147,11 @@ class FileOperator {
       </div>`;
     newFolderModal.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
       e.preventDefault();
-      document.body.removeChild(newFolderModal);
+      this.router.routerDataEl.removeChild(newFolderModal);
+    });
+    newFolderModal.querySelector('#newName').addEventListener('keyup', _ => {
+      const newFolderText = newFolderModal.querySelector("#newFolderModal_text");
+      newFolderText.innerHTML = '';
     });
     newFolderModal.querySelector("#modalCreateBtn").addEventListener('click', (e) => {
       e.preventDefault();
@@ -1062,7 +1159,7 @@ class FileOperator {
       if(newName.length > 0) {
         const result = this.newFolderRequest(newName);
         if(result.status == 200) {
-          document.body.removeChild(newFolderModal);
+          this.router.routerDataEl.removeChild(newFolderModal);
           const newFolder = JSON.parse(result.response);
           const folderElement = this.createFolderTemplate(newFolder);
           document.querySelector('#fileList').appendChild(folderElement);
@@ -1071,9 +1168,9 @@ class FileOperator {
         else {
           const newFolderBtns = newFolderModal.querySelector("#newFolderModal__btns");
           const newFolderBtn = newFolderModal.querySelector("#modalCreateBtn");
-          newFolderBtns.removeChild(newFolderBtn);
+          //newFolderBtns.removeChild(newFolderBtn);
           const newFolderText = newFolderModal.querySelector("#newFolderModal_text");
-          newFolderText.innerHTML ="Error occured durring operation. Try again later.";
+          newFolderText.innerHTML ="Error occured durring operation. Try again.";
           return null;
         }
       }
@@ -1086,7 +1183,7 @@ class FileOperator {
         return null;
       } 
     });
-    document.body.appendChild(newFolderModal);
+    this.router.routerDataEl.appendChild(newFolderModal);
     
   }
   OpenNewFolderModal() {
@@ -1163,7 +1260,7 @@ class FileOperator {
                               </div>`;
     fileElement.querySelector("#sharedDownloadBtn").addEventListener('click', (e) => {
       const a = document.createElement('a');
-      a.href = `${this.api}/shared/${shareId}?fileId=${file.ID}`;
+      a.href = `${this.api}shared/${shareId}?fileId=${file.ID}`;
       a.download = file.Name;
       a.click();
     });               
