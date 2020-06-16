@@ -2,6 +2,7 @@ import homeView from '../views/main_page/home.js'
 import FAQView from '../views/main_page/FAQ.js'
 import registerView from '../views/main_page/register.js'
 import loginView from '../views/main_page/login.js'
+import resultsView from '../views/user_panel/results.js'
 import resetPassword from '../views/main_page/reset-password.js'
 import forgotPassword from '../views/main_page/forgot-password.js'
 import files from '../views/user_panel/files.js'
@@ -35,6 +36,10 @@ const routes = [
     {
         path: '/shared',
         getTemplate: shared,
+    },
+    {
+        path: '/results',
+        getTemplate: resultsView,
     },
     {
         path: '/files/:directory',

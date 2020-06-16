@@ -237,6 +237,19 @@ class FileOperator {
   setup(currentRoute) {
     if(currentRoute == "files") {
       this.loadFiles();
+
+      const searchBtn = document.querySelector("#searchBtn");
+      if(searchBtn != null){
+          searchBtn.addEventListener('click', (e) =>{
+            e.preventDefault();
+            const search = this.searcher();
+            if(search != null){
+              document.body.appendChild(search);
+            }
+        })
+      }
+
+
       const folderBtn = document.querySelector("#newFolderBtn");
       if(folderBtn != null)
       folderBtn.addEventListener('click', (e) => {
@@ -262,7 +275,11 @@ class FileOperator {
       this.getShById(shareId);
      
     }
-    
+    else if(currentRoute == "results"){
+      if (this.searching == null){
+        this.router.loadRoute("files")
+      }
+    }
   }
   setRouter(router) {
     this.router = router;
@@ -458,6 +475,7 @@ class FileOperator {
   bindParentFolderBtn(parentFolderBtn) {
     parentFolderBtn.addEventListener('dblclick', (e) => {
       e.preventDefault();
+      console.log(this.files.ParentID); // Testing
       const result = this.getDirData(this.files.ParentID);
       if(result.status == 200) {
         this.files = JSON.parse(result.response);
@@ -547,6 +565,7 @@ class FileOperator {
                               </div>`;
     folderElement.addEventListener('dblclick', (e) => {
       let folderID = folderElement.id.slice(7);
+      console.log(this.files.ParentID); // Testing
       const directoryObj = this.findFolderObj(folderID);
       if(directoryObj != null) {
         const result = this.getDirData(directoryObj.ID);
@@ -1176,6 +1195,144 @@ class FileOperator {
     });               
     return fileElement;
   }
+
+
+  searcher(){
+    const searchBox = document.createElement('div');
+    searchBox.classList.add('up_SearcherModal');
+    searchBox.innerHTML = `
+    <header>
+        <h2 class="up_SearcherModal__header">Search files</h2>
+    </header>
+    <div class="up_SearcherModal__content">
+        <h3 class="up_SearcherModal__name">Search:</h3>
+        <input type="search" name="searcher" id="searcher" class="up_SearcherModal__searchText"/>
+        <div class="up_SearcherModal__filter", id="searcherFilter"></div>
+        <p class="up_SearcherModal__p" id="SearcherModal_text"></p>
+        <div class="up_SearcherModal__btns" id="SearcherModal__btns">
+            <button class="up_SearcherModal__CloseBtn" id="modalCloseBtn">Close</button>
+            <button class="up_SearcherModal__FilterBtn" id="modalFilterBtn">Filter</button>
+            <button class="up_SearcherModal__SearchBtn" id="modalSearchBtn">Search</button>
+        </div>
+    </div>`;
+    searchBox.querySelector("#modalCloseBtn").addEventListener('click', (e) => {
+      e.preventDefault();
+      document.body.removeChild(searchBox);
+    });
+    searchBox.querySelector("#modalFilterBtn").addEventListener('click', (e) => {
+      e.preventDefault();
+      const filterBox = searchBox.querySelector("#searcherFilter");
+      if (filterBox.querySelector("#searcherFilterOptions") == null){
+        filterBox.innerHTML = `
+        <div class="up_SearcherModal__filter" id="searcherFilterOptions">Sort by:
+        <table>
+          <ul class="up_SearcherModal__filterOption">
+            <li><input type="checkbox" id="searcherFilterOptions_name">Name
+            <select id="searcherNameFilter">
+              <option value="Contains">Contains</option>
+              <option value="Eq">Equal</option>
+              <option value="Ne">Not equal</option>
+            </select>
+            </li>
+            <li><input type="checkbox" id="searcherFilterOptions_date">Date
+            <select id="searcherDateFilter">
+              <option value="Eq">Equal</option>
+              <option value="Ne">Not equal</option>
+              <option value="Lt">Less than</option>
+              <option value="Lte">Less than equal</option>
+              <option value="Gt">Greater than</option>
+              <option value="Gte">Greater than equal</option>
+            </select>
+            </li>
+            <li><input type="checkbox" id="searcherFilterOptions_size">Size
+            <select id="searcherSizeFilter">
+              <option value="Eq">Equal</option>
+              <option value="Ne">Not equal</option>
+              <option value="Lt">Less than</option>
+              <option value="Lte">Less than equal</option>
+              <option value="Gt">Greater than</option>
+              <option value="Gte">Greater than equal</option>
+            </select>  
+            </li>
+          </ul>
+        </table>
+        </div>`;
+      } else {
+        filterBox.innerHTML = ``;
+        //searchBox.removeChild(filterBox);
+      }
+    });
+    searchBox.querySelector("#modalSearchBtn").addEventListener('click', (e) => {
+      this.searcherRequest();
+    });
+    return searchBox;
+  }
+
+  appendResult(data){
+    console.log("Append: ", data);
+    // const status = document.getElementsById("searchStatus");
+    // const list = document.getElementsById("fileList");
+    
+    // const fileList = list.createElement('li');
+    //fileList.id = data['']
+  }
+
+  searchProcess(data){
+    window.test = data;
+      if (data['files'] != null){
+        for(var i = 0; i < data['files'].length; i++){
+          // console.log(data['files'][i]);
+          this.listFiles.push(data['files'][i]['Name']);
+        }
+      }
+      try{
+        if (data['directories'] != null){
+          for(var i = 0; i < data['directories'].length; i++){
+            //this.searchProcess(data['directories'][i]);
+            // console.log(data['directories'][i]);
+            const XHR = new XMLHttpRequest();
+            this.listFiles.push(data['directories'][i]['Name']);
+            console.log("Loading...");
+            XHR.open( 'GET', this.api + `u/${this.auth.getUserId()}/dir/${data['directories'][i]['ID']}`,false);
+            XHR.setRequestHeader('Content-Type', 'application/json');
+            XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+            XHR.send();
+            if(XHR.status == 200) {
+              this.appendResult(this.files)
+              this.searchProcess(JSON.parse(XHR.response));
+            }
+          }
+        }
+      } catch(error){
+        return;
+      }
+    }
+
+  searcherRequest(){
+    this.router.loadRoute('results');
+    const fileList = document.querySelector("#fileList");
+    const userId = this.auth.getUserId();
+    try {
+      const XHR = new XMLHttpRequest();
+      XHR.open( 'GET', this.api + `u/${userId}/dir/root`,false);
+      XHR.setRequestHeader('Content-Type', 'application/json');
+      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+      XHR.send();
+      if(XHR.status == 200) {
+        this.files = JSON.parse(XHR.response);
+        console.log(this.files);
+      }
+      this.listFiles = [];
+      this.searching=true;
+      this.searchProcess(this.files);
+      console.log(this.listFiles);
+      delete this.searching;
+    }
+    catch (error){
+      return null;
+    }
+  }
+
 }
 
 export default FileOperator;
