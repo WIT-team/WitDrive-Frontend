@@ -155,6 +155,8 @@ export default class Router{
                 this.auth.initdeleteAccountForm();
             if(currentRoute == "files" || currentRoute == "shared" || currentRoute == "bin" || currentRoute == "sharedfile")
                 this.fileoperator.setup(currentRoute);
+            if(currentRoute == "results")
+                this.fileoperator.checkSearch()
         }
         else {
             switch (currentRoute) {
@@ -191,6 +193,9 @@ export default class Router{
                 case "sharedfile":
                     console.log(currentRoute);
                     this.fileoperator.setup("sharedfile");
+                case "results":
+                    this.loadRoute('');
+                    break;
                 default:
                     break;
             }

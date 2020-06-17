@@ -233,6 +233,7 @@ class FileOperator {
 
   // setup 
   setup(currentRoute) {
+
     if(currentRoute == "files") {
       this.loadFiles();
 
@@ -274,9 +275,7 @@ class FileOperator {
      
     }
     else if(currentRoute == "results"){
-      if (this.searching == null){
-        this.router.loadRoute("files")
-      }
+      alert("Results...")
     }
   }
   setRouter(router) {
@@ -1360,26 +1359,31 @@ class FileOperator {
       }
     });
     searchBox.querySelector("#modalSearchBtn").addEventListener('click', (e) => {
+      this.searching = true;
+      this.router.loadRoute('results');
       this.searcherRequest();
     });
     return searchBox;
   }
 
-  appendResult(data){
-    console.log("Append: ", data);
+  appendResult(data, name=""){
+    if (data['Name'].includes(name)){
+      console.log("Append: ", data);
+      this.results.push(data);
+    }
     // const status = document.getElementsById("searchStatus");
-    // const list = document.getElementsById("fileList");
-    
-    // const fileList = list.createElement('li');
+    // status.innerHTML += `${data['Name']} -`
     //fileList.id = data['']
   }
 
   searchProcess(data){
     window.test = data;
+    this.results = []
       if (data['files'] != null){
         for(var i = 0; i < data['files'].length; i++){
           // console.log(data['files'][i]);
           this.listFiles.push(data['files'][i]['Name']);
+          this.appendResult((data['files'][i]));
         }
       }
       try{
@@ -1406,7 +1410,6 @@ class FileOperator {
     }
 
   searcherRequest(){
-    this.router.loadRoute('results');
     const fileList = document.querySelector("#fileList");
     const userId = this.auth.getUserId();
     try {
@@ -1420,13 +1423,17 @@ class FileOperator {
         console.log(this.files);
       }
       this.listFiles = [];
-      this.searching=true;
       this.searchProcess(this.files);
       console.log(this.listFiles);
-      delete this.searching;
     }
     catch (error){
       return null;
+    }
+  }
+
+  checkSearch(){
+    if(this.searching !== true){
+      this.router.loadRoute('files');
     }
   }
 
