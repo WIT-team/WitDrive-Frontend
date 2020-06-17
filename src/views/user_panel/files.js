@@ -27,9 +27,6 @@ export default params => {
 <div class="up_mainSection__files-box" id="files-box">
             <header>
                 <h1 class="up_mainSection__header">Files</h1>
-                <div class="up_mainSection__searchBtn">
-                    <button class="up_mainSection__searchBtn" id="searchBtn"><img height="15" src="./assets/imgs/lupa.svg" alt="Search">Search</button>
-                </div>
                 <button class="up_mainSeciton__newFoderBtn" id="newFolderBtn">+ New folder</button>
                 <div class="up_mainSection__file-atrubutes">
                     <span class="up_mainSection__file-atrubutes-name">Name</span>
