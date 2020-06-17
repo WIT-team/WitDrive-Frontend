@@ -1377,8 +1377,6 @@ class FileOperator {
         fileList.Name.Contains = [];
         fileList.Name.Contains.push(this.searchText);
 
-    console.log(this.files.ParentID)
-
     const filterBox = document.getElementById('searcherFilterOptions');
     if (filterBox != null){
       if (filterBox.value != ''){
@@ -1387,7 +1385,6 @@ class FileOperator {
         options.forEach(val => {
           
           const check = document.getElementById(val);
-            console.log(check);
             switch (val){
               case 'searcherFilterOptions_name':
                 if(check.checked == true){
@@ -1432,24 +1429,24 @@ class FileOperator {
                 break;
             }
           });
-        //console.log(JSON.stringify(fileList));
       }
-    //const XHR = new XMLHttpRequest();
-    //XHR.open();
     }
     
   const send = JSON.stringify(fileList)
   console.log(send);
+  
+  const userId = this.auth.getUserId();
+  console.log(userId);
 
   const XHR = new XMLHttpRequest();
-  XHR.open( 'GET', this.api + `u/${this.auth.getUserId()}/dir/search?searchRoot=${this.files.ParentID}`,false);
-  XHR.setRequestHeader('Content-Type', 'application/json');
+  XHR.open( 'GET', `${this.api}u/${userId}/dir/search?searchRoot=${this.files.ID}`,false);
   XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+  XHR.setRequestHeader('Content-Type', 'application/json');
   XHR.send(send);
+  this.results = XHR.response;
   if(XHR.status == 200){
-    this.results = XHR.response;
+    alert("Well done!");
   }
-
   }
 
   checkSearch(){
