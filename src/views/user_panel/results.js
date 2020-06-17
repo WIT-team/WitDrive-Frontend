@@ -27,7 +27,6 @@ export default params => {
 <div class="up_mainSection__files-box" id="files-box">
             <header>
                 <h1 class="up_mainSection__header">Results</h1>
-                <div class="up_mainSection__searchStatus" id="searchStatus">Search in progress...</div>
                 <div class="up_mainSection__file-atrubutes">
                     <span class="up_mainSection__file-atrubutes-name">Name</span>
                     <span class="up_mainSection__file-atrubutes-up-date">Upload date</span>

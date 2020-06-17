@@ -156,7 +156,7 @@ export default class Router{
             if(currentRoute == "files" || currentRoute == "shared" || currentRoute == "bin" || currentRoute == "sharedfile")
                 this.fileoperator.setup(currentRoute);
             if(currentRoute == "results")
-                this.fileoperator.checkSearch()
+                this.fileoperator.checkSearch();
         }
         else {
             switch (currentRoute) {

@@ -274,9 +274,6 @@ class FileOperator {
       this.getShById(shareId);
      
     }
-    else if(currentRoute == "results"){
-      alert("Results...")
-    }
   }
   setRouter(router) {
     this.router = router;
@@ -1062,7 +1059,7 @@ class FileOperator {
         const renameBtn = renameModal.querySelector("#modalRenameBtn");
         renameBtns.removeChild(renameBtn);
         const renameText = renameModal.querySelector("#RenameModal_text");
-        renameText.innerHTML ="Error occured durring operation. Try again later.";
+        renameText.innerHTML ="Error occured during operation. Try again later.";
       } 
       },100);
   });
@@ -1315,6 +1312,10 @@ class FileOperator {
       e.preventDefault();
       document.body.removeChild(searchBox);
     });
+    searchBox.querySelector('#searcher').addEventListener('input', (e) =>{
+      e.preventDefault();
+      this.searchText = searchBox.querySelector('#searcher').value;
+    })
     searchBox.querySelector("#modalFilterBtn").addEventListener('click', (e) => {
       e.preventDefault();
       const filterBox = searchBox.querySelector("#searcherFilter");
@@ -1339,6 +1340,8 @@ class FileOperator {
               <option value="Gt">Greater than</option>
               <option value="Gte">Greater than equal</option>
             </select>
+            <input type="date" id="searcherDateFilter_date"></input>
+            <input type="time" id="searcherDateFilter_time"></input>
             </li>
             <li><input type="checkbox" id="searcherFilterOptions_size">Size
             <select id="searcherSizeFilter">
@@ -1348,7 +1351,8 @@ class FileOperator {
               <option value="Lte">Less than equal</option>
               <option value="Gt">Greater than</option>
               <option value="Gte">Greater than equal</option>
-            </select>  
+            </select>
+            <input type="number" id="searcherSizeFilter_value"></input>
             </li>
           </ul>
         </table>
@@ -1360,80 +1364,99 @@ class FileOperator {
     });
     searchBox.querySelector("#modalSearchBtn").addEventListener('click', (e) => {
       this.searching = true;
-      this.router.loadRoute('results');
       this.searcherRequest();
+      document.body.removeChild(searchBox);
+      setTimeout(this.router.loadRoute('results'), 1000);
     });
     return searchBox;
   }
 
-  appendResult(data, name=""){
-    if (data['Name'].includes(name)){
-      console.log("Append: ", data);
-      this.results.push(data);
+  searcherRequest(){
+    var fileList = new Object();
+      fileList.Name = new Object();
+        fileList.Name.Contains = [];
+        fileList.Name.Contains.push(this.searchText);
+
+    console.log(this.files.ParentID)
+
+    const filterBox = document.getElementById('searcherFilterOptions');
+    if (filterBox != null){
+      if (filterBox.value != ''){
+        const options = ['searcherFilterOptions_name', 'searcherFilterOptions_date', 'searcherFilterOptions_size'];
+        
+        options.forEach(val => {
+          
+          const check = document.getElementById(val);
+            console.log(check);
+            switch (val){
+              case 'searcherFilterOptions_name':
+                if(check.checked == true){
+                  const logic = document.getElementById('searcherNameFilter').value;
+                  if (logic != 'Contains'){
+                    delete fileList.Name.Contains;
+                    fileList.Name[logic] = [this.searchText];
+                  }
+                }
+                break;
+              case 'searcherFilterOptions_date':
+                if(check.checked == true){
+                  const logic = document.getElementById('searcherDateFilter').value;
+                  if (fileList['Modified'] == null){
+                    fileList.Modified = new Object();
+                  }
+                  var dateVal = document.getElementById('searcherDateFilter_date').value;
+                  const timeVal = "T" + document.getElementById('searcherDateFilter_time').value + ":00";
+                  if(dateVal == '' || timeVal == ''){
+                    dateVal = new Date();
+                    fileList.Modified[logic] = dateVal.toJSON();
+                  } else {
+                    fileList.Modified[logic] = dateVal+timeVal;
+                  }
+                }  
+                break;
+              case 'searcherFilterOptions_size':
+                if(check.checked == true){
+                  if (fileList['Metadata'] == null){
+                    fileList.Metadata = new Object();
+                  }
+                    const logic = document.getElementById('searcherSizeFilter').value;
+                    const valueInput = document.getElementById('searcherSizeFilter');
+                    var number = 0
+                    if (valueInput != null){
+                      number = document.getElementById('searcherSizeFilter_value').value;
+                    }
+                    fileList.Metadata.Length = new Object();
+                    fileList.Metadata.Length[logic] = [number];
+                  
+                }
+                break;
+            }
+          });
+        //console.log(JSON.stringify(fileList));
+      }
+    //const XHR = new XMLHttpRequest();
+    //XHR.open();
     }
-    // const status = document.getElementsById("searchStatus");
-    // status.innerHTML += `${data['Name']} -`
-    //fileList.id = data['']
+    
+  const send = JSON.stringify(fileList)
+  console.log(send);
+
+  const XHR = new XMLHttpRequest();
+  XHR.open( 'GET', this.api + `u/${this.auth.getUserId()}/dir/search?searchRoot=${this.files.ParentID}`,false);
+  XHR.setRequestHeader('Content-Type', 'application/json');
+  XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+  XHR.send(send);
+  if(XHR.status == 200){
+    this.results = XHR.response;
   }
 
-  searchProcess(data){
-    window.test = data;
-    this.results = []
-      if (data['files'] != null){
-        for(var i = 0; i < data['files'].length; i++){
-          // console.log(data['files'][i]);
-          this.listFiles.push(data['files'][i]['Name']);
-          this.appendResult((data['files'][i]));
-        }
-      }
-      try{
-        if (data['directories'] != null){
-          for(var i = 0; i < data['directories'].length; i++){
-            //this.searchProcess(data['directories'][i]);
-            // console.log(data['directories'][i]);
-            const XHR = new XMLHttpRequest();
-            this.listFiles.push(data['directories'][i]['Name']);
-            console.log("Loading...");
-            XHR.open( 'GET', this.api + `u/${this.auth.getUserId()}/dir/${data['directories'][i]['ID']}`,false);
-            XHR.setRequestHeader('Content-Type', 'application/json');
-            XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
-            XHR.send();
-            if(XHR.status == 200) {
-              this.appendResult(this.files)
-              this.searchProcess(JSON.parse(XHR.response));
-            }
-          }
-        }
-      } catch(error){
-        return;
-      }
-    }
-
-  searcherRequest(){
-    const fileList = document.querySelector("#fileList");
-    const userId = this.auth.getUserId();
-    try {
-      const XHR = new XMLHttpRequest();
-      XHR.open( 'GET', this.api + `u/${userId}/dir/root`,false);
-      XHR.setRequestHeader('Content-Type', 'application/json');
-      XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
-      XHR.send();
-      if(XHR.status == 200) {
-        this.files = JSON.parse(XHR.response);
-        console.log(this.files);
-      }
-      this.listFiles = [];
-      this.searchProcess(this.files);
-      console.log(this.listFiles);
-    }
-    catch (error){
-      return null;
-    }
   }
 
   checkSearch(){
     if(this.searching !== true){
       this.router.loadRoute('files');
+    } else {
+      document.getElementById('fileList').innerHTML = this.results;
     }
   }
 
