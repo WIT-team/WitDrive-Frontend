@@ -1359,7 +1359,6 @@ class FileOperator {
         </div>`;
       } else {
         filterBox.innerHTML = ``;
-        //searchBox.removeChild(filterBox);
       }
     });
     searchBox.querySelector("#modalSearchBtn").addEventListener('click', (e) => {
@@ -1435,18 +1434,22 @@ class FileOperator {
   const send = JSON.stringify(fileList)
   const userId = this.auth.getUserId();
 
-  var SearchRequest = new XMLHttpRequest();
-  SearchRequest.open( 'GET', `${this.api}u/${userId}/dir/search?searchRoot=${this.files.ID}`,true);
+  try{
+    var SearchRequest = new XMLHttpRequest();
+  SearchRequest.open( 'POST', `${this.api}u/${userId}/dir/search?searchRoot=${this.files.ID}`, false);
   SearchRequest.setRequestHeader("Content-Type", "application/json; charset=utf-8");
   SearchRequest.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
-  SearchRequest.setRequestHeader("Cache-Control", "no-cache");
-  SearchRequest.setRequestHeader("Pragma", "no-cache");
   SearchRequest.send( send );
-  this.results = SearchRequest.response;
   if(SearchRequest.status == 200){
     alert("Well done!");
+    this.results = JSON.parse(SearchRequest.response);
   }
-  }
+  this.results = SearchRequest.response;
+} catch(error){
+  
+}
+}
+  
 
   checkSearch(){
     if(this.searching !== true){
