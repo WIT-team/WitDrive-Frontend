@@ -1433,18 +1433,17 @@ class FileOperator {
     }
     
   const send = JSON.stringify(fileList)
-  console.log(send);
-  
   const userId = this.auth.getUserId();
-  console.log(userId);
 
-  const XHR = new XMLHttpRequest();
-  XHR.open( 'GET', `${this.api}u/${userId}/dir/search?searchRoot=${this.files.ID}`,false);
-  XHR.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
-  XHR.setRequestHeader('Content-Type', 'application/json');
-  XHR.send(send);
-  this.results = XHR.response;
-  if(XHR.status == 200){
+  var SearchRequest = new XMLHttpRequest();
+  SearchRequest.open( 'GET', `${this.api}u/${userId}/dir/search?searchRoot=${this.files.ID}`,true);
+  SearchRequest.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+  SearchRequest.setRequestHeader("Authorization", "Bearer " + this.auth.getUserToken());
+  SearchRequest.setRequestHeader("Cache-Control", "no-cache");
+  SearchRequest.setRequestHeader("Pragma", "no-cache");
+  SearchRequest.send( send );
+  this.results = SearchRequest.response;
+  if(SearchRequest.status == 200){
     alert("Well done!");
   }
   }
